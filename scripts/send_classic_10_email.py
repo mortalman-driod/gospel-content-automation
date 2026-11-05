@@ -397,6 +397,8 @@ def send_classic_editorial_email(recipient: str, subject: str, fliers_dir: Path)
                     print(f"[ATTACHED] {img_file.name} as CID:{cid}")
             except Exception as e:
                 print(f"[WARNING] Failed to attach {img_file}: {e}", file=sys.stderr)
+        else:
+            print(f"[WARNING] Flyer image not found on disk: {img_file}", file=sys.stderr)
 
     try:
         with smtplib.SMTP(smtp_host, smtp_port, timeout=45) as server:
@@ -428,7 +430,7 @@ def send_classic_editorial_email(recipient: str, subject: str, fliers_dir: Path)
         return False
 
 if __name__ == "__main__":
-    fliers_dir = Path("C:/Users/ezeki/.gemini/antigravity/scratch/gospel-content-automation/reports/fliers")
+    fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_classic_editorial_email(
         recipient="aondoaseerezekiel@gmail.com",
         subject="🕊️ The Daily Kingdom Briefing • Issue No. 042 (Editorial Edition)",

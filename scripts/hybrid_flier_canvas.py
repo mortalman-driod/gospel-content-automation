@@ -10,12 +10,21 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 def get_font(font_name="segoeuib.ttf", size=32):
-    fonts_dir = Path("C:/Windows/Fonts")
-    font_path = fonts_dir / font_name
-    if not font_path.is_file():
-        font_path = fonts_dir / "arialbd.ttf"
-    if font_path.is_file():
-        return ImageFont.truetype(str(font_path), size)
+    search_dirs = [
+        Path("C:/Windows/Fonts"),
+        Path("/usr/share/fonts/truetype/dejavu"),
+        Path("/usr/share/fonts/truetype/freefont"),
+        Path("/usr/share/fonts")
+    ]
+    for d in search_dirs:
+        if d.is_dir():
+            for fname in [font_name, "DejaVuSans-Bold.ttf", "FreeSansBold.ttf", "arialbd.ttf", "arial.ttf"]:
+                fpath = d / fname
+                if fpath.is_file():
+                    try:
+                        return ImageFont.truetype(str(fpath), size)
+                    except Exception:
+                        pass
     return ImageFont.load_default()
 
 def draw_brush_ribbon(draw: ImageDraw.ImageDraw, x1, y1, x2, y2, fill_color, border_color=None):
@@ -161,8 +170,9 @@ def render_hybrid_flier(
     return output_path
 
 if __name__ == "__main__":
-    src_art = Path("C:/Users/ezeki/.gemini/antigravity/scratch/gospel-content-automation/reports/fliers/gemini_gospel_flyer.jpg")
-    out_dir = Path("C:/Users/ezeki/.gemini/antigravity/scratch/gospel-content-automation/reports/fliers")
+    base_dir = Path(__file__).resolve().parent.parent
+    src_art = base_dir / "reports" / "fliers" / "gemini_gospel_flyer.jpg"
+    out_dir = base_dir / "reports" / "fliers"
     
     if src_art.is_file():
         render_hybrid_flier(

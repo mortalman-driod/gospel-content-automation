@@ -411,7 +411,7 @@ def send_viral_fliers_email(recipient: str, subject: str, fliers_dir: Path):
         return False
 
 if __name__ == "__main__":
-    fliers_dir = Path("C:/Users/ezeki/.gemini/antigravity/scratch/gospel-content-automation/reports/fliers")
+    fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_viral_fliers_email(
         recipient="aondoaseerezekiel@gmail.com",
         subject="🕊️ Today's Kingdom Media Kit & Fliers (Hardened Suite)",
