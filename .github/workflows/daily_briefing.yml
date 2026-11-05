@@ -33,4 +33,4 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          python scripts/send_classic_10_email.py
+          python scripts/send_luxury_editorial_email.py

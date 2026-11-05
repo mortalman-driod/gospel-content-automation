@@ -58,7 +58,7 @@ def run_daily_pipeline(is_catchup: bool = False) -> bool:
     print(f"[{mode_label}] Initiating daily gospel pipeline for {today}...")
 
     # 1. Run Email & Media Dispatch Script
-    send_script = BASE_DIR / "scripts" / "send_viral_fliers_email.py"
+    send_script = BASE_DIR / "scripts" / "send_luxury_editorial_email.py"
     if not send_script.is_file():
         err = f"Script not found: {send_script}"
         print(f"[ERROR] {err}", file=sys.stderr)
