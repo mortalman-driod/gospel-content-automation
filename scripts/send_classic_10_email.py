@@ -21,9 +21,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 try:
     import content_db
     import catch_up_scheduler
+    import youtube_api_client
 except ImportError:
     content_db = None
     catch_up_scheduler = None
+    youtube_api_client = None
 
 def load_env_file():
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -407,6 +409,16 @@ def send_classic_editorial_email(recipient: str, subject: str, fliers_dir: Path)
 
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
+            if youtube_api_client:
+                live_vids = youtube_api_client.fetch_trending_gospel_videos()
+                for lv in live_vids:
+                    content_db.record_video(
+                        video_id=lv.get("video_id", "live_vid"),
+                        title=lv.get("title", ""),
+                        channel=lv.get("channel", ""),
+                        published_at=lv.get("published_at", "")
+                    )
+                print(f"[YOUTUBE INTEGRATION] {len(live_vids)} live video assets archived in database.")
         if catch_up_scheduler:
             catch_up_scheduler.save_state("SUCCESS")
 
