@@ -1,0 +1,36 @@
+name: Daily Kingdom Briefing Automation
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (which is 07:00 AM West Africa Time / Africa/Lagos)
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows 1-click manual trigger anytime from GitHub Actions tab
+
+jobs:
+  run-briefing:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute Daily Gospel Briefing & Email Dispatch
+        env:
+          SMTP_HOST: "smtp.gmail.com"
+          SMTP_PORT: "587"
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          python scripts/send_classic_10_email.py
