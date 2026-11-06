@@ -19,10 +19,12 @@ try:
     import content_db
     import catch_up_scheduler
     import youtube_api_client
+    from hybrid_flier_canvas import render_hybrid_flier
 except ImportError:
     content_db = None
     catch_up_scheduler = None
     youtube_api_client = None
+    render_hybrid_flier = None
 
 def load_env_file():
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -35,6 +37,39 @@ def load_env_file():
                 v = v.strip().strip('"').strip("'")
                 if k and k not in os.environ:
                     os.environ[k] = v
+
+def ensure_flyers(fliers_dir: Path):
+    """Ensures required high-resolution flyers exist, rendering via canvas if missing."""
+    fliers_dir.mkdir(parents=True, exist_ok=True)
+    base_art = fliers_dir / "gemini_gospel_flyer.jpg"
+    sq_path = fliers_dir / "flyer_praise_square.jpg"
+    vert_path = fliers_dir / "flyer_praise_whatsapp.jpg"
+
+    if render_hybrid_flier and base_art.is_file():
+        if not sq_path.is_file():
+            render_hybrid_flier(
+                background_art=base_art,
+                output_path=sq_path,
+                hook_top="Put on the Garment of",
+                highlight_word="PRAISE",
+                body_quote="Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness.",
+                speaker="Nathaniel Bassey & Apostle Joshua Selman",
+                scripture="Isaiah 61:3",
+                callout_badge="Joy is a spiritual weapon.",
+                target_dim=(1080, 1080)
+            )
+        if not vert_path.is_file():
+            render_hybrid_flier(
+                background_art=base_art,
+                output_path=vert_path,
+                hook_top="Exchange Heaviness for",
+                highlight_word="DIVINE JOY",
+                body_quote="When praise precedes the breakthrough, faith ceases to be a wish—it becomes an unstoppable kingdom verdict.",
+                speaker="Apostle Joshua Selman • Nathaniel Bassey",
+                scripture="Psalm 30:11-12",
+                callout_badge="Walk in victory today.",
+                target_dim=(1080, 1920)
+            )
 
 def generate_social_intent_links(captions: dict) -> dict:
     return {
@@ -69,13 +104,13 @@ def build_luxury_email_html(links: dict) -> str:
                 THE KINGDOM JOURNAL • DAILY EDITORIAL
               </div>
               <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1c1917; margin: 0 0 10px 0; letter-spacing: -0.5px;">
-                Send Judah First
+                The Garment of Praise
               </h1>
               <p style="font-family: Georgia, serif; font-size: 15px; font-style: italic; color: #78716c; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.5;">
-                On praise as strategic defiance, the power of midnight prayer, and why gratitude always precedes the open door.
+                On replacing the spirit of heaviness, praise as divine alignment, and why joy is an act of spiritual defiance.
               </p>
               <div style="border-top: 1px solid #f5f5f4; padding-top: 10px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #a8a29e;">
-                Vol. IV • Issue 43 • Thursday, November 5, 2026
+                Vol. IV • Issue 44 • Friday, November 6, 2026
               </div>
             </td>
           </tr>
@@ -84,22 +119,25 @@ def build_luxury_email_html(links: dict) -> str:
           <tr>
             <td style="padding: 36px 44px 20px 44px;">
               <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 18px 0;">
-                In ancient biblical warfare, King Jehoshaphat was confronted by three converging armies. Conventional military prudence would have placed the veteran archers, the heavy shields, and the frontline cavalry at the head of the formation. Instead, the king appointed worshippers to lead the march.
+                In the sixty-first chapter of Isaiah, the prophet outlines a divine exchange that defies all human calculation: beauty for ashes, the oil of joy for mourning, and the garment of praise for the spirit of heaviness.
+              </p>
+              <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 18px 0;">
+                Notice the deliberate distinction. Heaviness is identified as a spirit—an invisible weight that attempts to settle over your thoughts, paralyze your momentum, and whisper that your efforts are in vain. But praise is described as a garment. A garment is never passive. It is an intentional choice you make before you step out into the world.
               </p>
               <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 20px 0;">
-                He didn't send the army first. He sent Judah.
+                You do not wait until you feel warm before putting on a coat. In the same way, the kingdom never calls us to wait for pleasant circumstances before we choose to worship.
               </p>
               <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 24px 0;">
-                Watching today's live ministrations from Nathaniel Bassey and Mercy Chinwo brought home a timeless spiritual order: the breakthrough rarely begins when the circumstance changes. It begins the exact moment your song shifts. Praise is not an emotional celebration of what went right—it is a defiant announcement of who God remains when the room is dark.
+                Reflecting on this morning's live worship gatherings—from the sustained fervor of Nathaniel Bassey's Hallelujah Challenge to Apostle Joshua Selman's teachings on spiritual alignment—one reality becomes clear: joy is not an accidental emotional reaction. Joy is a weapon of warfare. When you choose thanksgiving in the face of pressure, you disarm heaviness because light and despair cannot occupy the same altar.
               </p>
 
               <!-- Curated Quote Accent -->
               <div style="border-left: 2px solid #b45309; padding: 8px 0 8px 20px; margin: 28px 0;">
                 <div style="font-family: Georgia, serif; font-size: 18px; font-style: italic; color: #1c1917; line-height: 1.5;">
-                  “The breakthrough doesn't start when the trial ends. It begins when your song changes.”
+                  “Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.”
                 </div>
                 <div style="font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #78716c; margin-top: 6px;">
-                  — 2 Chronicles 20:21 • Nathaniel Bassey &amp; Mercy Chinwo
+                  — Isaiah 61:3 • Nathaniel Bassey &amp; Apostle Joshua Selman
                 </div>
               </div>
             </td>
@@ -116,27 +154,27 @@ def build_luxury_email_html(links: dict) -> str:
                   THE ARTWORK • MASTER COMPOSITION
                 </div>
                 <h3 style="font-family: Georgia, serif; font-size: 20px; font-weight: normal; color: #1c1917; margin: 0 0 16px 0;">
-                  Send Judah First
+                  Put on the Garment of Praise
                 </h3>
 
                 <!-- Clean Artwork Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_judah" alt="Send Judah First Artwork" style="max-width: 100%; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
+                  <img src="cid:flyer_praise_square" alt="The Garment of Praise Artwork" style="max-width: 100%; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
                 </div>
 
                 <!-- Editorial Post Draft -->
                 <div style="background-color: #fafaf9; border-left: 2px solid #1c1917; padding: 18px 20px; font-size: 14px; line-height: 1.75; color: #44403c; margin-bottom: 20px;">
                   <p style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 15px; color: #1c1917;">
-                    Most of us wait for the storm to subside before we allow ourselves to breathe. But scripture paints a radically different picture.
+                    Heaviness is a spirit, but praise is a garment.
                   </p>
                   <p style="margin: 0 0 12px 0;">
-                    When King Jehoshaphat marched toward battle, he placed the singers on the front line. Praise was never designed as an emotional reaction to an easy week—it is your strategic weapon to enforce peace before the outcome is visible.
+                    You don't wait to feel happy before you put on your clothes—and you don't wait for life to become simple before choosing to worship.
                   </p>
                   <p style="margin: 0 0 12px 0; font-style: italic; color: #92400e;">
-                    If you are facing an uphill battle today, don't wait for Friday to thank God. Open your Bible, take a quiet breath, and send Judah first.
+                    When you offer God your gratitude in the middle of uncertainty, you break the cycle of anxious striving and anchor your spirit in His unbroken peace.
                   </p>
                   <div style="font-size: 12px; color: #a8a29e; border-top: 1px solid #f5f5f4; padding-top: 8px;">
-                    #SendJudahFirst #PraiseWeapon #WorshipDevotional #NathanielBassey #MercyChinwo #FaithOverFear
+                    #GarmentOfPraise #HallelujahChallenge #NathanielBassey #ApostleJoshuaSelman #FaithOverFear #MorningDevotion
                   </div>
                 </div>
 
@@ -165,7 +203,7 @@ def build_luxury_email_html(links: dict) -> str:
           </tr>
 
           <!-- ============================================== -->
-          <!-- PART II: THE MIDNIGHT REFLECTION (WHATSAPP)   -->
+          <!-- PART II: THE MOBILE REFLECTION (WHATSAPP)     -->
           <!-- ============================================== -->
           <tr>
             <td style="padding: 10px 44px 36px 44px;">
@@ -175,12 +213,12 @@ def build_luxury_email_html(links: dict) -> str:
                   THE MOBILE REFLECTION • STATUS CARD
                 </div>
                 <h3 style="font-family: Georgia, serif; font-size: 20px; font-weight: normal; color: #1c1917; margin: 0 0 16px 0;">
-                  Give God Your Midnight
+                  Exchange Heaviness for Joy
                 </h3>
 
                 <!-- Clean Vertical Flyer Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_midnight" alt="Midnight Thanksgiving Poster" style="max-width: 280px; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
+                  <img src="cid:flyer_praise_whatsapp" alt="Divine Joy Status Card" style="max-width: 280px; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
                 </div>
 
                 <!-- Intimate, Warm Message -->
@@ -189,10 +227,10 @@ def build_luxury_email_html(links: dict) -> str:
                     Good morning my friend.
                   </p>
                   <p style="margin: 0 0 10px 0;">
-                    A quiet word for your day: Never let yesterday's weariness steal today's gratitude. When you give God your midnight, He gives you peace for the morning.
+                    A quiet word for your Friday: In Isaiah 61:3, God promises <em>“the garment of praise for the spirit of heaviness.”</em> If you've carried weariness this week, lay it down today. When you dress your mind in gratitude, God clothes you in strength.
                   </p>
                   <p style="margin: 0; font-size: 13px; color: #78716c;">
-                    📖 <em>“At midnight Paul and Silas were praying and singing hymns to God, and the prisoners were listening to them.”</em> — Acts 16:25
+                    📖 <em>“You turned my wailing into dancing; you removed my sackcloth and clothed me with joy.”</em> — Psalm 30:11
                   </p>
                 </div>
 
@@ -230,6 +268,7 @@ def build_luxury_email_html(links: dict) -> str:
 
 def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     load_env_file()
+    ensure_flyers(fliers_dir)
     
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
@@ -245,27 +284,32 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     msg["From"] = f"The Kingdom Journal <{smtp_user}>"
     msg["To"] = recipient
 
-    # Fresh Humanized Captions for Today's New Topic
+    # Fresh Humanized Captions for Issue 44 (The Garment of Praise)
     captions = {
-        "twitter": "The breakthrough doesn't start when the problem leaves.\n\nIt begins the moment your song changes.\n\nPraise is not a celebration of what went right—it is a declaration of who God remains in the dark.\n\nSend Judah first. 🕊️",
-        "whatsapp": "Good morning my friend. A quiet word for your day:\n\nNever let yesterday's weariness steal today's gratitude. When you give God your midnight, He gives you peace for the morning.\n\n📖 “At midnight Paul and Silas prayed and sang praises unto God...” — Acts 16:25\n\nTake 2 minutes to thank Him today. Send this to someone who needs peace! ✨",
-        "threads": "There is a quiet strength that comes when you stop waiting for life to become easy before you choose to worship.\n\nWhen King Jehoshaphat went into battle, he didn't send the army first. He sent the singers.\n\nBreakthrough doesn't start when the difficulty ends—it begins the moment your song changes. Send Judah first.",
-        "facebook": "“The breakthrough doesn't start when the trial ends. It begins when your song changes.” Praise is not an emotional celebration of what went right; it is a declaration of who God remains when the room is dark. If you're facing an uphill climb today, don't wait for Friday to thank Him. Send Judah first."
+        "twitter": "Heaviness is a spirit, but praise is a garment.\n\nYou don't wait to feel cheerful before you put on your clothes—and you don't wait for life to become easy before you choose to worship.\n\nJoy is not an emotional accident; it is an act of spiritual defiance.\n\nPut on praise today. 🕊️",
+        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nIn Isaiah 61:3, God promises “the garment of praise for the spirit of heaviness.”\n\nNotice that praise is a garment—it is something you actively choose to put on. If you've felt drained or overwhelmed this week, don't let heaviness have the final word. Take 2 minutes right now to thank God for His faithfulness.\n\n📖 “You turned my wailing into dancing; you removed my sackcloth and clothed me with joy.” — Psalm 30:11\n\nHave a blessed and peaceful day! Forward this to someone who needs a lift today. ✨",
+        "threads": "A quick thought for Friday morning:\n\nMost people treat joy like an emotional consequence—something that only happens when all their problems are solved.\n\nScripture treats joy as a spiritual decision. Heaviness tries to dictate the room, but praise establishes God's atmosphere.\n\nYou don't wait for the trial to end to put on praise. You put on praise to remind yourself who God remains in every season. What are you grateful for today?",
+        "facebook": "“Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.” (Isaiah 61:3)\n\nHeaviness is a spirit, but praise is a garment. You don't wait to feel cheerful before you choose to worship. When you give God your gratitude in the middle of uncertainty, you break the cycle of anxiety and anchor your peace. Step out today with thanksgiving in your heart."
     }
 
     links = generate_social_intent_links(captions)
     html_content = build_luxury_email_html(links)
-    plain_text = "The Kingdom Journal • Morning Edition. Please view in an HTML-compatible email client to review today's artwork and pre-filled social drafts."
+    plain_text = (
+        "The Kingdom Journal • Morning Edition (Issue 44)\n\n"
+        "The Garment of Praise\n"
+        "“Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.” — Isaiah 61:3\n\n"
+        "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions."
+    )
 
     alt_part = MIMEMultipart("alternative")
     alt_part.attach(MIMEText(plain_text, "plain", "utf-8"))
     alt_part.attach(MIMEText(html_content, "html", "utf-8"))
     msg.attach(alt_part)
 
-    # Attach the two brand new topic flyers
+    # Attach the two brand new Issue 44 topic flyers
     attachments = [
-        ("flyer_judah", fliers_dir / "flyer_judah_square.jpg"),
-        ("flyer_midnight", fliers_dir / "flyer_midnight_whatsapp.jpg")
+        ("flyer_praise_square", fliers_dir / "flyer_praise_square.jpg"),
+        ("flyer_praise_whatsapp", fliers_dir / "flyer_praise_whatsapp.jpg")
     ]
 
     for cid, img_file in attachments:
@@ -294,11 +338,24 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
             content_db.record_quote(
-                quote_text="The breakthrough doesn't start when the trial ends. It begins when your song changes.",
-                speaker="Nathaniel Bassey & Mercy Chinwo",
-                scripture="2 Chronicles 20:21"
+                quote_text="Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.",
+                speaker="Nathaniel Bassey & Apostle Joshua Selman",
+                scripture="Isaiah 61:3 • Psalm 30:11-12"
             )
-            print("[DATABASE] New topic archived in SQLite memory.")
+            if youtube_api_client:
+                try:
+                    live_vids = youtube_api_client.fetch_trending_gospel_videos()
+                    for lv in live_vids:
+                        content_db.record_video(
+                            video_id=lv.get("video_id", "live_asset"),
+                            title=lv.get("title", ""),
+                            channel=lv.get("channel", ""),
+                            published_at=lv.get("published_at", "")
+                        )
+                    print(f"[YOUTUBE INTEGRATION] {len(live_vids)} live video assets archived in database.")
+                except Exception as ex:
+                    print(f"[YOUTUBE WARNING] Live archival skipped: {ex}", file=sys.stderr)
+            print("[DATABASE] Today's topic and video assets archived in SQLite memory.")
 
         if catch_up_scheduler:
             catch_up_scheduler.save_state("SUCCESS")
@@ -312,6 +369,6 @@ if __name__ == "__main__":
     fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_luxury_editorial_email(
         recipient="aondoaseerezekiel@gmail.com",
-        subject="🕊️ The Kingdom Journal • Send Judah First (Issue 43)",
+        subject="🕊️ The Kingdom Journal • The Garment of Praise (Issue 44)",
         fliers_dir=fliers_dir
     )
