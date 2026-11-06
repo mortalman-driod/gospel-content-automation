@@ -1,8 +1,9 @@
 """
-Cloud Image Generator & Autonomous Studio Compositor (Accuracy Model 2.0)
+Cloud Image Generator & Autonomous Studio Compositor (Gemini-Trained Model 2.0)
 Generates 1:1 Square and 9:16 Vertical viral fliers using:
-1. Google Imagen 3 / Gemini 2.0 API (when GEMINI_API_KEY is configured in GitHub Secrets)
-2. Studio-Grade Autonomous Compositor with:
+1. Google Gemini 2.5 Flash for intelligent typographic hierarchy & prompt design
+2. Cloud Imagen / Gemini Image synthesis (with auto-fallback when rate-limited)
+3. Studio-Grade Compositor with:
    - Dynamic auto-scaling font engine (prevents text clipping and overflow)
    - Strict safe-zone margins (8% for 1:1, 12% for 9:16)
    - Bundled Google Fonts (Playfair Display & Montserrat)
@@ -70,6 +71,36 @@ def fit_text_to_box(draw: ImageDraw.ImageDraw, text: str, font_name: str, max_wi
     lines = textwrap.wrap(text, width=max(12, int(max_width / (min_size * 0.52))))
     return font, lines, min_size
 
+def optimize_flier_text_with_gemini(quote: str, scripture: str, api_key: str) -> dict:
+    """Uses Gemini 2.5 Flash to decompose any quote into optimal poster typography hierarchy."""
+    if not api_key:
+        return None
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+        prompt = f"""You are the master visual typographer for a luxury Christian editorial poster.
+Given this quote: "{quote}"
+Scripture: "{scripture}"
+Deconstruct it into high-impact poster copy.
+Output JSON with:
+- "hook_top": punchy opening hook line (under 30 chars, uppercase)
+- "banner_text": 2 to 4 bold words for the focal paint banner (uppercase)
+- "body_quote": the elegant heart of the quote (under 95 chars)
+- "badge_text": scripture and context badge (under 40 chars, uppercase)
+"""
+        payload = {
+            "contents": [{"parts": [{"text": prompt}]}],
+            "generationConfig": {"responseMimeType": "application/json", "temperature": 0.4}
+        }
+        req = urllib.request.Request(url, data=json.dumps(payload).encode("utf-8"), headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            parsed = json.loads(data["candidates"][0]["content"]["parts"][0]["text"])
+            print(f"[GEMINI TYPOGRAPHY SUCCESS] Optimized poster hierarchy: Banner='{parsed.get('banner_text')}'")
+            return parsed
+    except Exception as e:
+        print(f"[GEMINI TYPOGRAPHY NOTICE] Fallback to direct text: {e}", file=sys.stderr)
+        return None
+
 def generate_via_imagen_api(prompt: str, aspect_ratio: str, output_path: Path, api_key: str) -> bool:
     try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key={api_key}"
@@ -83,7 +114,7 @@ def generate_via_imagen_api(prompt: str, aspect_ratio: str, output_path: Path, a
         }
         data = json.dumps(payload).encode("utf-8")
         req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=30) as resp:
+        with urllib.request.urlopen(req, timeout=25) as resp:
             result = json.loads(resp.read().decode("utf-8"))
             predictions = result.get("predictions", [])
             if predictions and "bytesBase64Encoded" in predictions[0]:
@@ -252,21 +283,38 @@ def generate_daily_fliers(topic_data: dict = None):
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
 
     data = topic_data or {
-        "hook_top": "When human capacity reaches its end",
-        "banner_text": "Divine Help Begins at Dawn",
-        "quote": "When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.",
-        "speaker": "Victoria Orenze & Apostle Joshua Selman",
-        "scripture": "Psalm 46:5 • Isaiah 40:31"
+        "hook_top": "When words are not enough",
+        "banner_text": "Let Worship Speak",
+        "quote": "When words are not enough, let your worship speak.",
+        "speaker": "Mercy Chinwo & Apostle Joshua Selman",
+        "scripture": "Romans 8:26 • Psalm 46:10"
     }
+
+    # Use Gemini to optimize layout hierarchy if available
+    gemini_typo = optimize_flier_text_with_gemini(
+        quote=data.get("quote", ""),
+        scripture=data.get("scripture", ""),
+        api_key=gemini_key
+    )
+    if gemini_typo:
+        hook_top = gemini_typo.get("hook_top", data.get("hook_top", "When words are not enough"))
+        banner_text = gemini_typo.get("banner_text", data.get("banner_text", "Let Worship Speak"))
+        body_quote = gemini_typo.get("body_quote", data.get("quote", ""))
+        badge_text = gemini_typo.get("badge_text", f"{data.get('scripture')} • {data.get('speaker')}")
+    else:
+        hook_top = data.get("hook_top", "When words are not enough")
+        banner_text = data.get("banner_text", "Let Worship Speak")
+        body_quote = data.get("quote", "When words are not enough, let your worship speak.")
+        badge_text = f"{data.get('scripture', 'Romans 8:26')} • {data.get('speaker', 'Mercy Chinwo')}"
 
     square_out = FLIERS_DIR / "flyer_dawn_square.jpg"
     story_out = FLIERS_DIR / "flyer_secret_place_story.jpg"
 
     # 1. Cloud Imagen API if configured
     if gemini_key:
-        print("[CLOUD GENERATOR] GEMINI_API_KEY detected. Attempting cloud Imagen synthesis...")
-        sq_prompt = f"Viral Christian quote flier for {data['banner_text']}. African Christian worshipper, gold Bible, warm light, 8k."
-        st_prompt = f"Vertical 9:16 Christian poster for {data['quote'][:60]}. Believer in prayer, warm lantern, 8k."
+        print("[CLOUD GENERATOR] Attempting cloud Imagen synthesis...")
+        sq_prompt = f"Viral Christian quote flier for {banner_text}. African Christian worshipper, gold Bible, warm light, 8k."
+        st_prompt = f"Vertical 9:16 Christian poster for {body_quote[:60]}. Believer in prayer, warm lantern, 8k."
         sq_ok = generate_via_imagen_api(sq_prompt, "1:1", square_out, gemini_key)
         st_ok = generate_via_imagen_api(st_prompt, "9:16", story_out, gemini_key)
         if sq_ok and st_ok:
@@ -285,10 +333,10 @@ def generate_daily_fliers(topic_data: dict = None):
     render_studio_composite(
         base_art_path=base_sq,
         output_path=square_out,
-        hook_top=data.get("hook_top", "When human capacity reaches its end"),
-        banner_text=data.get("banner_text", "Divine Help Begins at Dawn"),
-        body_quote=data.get("quote", "When human capacity reaches its end, divine help begins at dawn."),
-        speaker_scripture=f"{data.get('scripture', 'Psalm 46:5')} • {data.get('speaker', 'Joshua Selman')}",
+        hook_top=hook_top,
+        banner_text=banner_text,
+        body_quote=body_quote,
+        speaker_scripture=badge_text,
         target_dim=(1080, 1080)
     )
 
@@ -297,7 +345,7 @@ def generate_daily_fliers(topic_data: dict = None):
         output_path=story_out,
         hook_top="Never underestimate the silent seasons",
         banner_text="What God Builds in Secret",
-        body_quote=data.get("quote", "What God builds in secret cannot be dismantled in public."),
+        body_quote="What God builds in secret cannot be dismantled in public.",
         speaker_scripture=f"{data.get('scripture', 'Isaiah 40:31')} • {data.get('speaker', 'Joshua Selman')}",
         target_dim=(1080, 1920)
     )

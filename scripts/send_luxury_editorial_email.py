@@ -469,7 +469,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
         scripture=youtube_insight.get("scripture", "Romans 8:26 • Psalm 46:10")
     )
     essay_data = engine.generate_editorial_micro_essay()
-    captions = engine.generate_multi_platform_captions()
+    captions = engine.generate_multi_platform_captions(essay_data.get("gemini_captions"))
     print(f"[PIPELINE STEP 2] Content engine generated editorial essay for '{essay_data['title']}'")
 
     # 3. PILLAR 1: Ensure fliers are synthesized and verified
