@@ -1,7 +1,8 @@
 """
 Luxury Editorial Gospel Briefing (High-Class Edition - Issue 46)
 Topic: Divine Help at Break of Day (Psalm 46:5 • Isaiah 40:31)
-Bespoke editorial prose, studio-grade viral artwork, live YouTube radar, and pre-filled social actions.
+Bespoke editorial prose, studio-grade viral artwork, live YouTube radar, and complete multi-platform social actions
+including Instagram (Feed + Stories), X, Threads, Facebook, and WhatsApp.
 """
 
 import email.utils
@@ -39,13 +40,15 @@ def load_env_file():
 
 def generate_social_intent_links(captions: dict) -> dict:
     return {
+        "instagram": "https://www.instagram.com/create/select/",
+        "instagram_story": "https://www.instagram.com/",
         "twitter": f"https://twitter.com/intent/tweet?text={urllib.parse.quote(captions['twitter'])}",
         "whatsapp": f"https://wa.me/?text={urllib.parse.quote(captions['whatsapp'])}",
         "threads": f"https://threads.net/intent/post?text={urllib.parse.quote(captions['threads'])}",
         "facebook": f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(captions['facebook'])}"
     }
 
-def build_luxury_email_html(links: dict, videos: list = None) -> str:
+def build_luxury_email_html(links: dict, captions: dict, videos: list = None) -> str:
     # Build the live listening section if YouTube videos are present
     youtube_html = ""
     if videos:
@@ -75,6 +78,9 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
           </tr>
         </table>
         """
+
+    # Format the Instagram caption for clean display
+    ig_caption_display = captions.get('instagram', '').replace('\n', '<br>')
 
     return f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -123,7 +129,13 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
         display: block !important;
         width: 100% !important;
         text-align: center !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 10px !important;
+      }}
+      .btn-full {{
+        display: block !important;
+        width: 90% !important;
+        margin: 6px auto !important;
+        text-align: center !important;
       }}
     }}
   </style>
@@ -226,37 +238,37 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                   <img src="cid:flyer_dawn" alt="Divine Help at Dawn Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
-                <!-- Editorial Social Copy Block -->
-                <div style="background-color: #faf9f6; border-left: 2px solid #1a1a1a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #3d3935; margin-bottom: 22px;">
-                  <p style="margin: 0 0 12px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a1a;">
-                    When human capacity reaches its end, divine help begins at dawn.
-                  </p>
-                  <p style="margin: 0 0 12px 0;">
-                    Psalm 46:5 promises that <em>“God will help her at break of day.”</em> The darkest hour of the night is always the forerunner to heaven's scheduled intervention.
-                  </p>
-                  <p style="margin: 0 0 12px 0; font-style: italic; color: #92400e;">
-                    Stop carrying into today the exhaustion of yesterday's battles. God does not sleep, and His assistance arrives right on time.
-                  </p>
-                  <div style="font-size: 11px; color: #8c827a; border-top: 1px solid #e5e2da; padding-top: 10px; letter-spacing: 0.5px;">
-                    #DivineHelp #BreakOfDay #TheKingdomJournal #VictoriaOrenze #JoshuaSelman #MorningPrayer
+                <!-- INSTAGRAM READY CAPTION BOX -->
+                <div style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #c13584; padding: 18px 20px; margin-bottom: 20px; border-radius: 2px;">
+                  <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c13584; margin-bottom: 10px;">
+                    📸 INSTAGRAM CAPTION &amp; REEL SCRIPT (TAP TO COPY)
+                  </div>
+                  <div style="font-size: 13px; line-height: 1.7; color: #2e2b27;">
+                    {ig_caption_display}
                   </div>
                 </div>
 
-                <!-- Classic Action Buttons Table -->
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <!-- ACTION BUTTONS: INSTAGRAM + X + THREADS + FACEBOOK -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 12px;">
                   <tr>
-                    <td class="mobile-stack" align="left">
-                      <a href="{links['twitter']}" target="_blank" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
+                    <td class="mobile-stack" align="left" style="padding-bottom: 8px;">
+                      <!-- Instagram Feed Button -->
+                      <a href="{links['instagram']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px; margin-right: 8px;">
+                        Post to Instagram
+                      </a>
+                      <!-- Post to X Button -->
+                      <a href="{links['twitter']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
                         Post to X
                       </a>
-                      &nbsp;&nbsp;
-                      <a href="{links['threads']}" target="_blank" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
-                        Post on Threads
-                      </a>
                     </td>
-                    <td class="mobile-stack" align="right">
-                      <a href="{links['facebook']}" target="_blank" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 18px; border-radius: 2px;">
-                        Share to Facebook
+                    <td class="mobile-stack" align="right" style="padding-bottom: 8px;">
+                      <!-- Post to Threads -->
+                      <a href="{links['threads']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 18px; border-radius: 2px; margin-right: 8px;">
+                        Threads
+                      </a>
+                      <!-- Share to Facebook -->
+                      <a href="{links['facebook']}" target="_blank" class="btn-full" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 16px; border-radius: 2px;">
+                        Facebook
                       </a>
                     </td>
                   </tr>
@@ -274,7 +286,7 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
               <div style="border-top: 1px solid #f0ede6; padding-top: 30px;">
                 
                 <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
-                  THE MOBILE REFLECTION • STATUS POSTER (9:16)
+                  THE MOBILE REFLECTION • STATUS &amp; STORY POSTER (9:16)
                 </div>
                 <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
                   What God Builds in Secret
@@ -298,12 +310,21 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                   </p>
                 </div>
 
-                <!-- Pre-filled WhatsApp Button -->
-                <div style="text-align: right;">
-                  <a href="{links['whatsapp']}" target="_blank" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
-                    Send via WhatsApp
-                  </a>
-                </div>
+                <!-- DUAL ACTION BUTTONS: WHATSAPP + INSTAGRAM STORY -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td class="mobile-stack" align="left" style="padding-bottom: 6px;">
+                      <a href="{links['whatsapp']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
+                        Send via WhatsApp
+                      </a>
+                    </td>
+                    <td class="mobile-stack" align="right" style="padding-bottom: 6px;">
+                      <a href="{links['instagram_story']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
+                        Post to Instagram Story
+                      </a>
+                    </td>
+                  </tr>
+                </table>
 
               </div>
             </td>
@@ -363,8 +384,19 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Message-ID"] = email.utils.make_msgid(domain="gmail.com")
 
-    # Fresh Humanized Captions for Issue 46 (Divine Help at Break of Day)
+    # Full Multi-Platform Social Captions (Including Instagram)
     captions = {
+        "instagram": (
+            "When human capacity reaches its end, divine help begins at dawn.\n\n"
+            "Psalm 46:5 gives us this quiet, unshakable verdict: “God is within her, she will not fall; God will help her at break of day.”\n\n"
+            "In ancient warfare, the fourth watch of the night—between 3:00 AM and 6:00 AM—was when human exhaustion peaked and defenses were at their weakest.\n\n"
+            "Yet throughout Scripture, dawn is heaven's appointed schedule for divine reversals:\n"
+            "• The Red Sea parted at the morning watch.\n"
+            "• Manna settled with the dawn dew.\n"
+            "• The tomb was empty before the sunrise.\n\n"
+            "Stop carrying the exhaustion of yesterday's battles. You don't have to panic over outcomes God has already scheduled for your deliverance.\n\n"
+            "#DivineHelp #Psalm46 #BreakOfDay #MorningPrayer #ApostleJoshuaSelman #VictoriaOrenze #FaithOverFear #KingdomMindset #ChristianCreatives #NigerianGospel #PraiseAndWorship #SecretPlace #DailyWord"
+        ),
         "twitter": "When human capacity reaches its end, divine help begins at dawn.\n\nPsalm 46:5 promises that God will help her at the break of day. The darkest hour is never the conclusion; it is heaven's appointed schedule for your turnaround.\n\nRest in His timing today. 🕊️",
         "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nNever underestimate the silent seasons of your life. What God builds in secret cannot be dismantled in public.\n\nPsalm 46:5 says, “God is within her, she will not fall; God will help her at break of day.” Whatever felt exhausting this week, know that divine help is already scheduled.\n\n📖 “Those who wait upon the Lord shall renew their strength.” — Isaiah 40:31\n\nHave a peaceful, favored day! Forward this to someone who needs encouragement today. ✨",
         "threads": "A thought for your Friday morning:\n\nIn ancient times, the fourth watch of the night—just before dawn—was when exhaustion was deepest and defenses were weakest.\n\nYet throughout scripture, dawn is precisely when God moves: the Red Sea parted at dawn, manna fell at dawn, and the tomb was empty at dawn.\n\nYou don't have to carry anxiety over battles God has already scheduled for your deliverance. What are you trusting Him for today?",
@@ -372,12 +404,12 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     }
 
     links = generate_social_intent_links(captions)
-    html_content = build_luxury_email_html(links, videos=live_vids)
+    html_content = build_luxury_email_html(links, captions, videos=live_vids)
     plain_text = (
         "The Kingdom Journal • Morning Edition (Issue 46)\n\n"
         "Divine Help at Break of Day\n"
         "“When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.” — Psalm 46:5\n\n"
-        "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions."
+        "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions (Instagram, X, Threads, Facebook, WhatsApp)."
     )
 
     alt_part = MIMEMultipart("alternative")
@@ -412,7 +444,7 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
             server.ehlo()
             server.login(smtp_user, smtp_pass)
             server.sendmail(smtp_user, [recipient], msg.as_string())
-        print(f"[SUCCESS] Luxury Editorial Briefing successfully delivered to {recipient}")
+        print(f"[SUCCESS] Luxury Editorial Briefing (with Instagram integration) successfully delivered to {recipient}")
 
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
@@ -442,6 +474,6 @@ if __name__ == "__main__":
     fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_luxury_editorial_email(
         recipient="aondoaseerezekiel@gmail.com",
-        subject="🕊️ The Kingdom Journal • Divine Help at Break of Day (Issue 46)",
+        subject="🕊️ The Kingdom Journal • Divine Help at Break of Day (Issue 46 - Complete Edition)",
         fliers_dir=fliers_dir
     )
