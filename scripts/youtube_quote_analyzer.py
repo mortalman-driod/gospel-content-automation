@@ -185,26 +185,40 @@ def analyze_trending_gospel_videos(api_key: str = None) -> dict:
 
                     titles.append(v_title)
                     channels.append(ch_title)
+                    view_int = int(views) if str(views).isdigit() else 0
+                    if view_int >= 1_000_000:
+                        fmt_views = f"{view_int / 1_000_000:.1f}M views"
+                    elif view_int >= 1_000:
+                        fmt_views = f"{view_int / 1_000:.1f}K views"
+                    else:
+                        fmt_views = f"{view_int:,} views"
+
                     video_summaries.append({
                         "title": v_title,
                         "channel": ch_title,
                         "video_id": v.get("id"),
-                        "views": views
+                        "views": fmt_views,
+                        "url": f"https://www.youtube.com/watch?v={v.get('id')}",
+                        "published_at": snip.get("publishedAt", "")
                     })
         except Exception as ey:
             print(f"[ANALYZER NOTICE] YouTube fetch exception: {ey}", file=sys.stderr)
+
+    pulled_at_str = datetime.now(timezone.utc).strftime("%B %d, %Y at %H:%M UTC")
 
     # Use Gemini 3.8 Flash to synthesize original proprietary editorial from the live signals
     if gemini_key and titles:
         synthesized = synthesize_principle_with_gemini(titles, channels, gemini_key)
         if synthesized:
             synthesized["videos"] = video_summaries
+            synthesized["radar_pulled_at"] = pulled_at_str
             return synthesized
 
     # Deterministic high-class curated fallback (100% de-promotional, brand building)
     idx = datetime.now().toordinal() % len(CURATED_THEMES)
     selected = dict(CURATED_THEMES[idx])
     selected["videos"] = video_summaries
+    selected["radar_pulled_at"] = pulled_at_str
     return selected
 
 if __name__ == "__main__":

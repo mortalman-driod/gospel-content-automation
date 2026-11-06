@@ -1,10 +1,12 @@
 """
-Luxury Editorial Gospel Briefing (High-Class Edition 2.0)
-Unified Engine orchestrating:
-1. YouTube Video Analyzer & Punchy Line Extractor (Pillar 3)
-2. Humanized De-AI Content & Caption Engine (Pillar 2)
-3. Cloud Image Generator & Studio Compositor (Pillar 1)
-4. Luxury Responsive Email & Outlook Body Builder (Pillar 4)
+Luxury Editorial Gospel Briefing (Journalistic & Theological Integrity Edition 3.0)
+Strict Integrity Standards:
+1. Verbatim Scripture from ScriptureEngine with translation tags.
+2. Absolute separation: Editorial Axiom (The Kingdom Journal) vs Scripture vs Thematic Ministers.
+3. Transparent UI: Every outbound social payload is displayed in the email before clicking.
+4. Working intents: Threads (threads.com with length guard), WhatsApp, X/Twitter, and honest Open Instagram/Facebook buttons.
+5. Rich YouTube Radar: Clickable video URLs, view counts, upload recency, and timestamp.
+6. Accessible HTML: WCAG AA contrast (>= 4.5:1), 48px touch targets, and hidden preheaders.
 """
 
 import email.utils
@@ -18,23 +20,26 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from pathlib import Path
 
-# Add parent path for database & state imports
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR / "scripts"))
+
 try:
     import content_db
     import catch_up_scheduler
     import youtube_quote_analyzer
     import humanized_content_engine
     import cloud_image_generator
+    import scripture_engine
 except ImportError:
     content_db = None
     catch_up_scheduler = None
     youtube_quote_analyzer = None
     humanized_content_engine = None
     cloud_image_generator = None
+    scripture_engine = None
 
 def load_env_file():
-    env_path = Path(__file__).resolve().parent.parent / ".env"
+    env_path = BASE_DIR / ".env"
     if env_path.is_file():
         for line in env_path.read_text(encoding="utf-8").splitlines():
             line = line.strip()
@@ -46,63 +51,94 @@ def load_env_file():
                     os.environ[k] = v
 
 def generate_social_intent_links(captions: dict) -> dict:
+    tw_text = urllib.parse.quote(captions.get('twitter', '')[:240])
+    wa_text = urllib.parse.quote(captions.get('whatsapp', ''))
+    th_text = urllib.parse.quote(captions.get('threads', '')[:480])
+
     return {
-        "instagram": "https://www.instagram.com/create/select/",
+        "instagram": "https://www.instagram.com/",
         "instagram_story": "https://www.instagram.com/",
-        "twitter": f"https://twitter.com/intent/tweet?text={urllib.parse.quote(captions['twitter'])}",
-        "whatsapp": f"https://wa.me/?text={urllib.parse.quote(captions['whatsapp'])}",
-        "threads": f"https://threads.net/intent/post?text={urllib.parse.quote(captions['threads'])}",
-        "facebook": f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(captions['facebook'])}"
+        "twitter": f"https://twitter.com/intent/tweet?text={tw_text}",
+        "whatsapp": f"https://wa.me/?text={wa_text}",
+        "threads": f"https://threads.com/intent/post?text={th_text}",
+        "facebook": "https://www.facebook.com/"
     }
 
-def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote_data: dict, videos: list = None) -> str:
-    # Build the live listening section if YouTube videos are present
+def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote_data: dict, videos: list = None, issue_num: int = 49) -> str:
+    # 1. YouTube Radar HTML
     youtube_html = ""
+    radar_time = quote_data.get("radar_pulled_at", datetime.now().strftime("%B %d, %Y at %H:%M UTC"))
     if videos:
         items_html = ""
         for v in videos[:3]:
             title = v.get("title", "")
             channel = v.get("channel", "")
+            views = v.get("views", "")
+            url = v.get("url", f"https://www.youtube.com/results?search_query={urllib.parse.quote(title)}")
+            views_badge = f" • <span style='color: #57534e; font-size: 11px;'>{views}</span>" if views else ""
             items_html += f"""
             <tr>
-              <td class="dark-radar-text" style="padding: 7px 0; font-size: 13px; line-height: 1.5; color: #44403c; border-bottom: 1px dashed #e7e5e4;">
-                <span style="font-weight: 600; color: #1c1917;" class="dark-heading">{channel}</span> — <em>{title}</em>
+              <td class="dark-radar-text" style="padding: 9px 0; font-size: 13px; line-height: 1.5; color: #2e2b27; border-bottom: 1px dashed #e7e5e4;">
+                <span style="font-weight: 700; color: #1c1917;" class="dark-heading">{channel}</span>{views_badge}<br />
+                <a href="{url}" target="_blank" style="color: #b45309; text-decoration: underline; font-style: italic;">
+                  {title}
+                </a>
               </td>
             </tr>"""
 
         youtube_html = f"""
         <!-- CURATED MORNING RADAR (Live YouTube Integration) -->
-        <table role="presentation" class="dark-radar-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0 8px 0; background-color: #faf9f6; border: 1px solid #e7e5e4; border-radius: 2px;">
+        <table role="presentation" class="dark-radar-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0 12px 0; background-color: #faf9f6; border: 1px solid #e7e5e4; border-radius: 4px;">
           <tr>
-            <td style="padding: 16px 20px;">
-              <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8c827a; margin-bottom: 8px;" class="dark-subtitle">
-                TODAY'S VIRAL MINISTRATIONS • LIVE RADAR
-              </div>
+            <td style="padding: 18px 22px;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="left" style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #57534e;" class="dark-subtitle">
+                    TODAY'S VIRAL MINISTRATIONS • LIVE RADAR
+                  </td>
+                  <td align="right" style="font-size: 10px; color: #78716c;" class="dark-subtitle">
+                    {radar_time}
+                  </td>
+                </tr>
+              </table>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 10px;">
                 {items_html}
               </table>
+              <div style="font-size: 11px; color: #78716c; margin-top: 10px; font-style: italic;">
+                * Streaming data verified via YouTube Data API v3. Thematic inspiration for today's journal.
+              </div>
             </td>
           </tr>
         </table>
         """
 
-    # Build essay paragraphs
+    # 2. Essay paragraphs
     essay_paragraphs_html = ""
     for p in essay_data.get("essay_paragraphs", []):
         essay_paragraphs_html += f"""
-        <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+        <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.85; color: #2e2b27; margin: 0 0 20px 0;">
           {p}
         </p>"""
 
-    # Format the Instagram caption for clean display
-    ig_caption_display = captions.get('instagram', '').replace('\n', '<br>')
+    title = essay_data.get("title", "The Protocol of the Secret Place")
+    subtitle = essay_data.get("subtitle", "On the quiet power of consecration.")
+    date_str = essay_data.get("date_str", datetime.now().strftime("%A, %B %d, %Y"))
+    
+    # 3. Strict Attribution Separation
+    verbatim_scripture = essay_data.get("verbatim_scripture", quote_data.get("verbatim_scripture", "He who dwells in the secret place of the Most High will rest in the shadow of the Almighty."))
+    scripture_ref = essay_data.get("scripture_display_ref", quote_data.get("scripture", "Psalm 91:1 [WEB]"))
+    editorial_axiom = essay_data.get("editorial_axiom", quote_data.get("quote", "Spiritual authority is not acquired on public stages; it is forged in the silence of deep consecration."))
+    inspirations = essay_data.get("inspirations", quote_data.get("speaker", "Dunsin Oyekan & Apostle Joshua Selman"))
 
-    title = essay_data.get("title", "Divine Help at Break of Day")
-    subtitle = essay_data.get("subtitle", "On the sacred mystery of God's timing and divine help in quiet seasons.")
-    quote_text = quote_data.get("quote", "")
-    speaker = quote_data.get("speaker", "Victoria Orenze & Apostle Joshua Selman")
-    scripture = quote_data.get("scripture", "Psalm 46:5 • Isaiah 40:31")
-    date_str = essay_data.get("date_str", "Friday, November 6, 2026")
+    # Formatted captions display
+    ig_caption_display = captions.get('instagram', '').replace('\n', '<br>')
+    reel_script_display = captions.get('reel_script', '').replace('\n', '<br>')
+    wa_display = captions.get('whatsapp', '').replace('\n', '<br>')
+    tw_display = captions.get('twitter', '').replace('\n', '<br>')
+    th_display = captions.get('threads', '').replace('\n', '<br>')
+    fb_display = captions.get('facebook', '').replace('\n', '<br>')
+
+    preheader_text = f"{title} • {editorial_axiom[:90]}..."
 
     return f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -112,7 +148,7 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
   <meta name="color-scheme" content="light dark" />
   <meta name="supported-color-schemes" content="light dark" />
   <meta name="x-apple-disable-message-reformatting" />
-  <title>The Kingdom Journal • Morning Edition</title>
+  <title>The Kingdom Journal • Issue {issue_num}</title>
   <!--[if mso]>
   <style type="text/css">
     table {{border-collapse:collapse;border-spacing:0;margin:0;}}
@@ -142,7 +178,6 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
       text-decoration: none;
     }}
     
-    /* Responsive Mobile Layout */
     @media only screen and (max-width: 620px) {{
       .wrapper {{
         width: 100% !important;
@@ -155,120 +190,93 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
         font-size: 26px !important;
         line-height: 1.25 !important;
       }}
-      .mobile-stack {{
+      .btn-touch {{
         display: block !important;
         width: 100% !important;
-        text-align: center !important;
-        margin-bottom: 8px !important;
-      }}
-      .btn-full {{
-        display: block !important;
-        width: 100% !important;
-        margin: 6px 0 !important;
+        margin-bottom: 10px !important;
         text-align: center !important;
         box-sizing: border-box !important;
       }}
     }}
-
-    /* Advanced Dark Mode Overrides */
+    
     @media (prefers-color-scheme: dark) {{
-      body, .dark-canvas {{
+      body, .dark-bg {{
         background-color: #121212 !important;
-        color: #e5e5e5 !important;
+        color: #f5f5f4 !important;
       }}
       .dark-card {{
         background-color: #1c1917 !important;
-        border-color: #2e2a27 !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6) !important;
-      }}
-      .dark-masthead {{
-        border-bottom-color: #2e2a27 !important;
+        border-color: #292524 !important;
       }}
       .dark-heading {{
         color: #f5f5f4 !important;
       }}
-      .dark-subtitle {{
-        color: #a8a29e !important;
-      }}
-      .dark-issue-badge {{
-        border-top-color: #2e2a27 !important;
-        color: #78716c !important;
-      }}
       .dark-body {{
         color: #d6d3d1 !important;
       }}
+      .dark-subtitle {{
+        color: #a8a29e !important;
+      }}
       .dark-quote-box {{
-        background-color: #24201d !important;
+        background-color: #262320 !important;
         border-left-color: #d97706 !important;
       }}
-      .dark-quote-text {{
-        color: #fafaf9 !important;
-      }}
-      .dark-quote-meta {{
-        color: #a8a29e !important;
-      }}
       .dark-radar-box {{
-        background-color: #24201d !important;
-        border-color: #38332e !important;
-      }}
-      .dark-radar-text {{
-        color: #d6d3d1 !important;
-        border-bottom-color: #38332e !important;
+        background-color: #201d1b !important;
+        border-color: #2e2a27 !important;
       }}
       .dark-caption-box {{
-        background-color: #24201d !important;
+        background-color: #24211e !important;
         border-color: #38332e !important;
-        color: #e7e5e4 !important;
-      }}
-      .dark-whatsapp-box {{
-        background-color: #152219 !important;
-        border-left-color: #16a34a !important;
-        color: #dcfce7 !important;
       }}
       .dark-footer {{
-        background-color: #171513 !important;
-        border-top-color: #2e2a27 !important;
-        color: #a8a29e !important;
-      }}
-      .dark-btn-facebook {{
-        border-color: #57534e !important;
-        color: #e7e5e4 !important;
+        background-color: #171514 !important;
+        border-color: #292524 !important;
       }}
     }}
   </style>
 </head>
-<body class="dark-canvas" style="margin: 0; padding: 40px 0; background-color: #f7f6f2; color: #1a1a1a;">
+<body style="margin: 0; padding: 0; background-color: #f7f6f2; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;">
 
-  <!-- Outer Canvas Table -->
-  <table role="presentation" class="dark-canvas" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f6f2;">
+  <!-- INVISIBLE PREHEADER (WCAG & Client Snippet Fix) -->
+  <div style="display: none; font-size: 1px; color: #f7f6f2; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
+    {preheader_text} &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f6f2;" class="dark-bg">
     <tr>
-      <td align="center" style="padding: 20px 10px;">
+      <td align="center" style="padding: 24px 12px;">
         
-        <!-- Main Document Card (Outlook & Modern Responsive) -->
         <!--[if mso]>
-        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" align="center">
         <tr>
-        <td align="center" valign="top" width="600">
+        <td>
         <![endif]-->
-        <table role="presentation" class="wrapper dark-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e2da; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); text-align: left;">
+        
+        <table role="presentation" class="wrapper dark-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #eae7e0; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);">
           
-          <!-- BESPOKE EDITORIAL MASTHEAD -->
+          <!-- TOP EMBOSSED GOLD HEADER BAR -->
           <tr>
-            <td class="content-padding dark-masthead" style="padding: 48px 48px 30px 48px; text-align: center; border-bottom: 1px solid #1a1a1a;">
+            <td height="5" style="background: linear-gradient(90deg, #92400e 0%, #d97706 50%, #f59e0b 100%); font-size: 0; line-height: 0;">&nbsp;</td>
+          </tr>
+
+          <!-- PUBLICATION MASTHEAD -->
+          <tr>
+            <td class="content-padding" style="padding: 40px 48px 24px 48px; border-bottom: 1px solid #f0ede6; text-align: center;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center">
-                    <div class="dark-subtitle" style="font-size: 10px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: #8c827a; margin-bottom: 14px;">
+                    <div class="dark-subtitle" style="font-size: 11px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: #57534e; margin-bottom: 14px;">
                       THE KINGDOM JOURNAL • DAILY EDITORIAL
                     </div>
                     <h1 class="headline dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
                       {title}
                     </h1>
-                    <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
+                    <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #57534e; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
                       {subtitle}
                     </p>
-                    <div class="dark-issue-badge" style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
-                      Vol. IV • Issue 48 • {date_str}
+                    <div class="dark-issue-badge" style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #57534e;">
+                      Vol. IV • Issue {issue_num} • {date_str}
                     </div>
                   </td>
                 </tr>
@@ -276,21 +284,44 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
             </td>
           </tr>
 
-          <!-- THE MORNING ESSAY (NO AI BULLETS) -->
+          <!-- THE MORNING ESSAY -->
           <tr>
             <td class="content-padding" style="padding: 38px 48px 24px 48px;">
               
               {essay_paragraphs_html}
 
-              <!-- Curated Pull Quote Accent -->
-              <table role="presentation" class="dark-quote-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0; border-left: 2px solid #b45309; background-color: #faf9f6;">
+              <!-- 1. VERBATIM SCRIPTURE ANCHOR BOX -->
+              <table role="presentation" class="dark-quote-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0 18px 0; border-left: 3px solid #16a34a; background-color: #f7fcf8; border-radius: 2px;">
                 <tr>
-                  <td style="padding: 16px 20px;">
-                    <div class="dark-quote-text" style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
-                      “{quote_text}”
+                  <td style="padding: 18px 22px;">
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #166534; margin-bottom: 8px;">
+                      📖 SCRIPTURE ANCHOR (VERBATIM)
                     </div>
-                    <div class="dark-quote-meta" style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
-                      — {scripture} • {speaker}
+                    <div class="dark-quote-text" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; font-style: italic; color: #1e293b; line-height: 1.6;">
+                      “{verbatim_scripture}”
+                    </div>
+                    <div class="dark-quote-meta" style="font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: #15803d; margin-top: 8px;">
+                      — {scripture_ref}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- 2. EDITORIAL AXIOM BOX (PROPRIETARY) -->
+              <table role="presentation" class="dark-quote-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 18px 0 24px 0; border-left: 3px solid #b45309; background-color: #faf9f6; border-radius: 2px;">
+                <tr>
+                  <td style="padding: 18px 22px;">
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #92400e; margin-bottom: 8px;">
+                      🕊️ EDITORIAL PRINCIPLE
+                    </div>
+                    <div class="dark-quote-text" style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-weight: 500; color: #1c1917; line-height: 1.6;">
+                      “{editorial_axiom}”
+                    </div>
+                    <div class="dark-quote-meta" style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #57534e; margin-top: 8px;">
+                      — The Kingdom Journal Editorial
+                    </div>
+                    <div style="font-size: 11px; color: #78716c; margin-top: 6px; font-style: italic;">
+                      Thematic inspiration drawn from: {inspirations}
                     </div>
                   </td>
                 </tr>
@@ -309,7 +340,7 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
             <td class="content-padding" style="padding: 10px 48px 36px 48px;">
               <div style="border-top: 1px solid #f0ede6; padding-top: 30px;" class="dark-masthead">
                 
-                <div class="dark-subtitle" style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #a39c93; margin-bottom: 6px;">
+                <div class="dark-subtitle" style="font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #57534e; margin-bottom: 6px;">
                   THE ARTWORK • MASTER COMPOSITION (1:1)
                 </div>
                 <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
@@ -321,37 +352,33 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
                   <img src="cid:flyer_dawn" alt="{title} Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
-                <!-- INSTAGRAM READY CAPTION BOX -->
-                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #c13584; padding: 18px 20px; margin-bottom: 20px; border-radius: 2px;">
-                  <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c13584; margin-bottom: 10px;">
-                    📸 INSTAGRAM CAPTION &amp; REEL SCRIPT (TAP TO COPY)
+                <!-- INSTAGRAM CAPTION & REEL SCRIPT COPY BOX -->
+                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #c13584; padding: 20px 22px; margin-bottom: 20px; border-radius: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c13584; margin-bottom: 8px;">
+                    📸 INSTAGRAM CAPTION (SELECT &amp; COPY)
                   </div>
-                  <div style="font-size: 13px; line-height: 1.7; color: #2e2b27;" class="dark-body">
+                  <div style="font-size: 13px; line-height: 1.7; color: #2e2b27; margin-bottom: 16px;" class="dark-body">
                     {ig_caption_display}
                   </div>
+                  
+                  {f'''
+                  <div style="border-top: 1px dashed #e5e2da; padding-top: 14px; margin-top: 14px;">
+                    <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #92400e; margin-bottom: 6px;">
+                      🎬 INSTAGRAM REEL SCRIPT (30s)
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.7; color: #2e2b27;" class="dark-body">
+                      {reel_script_display}
+                    </div>
+                  </div>
+                  ''' if reel_script_display else ''}
                 </div>
 
-                <!-- ACTION BUTTONS: INSTAGRAM + X + THREADS + FACEBOOK -->
+                <!-- INSTAGRAM ACTION BUTTON -->
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 12px;">
                   <tr>
-                    <td class="mobile-stack" align="left" style="padding-bottom: 8px;">
-                      <!-- Instagram Feed Button -->
-                      <a href="{links['instagram']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px; margin-right: 8px;">
-                        Post to Instagram
-                      </a>
-                      <!-- Post to X Button -->
-                      <a href="{links['twitter']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
-                        Post to X
-                      </a>
-                    </td>
-                    <td class="mobile-stack" align="right" style="padding-bottom: 8px;">
-                      <!-- Post to Threads -->
-                      <a href="{links['threads']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 18px; border-radius: 2px; margin-right: 8px;">
-                        Threads
-                      </a>
-                      <!-- Share to Facebook -->
-                      <a href="{links['facebook']}" target="_blank" class="btn-full dark-btn-facebook" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 16px; border-radius: 2px;">
-                        Facebook
+                    <td align="left">
+                      <a href="{links['instagram']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 14px 26px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 20px;">
+                        Open Instagram
                       </a>
                     </td>
                   </tr>
@@ -368,7 +395,7 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
             <td class="content-padding" style="padding: 10px 48px 36px 48px;">
               <div style="border-top: 1px solid #f0ede6; padding-top: 30px;" class="dark-masthead">
                 
-                <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
+                <div style="font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
                   THE MOBILE REFLECTION • STATUS &amp; STORY POSTER (9:16)
                 </div>
                 <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
@@ -380,30 +407,27 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
                   <img src="cid:flyer_secret_place" alt="What God Builds in Secret Poster" width="300" style="max-width: 300px; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
-                <!-- Warm Intimate Reflection -->
-                <div class="dark-whatsapp-box" style="background-color: #f7fcf8; border-left: 2px solid #16a34a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #2e3b2e; margin-bottom: 22px;">
-                  <p style="margin: 0 0 10px 0; font-weight: 600; color: #14532d; font-family: Georgia, 'Times New Roman', serif; font-size: 15px;">
-                    Good morning my friend.
-                  </p>
-                  <p style="margin: 0 0 10px 0;">
-                    A quiet word for your morning: “{quote_text}” When human capacity reaches its end, let your worship establish God's atmosphere.
-                  </p>
-                  <p style="margin: 0; font-size: 13px; color: #4b6350; font-style: italic;">
-                    📖 “The Spirit Himself makes intercession for us with groanings that cannot be uttered.” — Romans 8:26
-                  </p>
+                <!-- WHATSAPP DEVOTIONAL PAYLOAD BOX (Visible Before Sending) -->
+                <div class="dark-whatsapp-box" style="background-color: #f7fcf8; border: 1px solid #e2ece3; border-left: 3px solid #16a34a; padding: 20px 22px; margin-bottom: 20px; border-radius: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #15803d; margin-bottom: 10px;">
+                    💬 WHATSAPP DEVOTIONAL BROADCAST (PREVIEW)
+                  </div>
+                  <div style="font-size: 13px; line-height: 1.75; color: #2e3b2e;" class="dark-body">
+                    {wa_display}
+                  </div>
                 </div>
 
-                <!-- DUAL ACTION BUTTONS: WHATSAPP + INSTAGRAM STORY -->
+                <!-- WHATSAPP & STORY BUTTONS (48px Touch Targets) -->
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                   <tr>
-                    <td class="mobile-stack" align="left" style="padding-bottom: 6px;">
-                      <a href="{links['whatsapp']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
+                    <td class="mobile-stack" align="left" style="padding-bottom: 8px;">
+                      <a href="{links['whatsapp']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 14px 24px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 20px;">
                         Send via WhatsApp
                       </a>
                     </td>
-                    <td class="mobile-stack" align="right" style="padding-bottom: 6px;">
-                      <a href="{links['instagram_story']}" target="_blank" class="btn-full" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
-                        Post to Instagram Story
+                    <td class="mobile-stack" align="right" style="padding-bottom: 8px;">
+                      <a href="{links['instagram_story']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #c13584; color: #ffffff; text-decoration: none; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 14px 24px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 20px;">
+                        Open Instagram Story
                       </a>
                     </td>
                   </tr>
@@ -413,13 +437,70 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
             </td>
           </tr>
 
+          <!-- ============================================== -->
+          <!-- PART III: MULTI-PLATFORM SOCIAL BROADCAST KIT   -->
+          <!-- ============================================== -->
+          <tr>
+            <td class="content-padding" style="padding: 10px 48px 36px 48px;">
+              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;" class="dark-masthead">
+                
+                <div class="dark-subtitle" style="font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #57534e; margin-bottom: 6px;">
+                  COMMUNITY BROADCAST • SOCIAL SUITE
+                </div>
+                <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
+                  Multi-Platform Outreach Kit
+                </h3>
+
+                <!-- X / TWITTER POST CARD -->
+                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #1a1a1a; padding: 18px 20px; margin-bottom: 16px; border-radius: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #1a1a1a; margin-bottom: 8px;">
+                    🐦 X (TWITTER) POST
+                  </div>
+                  <div style="font-size: 13px; line-height: 1.6; color: #2e2b27; margin-bottom: 14px;" class="dark-body">
+                    {tw_display}
+                  </div>
+                  <a href="{links['twitter']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 12px 22px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 24px;">
+                    Post to X
+                  </a>
+                </div>
+
+                <!-- THREADS DISCUSSION CARD -->
+                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #44403c; padding: 18px 20px; margin-bottom: 16px; border-radius: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #44403c; margin-bottom: 8px;">
+                    🧵 THREADS COMMUNITY DISCUSSION
+                  </div>
+                  <div style="font-size: 13px; line-height: 1.6; color: #2e2b27; margin-bottom: 14px;" class="dark-body">
+                    {th_display}
+                  </div>
+                  <a href="{links['threads']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 12px 22px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 24px;">
+                    Post to Threads
+                  </a>
+                </div>
+
+                <!-- FACEBOOK DEVOTIONAL CARD -->
+                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #1877f2; padding: 18px 20px; margin-bottom: 16px; border-radius: 4px;">
+                  <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #1877f2; margin-bottom: 8px;">
+                    👥 FACEBOOK COMMUNITY DEVOTIONAL (SELECT &amp; COPY)
+                  </div>
+                  <div style="font-size: 13px; line-height: 1.6; color: #2e2b27; margin-bottom: 14px;" class="dark-body">
+                    {fb_display}
+                  </div>
+                  <a href="{links['facebook']}" target="_blank" class="btn-touch" style="display: inline-block; background-color: #1877f2; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 12px 22px; border-radius: 4px; min-height: 48px; box-sizing: border-box; line-height: 24px;">
+                    Open Facebook
+                  </a>
+                </div>
+
+              </div>
+            </td>
+          </tr>
+
           <!-- CLASSIC FOOTER -->
           <tr>
             <td class="content-padding dark-footer" style="padding: 32px 48px; background-color: #faf9f6; border-top: 1px solid #e5e2da; text-align: center;">
-              <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-style: italic; color: #8c827a; margin: 0 0 8px 0; line-height: 1.5;">
+              <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-style: italic; color: #57534e; margin: 0 0 8px 0; line-height: 1.5;">
                 The Kingdom Journal is curated daily for personal reflection and ministry broadcast.
               </p>
-              <p style="font-size: 10px; color: #a39c93; letter-spacing: 1.5px; text-transform: uppercase; margin: 0;" class="dark-subtitle">
+              <p style="font-size: 11px; color: #57534e; letter-spacing: 1.5px; text-transform: uppercase; margin: 0;" class="dark-subtitle">
                 Delivered to aondoaseerezekiel@gmail.com
               </p>
             </td>
@@ -439,22 +520,22 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
 </body>
 </html>"""
 
-def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir: Path = None, override_topic: dict = None):
+def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir: Path = None, override_topic: dict = None, issue_num: int = 49):
     load_env_file()
-    fliers_dir = fliers_dir or Path(__file__).resolve().parent.parent / "reports" / "fliers"
+    fliers_dir = fliers_dir or BASE_DIR / "reports" / "fliers"
     
     # 1. PILLAR 3: Analyze live YouTube videos to extract the best punchy line
     if override_topic:
         youtube_insight = override_topic
-        print(f"[PIPELINE STEP 1] Using custom trending topic: '{youtube_insight.get('title')}'")
+        print(f"[PIPELINE STEP 1] Using custom verified topic: '{youtube_insight.get('title')}'")
     else:
         youtube_insight = {
-            "title": "When Words Are Not Enough",
-            "hook_top": "When words are not enough",
-            "banner_text": "Let Your Worship Speak",
-            "quote": "When words are not enough, let your worship speak.",
-            "speaker": "Mercy Chinwo & Apostle Joshua Selman",
-            "scripture": "Romans 8:26 • Psalm 46:10",
+            "title": "The Protocol of the Secret Place",
+            "hook_top": "What God builds in secret",
+            "banner_text": "CANNOT BE SHAKEN",
+            "quote": "Spiritual authority is not acquired on public stages; it is forged in the silence of deep consecration.",
+            "speaker": "Dunsin Oyekan & Apostle Joshua Selman",
+            "scripture": "Matthew 6:6",
             "videos": []
         }
         if youtube_quote_analyzer:
@@ -462,15 +543,16 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
                 analyzed = youtube_quote_analyzer.analyze_trending_gospel_videos()
                 if analyzed and analyzed.get("quote"):
                     youtube_insight = analyzed
-                    print(f"[PIPELINE STEP 1] YouTube Analysis complete. Extracted line: '{youtube_insight['quote']}'")
+                    print(f"[PIPELINE STEP 1] YouTube Analysis complete. Topic: '{youtube_insight['title']}'")
             except Exception as ey:
                 print(f"[PIPELINE NOTICE] YouTube analysis fallback: {ey}", file=sys.stderr)
 
-    # 2. PILLAR 2: Generate humanized editorial essay and multi-platform captions
+    # 2. PILLAR 2: Generate humanized editorial essay and multi-platform captions with verified Scripture
+    scripture_ref = youtube_insight.get("scripture", "Matthew 6:6")
     engine = humanized_content_engine.HumanizedContentEngine(
-        quote=youtube_insight.get("quote", "When words are not enough, let your worship speak."),
-        speaker=youtube_insight.get("speaker", "Mercy Chinwo & Apostle Joshua Selman"),
-        scripture=youtube_insight.get("scripture", "Romans 8:26 • Psalm 46:10"),
+        editorial_axiom=youtube_insight.get("quote", "Spiritual authority is not acquired on public stages; it is forged in the silence of deep consecration."),
+        scripture_ref=scripture_ref,
+        inspirations=youtube_insight.get("speaker", "Dunsin Oyekan & Apostle Joshua Selman"),
         title=youtube_insight.get("title")
     )
     essay_data = engine.generate_editorial_micro_essay()
@@ -484,7 +566,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
                 "title": essay_data["title"],
                 "quote": youtube_insight["quote"],
                 "speaker": youtube_insight["speaker"],
-                "scripture": youtube_insight["scripture"]
+                "scripture": scripture_ref
             })
             print("[PIPELINE STEP 3] Flier generator verified high-res studio assets.")
         except Exception as eg:
@@ -500,7 +582,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
         print("[ERROR] SMTP_USER or SMTP_PASSWORD not set in environment or .env", file=sys.stderr)
         return False
 
-    final_subject = subject or f"🕊️ The Kingdom Journal • {essay_data['title']} (Issue 48)"
+    final_subject = subject or f"🕊️ The Kingdom Journal • {essay_data['title']} (Issue {issue_num})"
 
     msg = MIMEMultipart("related")
     msg["Subject"] = final_subject
@@ -515,14 +597,21 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
         captions=captions,
         essay_data=essay_data,
         quote_data=youtube_insight,
-        videos=youtube_insight.get("videos", [])
+        videos=youtube_insight.get("videos", []),
+        issue_num=issue_num
     )
     
     plain_text = (
-        f"The Kingdom Journal • Morning Edition (Issue 48)\n\n"
+        f"The Kingdom Journal • Issue {issue_num}\n"
+        f"{essay_data['date_str']}\n\n"
         f"{essay_data['title']}\n"
-        f"“{youtube_insight['quote']}” — {youtube_insight['scripture']}\n\n"
-        f"Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions (Instagram, WhatsApp, X, Threads, Facebook)."
+        f"{essay_data['subtitle']}\n\n"
+        f"EDITORIAL AXIOM:\n"
+        f"“{essay_data['editorial_axiom']}” — The Kingdom Journal Editorial\n"
+        f"Thematic inspiration from {essay_data['inspirations']}\n\n"
+        f"SCRIPTURE ANCHOR:\n"
+        f"“{essay_data['verbatim_scripture']}” — {essay_data['scripture_display_ref']}\n\n"
+        f"Please view this email in an HTML-compatible email client to review today's artwork and pre-written social kit."
     )
 
     alt_part = MIMEMultipart("alternative")
@@ -530,7 +619,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
     alt_part.attach(MIMEText(html_content, "html", "utf-8"))
     msg.attach(alt_part)
 
-    # Attach the two brand new authentic studio viral fliers
+    # Attach the two authentic viral fliers
     attachments = [
         ("flyer_dawn", fliers_dir / "flyer_dawn_square.jpg"),
         ("flyer_secret_place", fliers_dir / "flyer_secret_place_story.jpg")
@@ -563,15 +652,15 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
             content_db.record_dispatch(final_subject, recipient, "SUCCESS")
             content_db.record_quote(
                 quote_text=youtube_insight["quote"],
-                speaker=youtube_insight["speaker"],
-                scripture=youtube_insight["scripture"]
+                speaker=youtube_insight.get("speaker", "The Kingdom Journal"),
+                scripture=scripture_ref
             )
             for lv in youtube_insight.get("videos", []):
                 content_db.record_video(
                     video_id=lv.get("video_id", "live_asset"),
                     title=lv.get("title", ""),
                     channel=lv.get("channel", ""),
-                    published_at=datetime.now().isoformat()
+                    published_at=lv.get("published_at", datetime.now().isoformat())
                 )
             print("[DATABASE] Today's fresh YouTube insight and video assets archived in SQLite memory.")
 
@@ -584,4 +673,4 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
         return False
 
 if __name__ == "__main__":
-    send_luxury_editorial_email(recipient="aondoaseerezekiel@gmail.com")
+    send_luxury_editorial_email(recipient="aondoaseerezekiel@gmail.com", issue_num=49)
