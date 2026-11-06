@@ -268,7 +268,7 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
                       {subtitle}
                     </p>
                     <div class="dark-issue-badge" style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
-                      Vol. IV • Issue 47 • {date_str}
+                      Vol. IV • Issue 48 • {date_str}
                     </div>
                   </td>
                 </tr>
@@ -466,7 +466,8 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
     engine = humanized_content_engine.HumanizedContentEngine(
         quote=youtube_insight.get("quote", "When words are not enough, let your worship speak."),
         speaker=youtube_insight.get("speaker", "Mercy Chinwo & Apostle Joshua Selman"),
-        scripture=youtube_insight.get("scripture", "Romans 8:26 • Psalm 46:10")
+        scripture=youtube_insight.get("scripture", "Romans 8:26 • Psalm 46:10"),
+        title=youtube_insight.get("title")
     )
     essay_data = engine.generate_editorial_micro_essay()
     captions = engine.generate_multi_platform_captions(essay_data.get("gemini_captions"))
@@ -475,7 +476,12 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
     # 3. PILLAR 1: Ensure fliers are synthesized and verified
     if cloud_image_generator:
         try:
-            cloud_image_generator.generate_daily_fliers(topic_data=youtube_insight)
+            cloud_image_generator.generate_daily_fliers(topic_data={
+                "title": essay_data["title"],
+                "quote": youtube_insight["quote"],
+                "speaker": youtube_insight["speaker"],
+                "scripture": youtube_insight["scripture"]
+            })
             print("[PIPELINE STEP 3] Flier generator verified high-res studio assets.")
         except Exception as eg:
             print(f"[PIPELINE NOTICE] Flier generator using pre-existing assets: {eg}", file=sys.stderr)
@@ -490,7 +496,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
         print("[ERROR] SMTP_USER or SMTP_PASSWORD not set in environment or .env", file=sys.stderr)
         return False
 
-    final_subject = subject or f"🕊️ The Kingdom Journal • {essay_data['title']} (Issue 47)"
+    final_subject = subject or f"🕊️ The Kingdom Journal • {essay_data['title']} (Issue 48)"
 
     msg = MIMEMultipart("related")
     msg["Subject"] = final_subject
@@ -509,7 +515,7 @@ def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir:
     )
     
     plain_text = (
-        f"The Kingdom Journal • Morning Edition (Issue 47)\n\n"
+        f"The Kingdom Journal • Morning Edition (Issue 48)\n\n"
         f"{essay_data['title']}\n"
         f"“{youtube_insight['quote']}” — {youtube_insight['scripture']}\n\n"
         f"Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions (Instagram, WhatsApp, X, Threads, Facebook)."
