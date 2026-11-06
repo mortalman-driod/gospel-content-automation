@@ -1,9 +1,10 @@
 """
 Luxury Editorial Gospel Briefing (High-Class Edition)
 Completely removes all robotic AI templates (no '1/ 2/ 3/' lists, no formulaic bullet points).
-Formats daily worship insights with bespoke editorial typography and pre-filled social actions.
+Formats daily worship insights with bespoke editorial typography, live YouTube listening radar, and pre-filled social actions.
 """
 
+import email.utils
 import os
 import smtplib
 import sys
@@ -44,7 +45,37 @@ def generate_social_intent_links(captions: dict) -> dict:
         "facebook": f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(captions['facebook'])}"
     }
 
-def build_luxury_email_html(links: dict) -> str:
+def build_luxury_email_html(links: dict, videos: list = None) -> str:
+    # Build the live listening section if YouTube videos are present
+    youtube_html = ""
+    if videos:
+        items_html = ""
+        for v in videos[:3]:
+            title = v.get("title", "")
+            channel = v.get("channel", "")
+            items_html += f"""
+            <tr>
+              <td style="padding: 6px 0; font-size: 13px; line-height: 1.5; color: #44403c; border-bottom: 1px dashed #e7e5e4;">
+                <span style="font-weight: 600; color: #1c1917;">{channel}</span> — <em>{title}</em>
+              </td>
+            </tr>"""
+
+        youtube_html = f"""
+        <!-- CURATED MORNING RADAR (Live YouTube Integration) -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0 8px 0; background-color: #faf9f6; border: 1px solid #e7e5e4; border-radius: 2px;">
+          <tr>
+            <td style="padding: 16px 20px;">
+              <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8c827a; margin-bottom: 8px;">
+                TODAY'S VIRAL MINISTRATIONS • LIVE RADAR
+              </div>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                {items_html}
+              </table>
+            </td>
+          </tr>
+        </table>
+        """
+
     return f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
@@ -169,6 +200,9 @@ def build_luxury_email_html(links: dict) -> str:
                   </td>
                 </tr>
               </table>
+
+              <!-- LIVE YOUTUBE MINISTRATION RADAR -->
+              {youtube_html}
 
             </td>
           </tr>
@@ -313,10 +347,21 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         print("[ERROR] SMTP_USER or SMTP_PASSWORD not set in environment or .env", file=sys.stderr)
         return False
 
+    # 1. Fetch live YouTube videos for context and archival
+    live_vids = []
+    if youtube_api_client:
+        try:
+            live_vids = youtube_api_client.fetch_trending_gospel_videos()
+            print(f"[YOUTUBE RADAR] Successfully fetched {len(live_vids)} trending ministrations.")
+        except Exception as ey:
+            print(f"[YOUTUBE NOTICE] Falling back: {ey}", file=sys.stderr)
+
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
     msg["From"] = f"The Kingdom Journal <{smtp_user}>"
     msg["To"] = recipient
+    msg["Date"] = email.utils.formatdate(localtime=True)
+    msg["Message-ID"] = email.utils.make_msgid(domain="gmail.com")
 
     # Fresh Humanized Captions for Issue 45 (Send Judah First)
     captions = {
@@ -327,7 +372,7 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     }
 
     links = generate_social_intent_links(captions)
-    html_content = build_luxury_email_html(links)
+    html_content = build_luxury_email_html(links, videos=live_vids)
     plain_text = (
         "The Kingdom Journal • Morning Edition (Issue 45)\n\n"
         "Send Judah First\n"
@@ -376,19 +421,13 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
                 speaker="Nathaniel Bassey & Apostle Joshua Selman",
                 scripture="2 Chronicles 20:21-22 • Acts 16:25-26"
             )
-            if youtube_api_client:
-                try:
-                    live_vids = youtube_api_client.fetch_trending_gospel_videos()
-                    for lv in live_vids:
-                        content_db.record_video(
-                            video_id=lv.get("video_id", "live_asset"),
-                            title=lv.get("title", ""),
-                            channel=lv.get("channel", ""),
-                            published_at=lv.get("published_at", "")
-                        )
-                    print(f"[YOUTUBE INTEGRATION] {len(live_vids)} live video assets archived in database.")
-                except Exception as ex:
-                    print(f"[YOUTUBE WARNING] Live archival skipped: {ex}", file=sys.stderr)
+            for lv in live_vids:
+                content_db.record_video(
+                    video_id=lv.get("video_id", "live_asset"),
+                    title=lv.get("title", ""),
+                    channel=lv.get("channel", ""),
+                    published_at=lv.get("published_at", "")
+                )
             print("[DATABASE] Today's topic and video assets archived in SQLite memory.")
 
         if catch_up_scheduler:
