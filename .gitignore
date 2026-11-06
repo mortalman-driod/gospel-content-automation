@@ -1,5 +1,4 @@
 .env
-data/gospel_history.db
 __pycache__/
 *.pyc
 .idea/
