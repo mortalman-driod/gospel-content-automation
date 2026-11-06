@@ -1,0 +1,52 @@
+# The Kingdom Journal: Brand Configuration & Rotating Palettes
+
+brand:
+  name: "THE KINGDOM JOURNAL"
+  sub_brand: "DAILY EDITORIAL"
+  tagline: "Proven truth from the secret place"
+  watermark: "THE KINGDOM JOURNAL"
+
+palettes:
+  - id: "navy_gold"
+    name: "Midnight & Gold"
+    bg_primary: "#0A1128"
+    bg_secondary: "#101D42"
+    accent: "#D4AF37"
+    text_primary: "#F8F9FA"
+    text_secondary: "#CBD5E1"
+    scrim_tint: [10, 17, 40]
+
+  - id: "charcoal_warm_white"
+    name: "Charcoal & Alabaster"
+    bg_primary: "#141518"
+    bg_secondary: "#23252B"
+    accent: "#C5A880"
+    text_primary: "#F5F3EF"
+    text_secondary: "#D4C5B9"
+    scrim_tint: [20, 21, 24]
+
+  - id: "teal_cream"
+    name: "Deep Teal & Cream"
+    bg_primary: "#0B2B30"
+    bg_secondary: "#13424A"
+    accent: "#E9C46A"
+    text_primary: "#FAF0CA"
+    text_secondary: "#D1E0D7"
+    scrim_tint: [11, 43, 48]
+
+  - id: "burgundy_gold"
+    name: "Deep Burgundy & Crown Gold"
+    bg_primary: "#2B0B11"
+    bg_secondary: "#44121A"
+    accent: "#F4D06F"
+    text_primary: "#FFF8F0"
+    text_secondary: "#E2C4C9"
+    scrim_tint: [43, 11, 17]
+
+templates:
+  - "bold_statement"
+  - "contrast_split"
+  - "scripture_card"
+  - "question_hook"
+  - "quiet_light"
+  - "numbered_list"

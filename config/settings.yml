@@ -1,0 +1,16 @@
+# System settings and quota limits for The Kingdom Journal
+discovery:
+  max_days_old: 14
+  min_duration_minutes: 3
+  max_duration_minutes: 60
+  max_search_calls_per_run: 2
+  max_quota_units_per_day: 3000
+  score_weights:
+    velocity: 0.45
+    outlier: 0.35
+    engagement: 0.20
+
+operations:
+  timezone: "Africa/Lagos"
+  watchdog_threshold_hours: 36
+  used_history_window_days: 30

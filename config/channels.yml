@@ -1,0 +1,37 @@
+# The Kingdom Journal: Curated YouTube Channels
+# Uploads playlists are derived automatically: UC... -> UU...
+channels:
+  - id: "UCq2ueL6wl7slTuInRbFpe7w"
+    name: "Koinonia Global"
+    speaker: "Apostle Joshua Selman"
+    category: "apostolic_teaching"
+
+  - id: "UC9unpsMUkOGDIMraqBfZtYg"
+    name: "Dunsin Oyekan"
+    speaker: "Dunsin Oyekan"
+    category: "prophetic_worship"
+
+  - id: "UCRe2Ir9wtPk_YQjElam7n2w"
+    name: "Nathaniel Bassey Main"
+    speaker: "Nathaniel Bassey"
+    category: "worship_warfare"
+
+  - id: "UCo9_ALYi0IYcMn7K84YFTzw"
+    name: "Victoria Orenze"
+    speaker: "Victoria Orenze"
+    category: "intimate_worship"
+
+  - id: "UC299_CRk_c_LvfwhMzmfyBQ"
+    name: "Theophilus Sunday"
+    speaker: "Theophilus Sunday"
+    category: "secret_place_chants"
+
+  - id: "UCNeLs83EPGjX8Pz7wsiBckw"
+    name: "Lawrence Oyor"
+    speaker: "Lawrence Oyor"
+    category: "revival_chants"
+
+  - id: "UCtIRyuESlnOflQCpmk-fHUw"
+    name: "Mercy Chinwo Official"
+    speaker: "Mercy Chinwo"
+    category: "praise_adoration"

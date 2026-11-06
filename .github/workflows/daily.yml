@@ -1,0 +1,74 @@
+name: The Kingdom Journal Daily Editorial Pipeline
+
+on:
+  schedule:
+    # 04:17 UTC = 05:17 Lagos / West Africa Time (off-peak schedule to avoid top-of-hour GitHub queue delays)
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Bypass idempotency lock and force re-run today'
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Simulate pipeline without sending live email'
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: kingdom-journal-daily
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run-daily-journal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run The Kingdom Journal Pipeline
+        env:
+          SMTP_HOST: "smtp.gmail.com"
+          SMTP_PORT: "587"
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || secrets.SMTP_USER }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY || secrets.YT_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          TRANSCRIPT_API_KEY: ${{ secrets.TRANSCRIPT_API_KEY }}
+          TRANSCRIPT_API_ENDPOINT: ${{ secrets.TRANSCRIPT_API_ENDPOINT }}
+        run: |
+          FLAGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then FLAGS="$FLAGS --force"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then FLAGS="$FLAGS --dry-run"; fi
+          python -m src.main $FLAGS
+
+      - name: Persist State & Learning Data to Repository
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/state.json data/used.json data/performance.csv data/transcripts/
+          git diff --staged --quiet || (git commit -m "chore(ops): update pipeline state and performance logs [skip ci]" && git push origin main)
