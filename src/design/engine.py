@@ -191,12 +191,12 @@ class FlyerEngine:
 
     def _draw_watermark(self, draw: ImageDraw.ImageDraw, left: int, bottom: int, right: int, colors: Dict):
         """Renders subtle footer watermark."""
-        font_wm = load_font("sans", 20)
+        font_wm = load_font("sans", 22)
         wm_text = "THE KINGDOM JOURNAL  •  DAILY EDITORIAL"
         bbox = draw.textbbox((0, 0), wm_text, font=font_wm)
         bw = bbox[2] - bbox[0]
         cx = (left + right) // 2
-        draw.text((cx - bw // 2, bottom - 25), wm_text, font=font_wm, fill=colors["secondary"])
+        draw.text((cx - bw // 2, bottom - 25), wm_text, font=font_wm, fill=colors.get("accent", colors["primary"]))
 
     # 1. BOLD STATEMENT TEMPLATE
     def _render_bold_statement(self, bg, width, height, safe_box, content, colors):
@@ -213,7 +213,7 @@ class FlyerEngine:
         lines, font, _, text_h = fit_headline(headline, max_w, max_h, font_family="serif", initial_size=74, min_size=48)
 
         text_y = s_top + int((s_bottom - s_top - text_h) * 0.44)
-        text_bbox = (s_left, text_y, s_right, text_y + text_h)
+        text_bbox = (s_left, text_y, s_right, text_y + text_h + 60)
 
         # Apply adaptive scrim
         bg = apply_adaptive_scrim(bg, text_bbox, colors["primary"], colors["tint"], min_contrast=4.5)
@@ -230,9 +230,14 @@ class FlyerEngine:
             bbox = draw.textbbox((0, 0), line, font=font)
             cur_y += (bbox[3] - bbox[1]) + line_spacing
 
-        # Credit line
-        font_credit = load_font("sans", 28)
-        draw.text((s_left + 24, cur_y + 20), f"— {credit}", font=font_credit, fill=colors["accent"])
+        # Credit line with auto-wrapping
+        font_credit = load_font("sans", 24)
+        credit_lines = wrap_text_to_width(f"— {credit}", font_credit, max_w - 48, draw)
+        c_y = cur_y + 20
+        for cl in credit_lines[:2]:
+            draw.text((s_left + 24, c_y), cl, font=font_credit, fill=colors["accent"])
+            bbox_c = draw.textbbox((0, 0), cl, font=font_credit)
+            c_y += (bbox_c[3] - bbox_c[1]) + 8
 
         self._draw_watermark(draw, s_left, s_bottom, s_right, colors)
         return bg, text_bbox
@@ -258,7 +263,7 @@ class FlyerEngine:
 
         total_h = len(lines1) * 55 + 50 + h2
         start_y = s_top + int((s_bottom - s_top - total_h) * 0.42)
-        text_bbox = (s_left, start_y, s_right, start_y + total_h)
+        text_bbox = (s_left, start_y, s_right, start_y + total_h + 60)
 
         bg = apply_adaptive_scrim(bg, text_bbox, colors["primary"], colors["tint"], min_contrast=4.5)
         draw = ImageDraw.Draw(bg)
@@ -280,9 +285,14 @@ class FlyerEngine:
             bbox = draw.textbbox((0, 0), l, font=font2)
             y += (bbox[3] - bbox[1]) + int(font2.size * 0.28)
 
-        # Credit line
-        font_credit = load_font("sans", 26)
-        draw.text((s_left, y + 25), f"— {credit}", font=font_credit, fill=colors["primary"])
+        # Credit line with auto-wrapping
+        font_credit = load_font("sans", 24)
+        credit_lines = wrap_text_to_width(f"— {credit}", font_credit, max_w, draw)
+        c_y = y + 25
+        for cl in credit_lines[:2]:
+            draw.text((s_left, c_y), cl, font=font_credit, fill=colors["primary"])
+            bbox_c = draw.textbbox((0, 0), cl, font=font_credit)
+            c_y += (bbox_c[3] - bbox_c[1]) + 8
 
         self._draw_watermark(draw, s_left, s_bottom, s_right, colors)
         return bg, text_bbox
