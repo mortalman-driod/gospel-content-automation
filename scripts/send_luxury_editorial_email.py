@@ -439,28 +439,32 @@ def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote
 </body>
 </html>"""
 
-def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir: Path = None):
+def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir: Path = None, override_topic: dict = None):
     load_env_file()
     fliers_dir = fliers_dir or Path(__file__).resolve().parent.parent / "reports" / "fliers"
     
     # 1. PILLAR 3: Analyze live YouTube videos to extract the best punchy line
-    youtube_insight = {
-        "title": "When Words Are Not Enough",
-        "hook_top": "When words are not enough",
-        "banner_text": "Let Your Worship Speak",
-        "quote": "When words are not enough, let your worship speak.",
-        "speaker": "Mercy Chinwo & Apostle Joshua Selman",
-        "scripture": "Romans 8:26 • Psalm 46:10",
-        "videos": []
-    }
-    if youtube_quote_analyzer:
-        try:
-            analyzed = youtube_quote_analyzer.analyze_trending_gospel_videos()
-            if analyzed and analyzed.get("quote"):
-                youtube_insight = analyzed
-                print(f"[PIPELINE STEP 1] YouTube Analysis complete. Extracted line: '{youtube_insight['quote']}'")
-        except Exception as ey:
-            print(f"[PIPELINE NOTICE] YouTube analysis fallback: {ey}", file=sys.stderr)
+    if override_topic:
+        youtube_insight = override_topic
+        print(f"[PIPELINE STEP 1] Using custom trending topic: '{youtube_insight.get('title')}'")
+    else:
+        youtube_insight = {
+            "title": "When Words Are Not Enough",
+            "hook_top": "When words are not enough",
+            "banner_text": "Let Your Worship Speak",
+            "quote": "When words are not enough, let your worship speak.",
+            "speaker": "Mercy Chinwo & Apostle Joshua Selman",
+            "scripture": "Romans 8:26 • Psalm 46:10",
+            "videos": []
+        }
+        if youtube_quote_analyzer:
+            try:
+                analyzed = youtube_quote_analyzer.analyze_trending_gospel_videos()
+                if analyzed and analyzed.get("quote"):
+                    youtube_insight = analyzed
+                    print(f"[PIPELINE STEP 1] YouTube Analysis complete. Extracted line: '{youtube_insight['quote']}'")
+            except Exception as ey:
+                print(f"[PIPELINE NOTICE] YouTube analysis fallback: {ey}", file=sys.stderr)
 
     # 2. PILLAR 2: Generate humanized editorial essay and multi-platform captions
     engine = humanized_content_engine.HumanizedContentEngine(
