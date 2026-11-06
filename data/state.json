@@ -1,8 +1,7 @@
 {
   "current_issue_number": 50,
   "last_successful_date": "2026-11-06",
-  "last_run_timestamp": "2026-11-06T15:44:37.341278+00:00",
+  "last_run_timestamp": "2026-11-06T15:44:37Z",
   "last_status": "SUCCESS",
-  "consecutive_failures": 0,
-  "last_error": "'history'"
+  "consecutive_failures": 0
 }
