@@ -111,7 +111,12 @@ class StateManager:
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
         self.state_file.write_text(json.dumps(self.state_data, indent=2), encoding="utf-8")
 
-        # Update used history
+        # Update used history safely
+        self.used_data.setdefault("used_video_ids", [])
+        self.used_data.setdefault("used_quotes", [])
+        self.used_data.setdefault("used_themes", [])
+        self.used_data.setdefault("history", [])
+
         if video_id and video_id not in self.used_data["used_video_ids"]:
             self.used_data["used_video_ids"].append(video_id)
         if quote_text and quote_text not in self.used_data["used_quotes"]:

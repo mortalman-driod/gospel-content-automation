@@ -1,6 +1,20 @@
 {
-  "used_video_ids": [],
-  "used_quotes": [],
-  "used_themes": [],
-  "updated_at": "2026-11-06T15:00:00Z"
+  "used_video_ids": [
+    "C3pLDUNe87M"
+  ],
+  "used_quotes": [
+    "The night is far spent. Wake up out of sleep."
+  ],
+  "used_themes": [
+    "The 4 a.m. nudge is a call."
+  ],
+  "updated_at": "2026-11-06T15:00:00Z",
+  "history": [
+    {
+      "issue": 50,
+      "date": "2026-11-06",
+      "video_id": "C3pLDUNe87M",
+      "theme": "The 4 a.m. nudge is a call."
+    }
+  ]
 }
