@@ -1,7 +1,7 @@
 """
-Luxury Editorial Gospel Briefing (High-Class Edition)
-Completely removes all robotic AI templates (no '1/ 2/ 3/' lists, no formulaic bullet points).
-Formats daily worship insights with bespoke editorial typography, live YouTube listening radar, and pre-filled social actions.
+Luxury Editorial Gospel Briefing (High-Class Edition - Issue 46)
+Topic: Divine Help at Break of Day (Psalm 46:5 • Isaiah 40:31)
+Bespoke editorial prose, studio-grade viral artwork, live YouTube radar, and pre-filled social actions.
 """
 
 import email.utils
@@ -153,13 +153,13 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                       THE KINGDOM JOURNAL • DAILY EDITORIAL
                     </div>
                     <h1 class="headline" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
-                      Send Judah First
+                      Divine Help at Break of Day
                     </h1>
                     <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
-                      On praise as strategic defiance, the mystery of breakthrough before manifestation, and why thanksgiving leads the battle.
+                      On the sacred mystery of God's timing, why dawn dismantles human exhaustion, and what happens when capacity runs dry.
                     </p>
                     <div style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
-                      Vol. IV • Issue 45 • Friday, November 6, 2026
+                      Vol. IV • Issue 46 • Friday, November 6, 2026
                     </div>
                   </td>
                 </tr>
@@ -172,19 +172,19 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
             <td class="content-padding" style="padding: 38px 48px 24px 48px;">
               
               <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                In the twentieth chapter of Second Chronicles, King Jehoshaphat stood before an overwhelming military alliance. Three hostile nations had surrounded Jerusalem, and human reason demanded archers, barricades, and vanguard cavalry.
+                In the forty-sixth Psalm, the scripture records an arresting promise: <em>“God is within her, she will not fall; God will help her at break of day.”</em>
               </p>
               
               <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                Instead, the prophet Jahaziel delivered an instruction that defied all conventional military strategy: <em>Appoint worshippers to march at the very front of the army.</em>
+                Consider the quiet precision of that timing. In ancient warfare, the final stretch of the night—the fourth watch between three and six in the morning—was when fatigue peaked and human defenses were at their absolute weakest. It was the hour when striving gave way to exhaustion.
               </p>
 
               <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                Judah—whose name literally signifies <em>praise</em>—was dispatched ahead of the spears. Before a single sword was unclasped, the moment their voices lifted in thanksgiving, supernatural ambushes scattered the opposition.
+                Yet throughout biblical history, the break of day is never an afterthought. It is heaven’s appointed hour for divine reversals. The waters of the Red Sea parted as the morning watch arrived. The manna settled with the dawn dew. And before the sun fully crested over Jerusalem on the third day, the stone was already rolled away.
               </p>
 
               <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 24px 0;">
-                Reflecting on this morning's live worship ministrations led by Nathaniel Bassey and Apostle Joshua Selman, the spiritual principle is unmistakable: <strong>Praise is not a celebration of a victory already completed; it is the strategic declaration of who God remains while the outcome is still contested.</strong> The breakthrough does not begin when the trial ends—it begins the moment your song changes.
+                Drawing from this morning's live worship ministrations led by Victoria Orenze and Apostle Joshua Selman, the spiritual truth is liberating: <strong>You do not have to panic over battles God has already scheduled for dawn.</strong> When human capacity reaches its limit, divine assistance takes over.
               </p>
 
               <!-- Curated Pull Quote Accent -->
@@ -192,10 +192,10 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                 <tr>
                   <td style="padding: 16px 20px;">
                     <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
-                      “The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.”
+                      “When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.”
                     </div>
                     <div style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
-                      — 2 CHRONICLES 20:21-22 • NATHANIEL BASSEY &amp; APOSTLE JOSHUA SELMAN
+                      — PSALM 46:5 • VICTORIA ORENZE &amp; APOSTLE JOSHUA SELMAN
                     </div>
                   </td>
                 </tr>
@@ -208,7 +208,7 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
           </tr>
 
           <!-- ============================================== -->
-          <!-- PART I: THE SQUARE MASTER ARTWORK              -->
+          <!-- PART I: THE SQUARE MASTER ARTWORK (1:1)       -->
           <!-- ============================================== -->
           <tr>
             <td class="content-padding" style="padding: 10px 48px 36px 48px;">
@@ -218,27 +218,27 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                   THE ARTWORK • MASTER COMPOSITION (1:1)
                 </div>
                 <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
-                  Send Judah First: Praise as Strategic Defiance
+                  Divine Help Begins at Dawn
                 </h3>
 
                 <!-- Native Studio Artwork Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_judah" alt="Send Judah First Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
+                  <img src="cid:flyer_dawn" alt="Divine Help at Dawn Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
                 <!-- Editorial Social Copy Block -->
                 <div style="background-color: #faf9f6; border-left: 2px solid #1a1a1a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #3d3935; margin-bottom: 22px;">
                   <p style="margin: 0 0 12px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a1a;">
-                    The breakthrough doesn't start when the trial ends. It begins when your song changes.
+                    When human capacity reaches its end, divine help begins at dawn.
                   </p>
                   <p style="margin: 0 0 12px 0;">
-                    When Jehoshaphat faced three invading armies, he didn't put his swordsmen at the front—he sent worshippers. Judah means praise, and praise goes first.
+                    Psalm 46:5 promises that <em>“God will help her at break of day.”</em> The darkest hour of the night is always the forerunner to heaven's scheduled intervention.
                   </p>
                   <p style="margin: 0 0 12px 0; font-style: italic; color: #92400e;">
-                    Praise is not a celebration of what went right; it is an uncompromising declaration of who God remains. Whatever feels heavy this morning, lead with worship.
+                    Stop carrying into today the exhaustion of yesterday's battles. God does not sleep, and His assistance arrives right on time.
                   </p>
                   <div style="font-size: 11px; color: #8c827a; border-top: 1px solid #e5e2da; padding-top: 10px; letter-spacing: 0.5px;">
-                    #SendJudahFirst #TheKingdomJournal #NathanielBassey #ApostleJoshuaSelman #FaithOverFear #MorningDevotion
+                    #DivineHelp #BreakOfDay #TheKingdomJournal #VictoriaOrenze #JoshuaSelman #MorningPrayer
                   </div>
                 </div>
 
@@ -277,12 +277,12 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                   THE MOBILE REFLECTION • STATUS POSTER (9:16)
                 </div>
                 <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
-                  Give God Your Midnight
+                  What God Builds in Secret
                 </h3>
 
                 <!-- Clean Vertical Flyer Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_midnight" alt="Give God Your Midnight Poster" width="300" style="max-width: 300px; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
+                  <img src="cid:flyer_secret_place" alt="What God Builds in Secret Poster" width="300" style="max-width: 300px; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
                 <!-- Warm Intimate Reflection -->
@@ -291,10 +291,10 @@ def build_luxury_email_html(links: dict, videos: list = None) -> str:
                     Good morning my friend.
                   </p>
                   <p style="margin: 0 0 10px 0;">
-                    A word for your Friday: Never let yesterday's weariness steal today's gratitude. Give God your midnight, and watch Him clear your morning.
+                    A quiet word for your Friday: Never underestimate the silent seasons of your life. What God builds in secret cannot be dismantled in public.
                   </p>
                   <p style="margin: 0; font-size: 13px; color: #4b6350; font-style: italic;">
-                    📖 “At midnight Paul and Silas were praying and singing hymns to God, and the other prisoners were listening to them. Suddenly there was such a violent earthquake that the foundations of the prison were shaken.” — Acts 16:25-26
+                    📖 “Those who wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary.” — Isaiah 40:31
                   </p>
                 </div>
 
@@ -363,20 +363,20 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Message-ID"] = email.utils.make_msgid(domain="gmail.com")
 
-    # Fresh Humanized Captions for Issue 45 (Send Judah First)
+    # Fresh Humanized Captions for Issue 46 (Divine Help at Break of Day)
     captions = {
-        "twitter": "The breakthrough doesn't start when the trial ends.\n\nIt begins when your song changes.\n\nWhen Jehoshaphat faced three invading armies, he didn't put swordsmen at the front—he sent worshippers. Judah means praise, and praise goes first.\n\nSend Judah first today. 🕊️",
-        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nNever let yesterday's weariness steal today's gratitude. Give God your midnight, and watch Him clear your morning.\n\nIn 2 Chronicles 20, God told Jehoshaphat to put worshippers at the front lines. The moment they began to sing, God set ambushes for their victory.\n\n📖 “Praise the Lord, for His mercy endures forever.” — 2 Chronicles 20:21\n\nHave a victorious and blessed day! Forward this to someone who needs courage today. ✨",
-        "threads": "A thought for your Friday morning:\n\nMost people wait for the breakthrough before releasing their song.\n\nIn the kingdom, your song IS the breakthrough. In 2 Chronicles 20, King Jehoshaphat placed worshippers at the front lines ahead of the army. Praise wasn't the victory parade—it was the weapon.\n\nDon't wait for things to calm down before thanking God. Praise is a declaration of who He remains in every storm. What are you praising Him for today?",
-        "facebook": "“The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.” (2 Chronicles 20:21-22)\n\nWhen you face an uphill battle, do not wait until the dust settles to give God your thanksgiving. Worship is spiritual defiance. Lead with praise today and let God handle the battle."
+        "twitter": "When human capacity reaches its end, divine help begins at dawn.\n\nPsalm 46:5 promises that God will help her at the break of day. The darkest hour is never the conclusion; it is heaven's appointed schedule for your turnaround.\n\nRest in His timing today. 🕊️",
+        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nNever underestimate the silent seasons of your life. What God builds in secret cannot be dismantled in public.\n\nPsalm 46:5 says, “God is within her, she will not fall; God will help her at break of day.” Whatever felt exhausting this week, know that divine help is already scheduled.\n\n📖 “Those who wait upon the Lord shall renew their strength.” — Isaiah 40:31\n\nHave a peaceful, favored day! Forward this to someone who needs encouragement today. ✨",
+        "threads": "A thought for your Friday morning:\n\nIn ancient times, the fourth watch of the night—just before dawn—was when exhaustion was deepest and defenses were weakest.\n\nYet throughout scripture, dawn is precisely when God moves: the Red Sea parted at dawn, manna fell at dawn, and the tomb was empty at dawn.\n\nYou don't have to carry anxiety over battles God has already scheduled for your deliverance. What are you trusting Him for today?",
+        "facebook": "“When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.” (Psalm 46:5)\n\nStop carrying the exhaustion of yesterday's striving. When your strength runs dry, divine assistance takes over. Step out today with quiet confidence in His covenant."
     }
 
     links = generate_social_intent_links(captions)
     html_content = build_luxury_email_html(links, videos=live_vids)
     plain_text = (
-        "The Kingdom Journal • Morning Edition (Issue 45)\n\n"
-        "Send Judah First\n"
-        "“The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.” — 2 Chronicles 20:21-22\n\n"
+        "The Kingdom Journal • Morning Edition (Issue 46)\n\n"
+        "Divine Help at Break of Day\n"
+        "“When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.” — Psalm 46:5\n\n"
         "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions."
     )
 
@@ -387,8 +387,8 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
 
     # Attach the two brand new authentic studio viral fliers
     attachments = [
-        ("flyer_judah", fliers_dir / "flyer_judah_square.jpg"),
-        ("flyer_midnight", fliers_dir / "flyer_midnight_whatsapp.jpg")
+        ("flyer_dawn", fliers_dir / "flyer_dawn_square.jpg"),
+        ("flyer_secret_place", fliers_dir / "flyer_secret_place_story.jpg")
     ]
 
     for cid, img_file in attachments:
@@ -417,9 +417,9 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
             content_db.record_quote(
-                quote_text="The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.",
-                speaker="Nathaniel Bassey & Apostle Joshua Selman",
-                scripture="2 Chronicles 20:21-22 • Acts 16:25-26"
+                quote_text="When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.",
+                speaker="Victoria Orenze & Apostle Joshua Selman",
+                scripture="Psalm 46:5 • Isaiah 40:31"
             )
             for lv in live_vids:
                 content_db.record_video(
@@ -428,7 +428,7 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
                     channel=lv.get("channel", ""),
                     published_at=lv.get("published_at", "")
                 )
-            print("[DATABASE] Today's topic and video assets archived in SQLite memory.")
+            print("[DATABASE] Today's fresh topic and video assets archived in SQLite memory.")
 
         if catch_up_scheduler:
             catch_up_scheduler.save_state("SUCCESS")
@@ -442,6 +442,6 @@ if __name__ == "__main__":
     fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_luxury_editorial_email(
         recipient="aondoaseerezekiel@gmail.com",
-        subject="🕊️ The Kingdom Journal • Send Judah First (Issue 45)",
+        subject="🕊️ The Kingdom Journal • Divine Help at Break of Day (Issue 46)",
         fliers_dir=fliers_dir
     )
