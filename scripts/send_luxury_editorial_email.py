@@ -1,8 +1,11 @@
 """
 Luxury Editorial Gospel Briefing (High-Class Edition - Issue 46)
 Topic: Divine Help at Break of Day (Psalm 46:5 • Isaiah 40:31)
-Bespoke editorial prose, studio-grade viral artwork, live YouTube radar, and complete multi-platform social actions
-including Instagram (Feed + Stories), X, Threads, Facebook, and WhatsApp.
+Features:
+- Complete De-AI'd Editorial Prose
+- Advanced Cross-Client Dark Mode Architecture (Apple Mail, Outlook, Gmail)
+- Autonomous Cloud Image Synthesis Hook
+- 5-Platform Social Sharing (Instagram, WhatsApp, X, Threads, Facebook)
 """
 
 import email.utils
@@ -21,10 +24,12 @@ try:
     import content_db
     import catch_up_scheduler
     import youtube_api_client
+    import cloud_image_generator
 except ImportError:
     content_db = None
     catch_up_scheduler = None
     youtube_api_client = None
+    cloud_image_generator = None
 
 def load_env_file():
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -58,17 +63,17 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
             channel = v.get("channel", "")
             items_html += f"""
             <tr>
-              <td style="padding: 6px 0; font-size: 13px; line-height: 1.5; color: #44403c; border-bottom: 1px dashed #e7e5e4;">
-                <span style="font-weight: 600; color: #1c1917;">{channel}</span> — <em>{title}</em>
+              <td class="dark-radar-text" style="padding: 7px 0; font-size: 13px; line-height: 1.5; color: #44403c; border-bottom: 1px dashed #e7e5e4;">
+                <span style="font-weight: 600; color: #1c1917;" class="dark-heading">{channel}</span> — <em>{title}</em>
               </td>
             </tr>"""
 
         youtube_html = f"""
         <!-- CURATED MORNING RADAR (Live YouTube Integration) -->
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0 8px 0; background-color: #faf9f6; border: 1px solid #e7e5e4; border-radius: 2px;">
+        <table role="presentation" class="dark-radar-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 24px 0 8px 0; background-color: #faf9f6; border: 1px solid #e7e5e4; border-radius: 2px;">
           <tr>
             <td style="padding: 16px 20px;">
-              <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8c827a; margin-bottom: 8px;">
+              <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #8c827a; margin-bottom: 8px;" class="dark-subtitle">
                 TODAY'S VIRAL MINISTRATIONS • LIVE RADAR
               </div>
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -87,6 +92,8 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
   <meta name="x-apple-disable-message-reformatting" />
   <title>The Kingdom Journal • Morning Edition</title>
   <!--[if mso]>
@@ -96,6 +103,10 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
   </style>
   <![endif]-->
   <style type="text/css">
+    :root {{
+      color-scheme: light dark;
+      supported-color-schemes: light dark;
+    }}
     body {{
       margin: 0;
       padding: 0;
@@ -113,13 +124,15 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
     a {{
       text-decoration: none;
     }}
+    
+    /* Responsive Mobile Layout */
     @media only screen and (max-width: 620px) {{
       .wrapper {{
         width: 100% !important;
-        padding: 10px !important;
+        padding: 8px !important;
       }}
       .content-padding {{
-        padding: 24px 20px !important;
+        padding: 24px 18px !important;
       }}
       .headline {{
         font-size: 26px !important;
@@ -129,21 +142,88 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
         display: block !important;
         width: 100% !important;
         text-align: center !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 8px !important;
       }}
       .btn-full {{
         display: block !important;
-        width: 90% !important;
-        margin: 6px auto !important;
+        width: 100% !important;
+        margin: 6px 0 !important;
         text-align: center !important;
+        box-sizing: border-box !important;
+      }}
+    }}
+
+    /* Advanced Dark Mode Overrides */
+    @media (prefers-color-scheme: dark) {{
+      body, .dark-canvas {{
+        background-color: #121212 !important;
+        color: #e5e5e5 !important;
+      }}
+      .dark-card {{
+        background-color: #1c1917 !important;
+        border-color: #2e2a27 !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6) !important;
+      }}
+      .dark-masthead {{
+        border-bottom-color: #2e2a27 !important;
+      }}
+      .dark-heading {{
+        color: #f5f5f4 !important;
+      }}
+      .dark-subtitle {{
+        color: #a8a29e !important;
+      }}
+      .dark-issue-badge {{
+        border-top-color: #2e2a27 !important;
+        color: #78716c !important;
+      }}
+      .dark-body {{
+        color: #d6d3d1 !important;
+      }}
+      .dark-quote-box {{
+        background-color: #24201d !important;
+        border-left-color: #d97706 !important;
+      }}
+      .dark-quote-text {{
+        color: #fafaf9 !important;
+      }}
+      .dark-quote-meta {{
+        color: #a8a29e !important;
+      }}
+      .dark-radar-box {{
+        background-color: #24201d !important;
+        border-color: #38332e !important;
+      }}
+      .dark-radar-text {{
+        color: #d6d3d1 !important;
+        border-bottom-color: #38332e !important;
+      }}
+      .dark-caption-box {{
+        background-color: #24201d !important;
+        border-color: #38332e !important;
+        color: #e7e5e4 !important;
+      }}
+      .dark-whatsapp-box {{
+        background-color: #152219 !important;
+        border-left-color: #16a34a !important;
+        color: #dcfce7 !important;
+      }}
+      .dark-footer {{
+        background-color: #171513 !important;
+        border-top-color: #2e2a27 !important;
+        color: #a8a29e !important;
+      }}
+      .dark-btn-facebook {{
+        border-color: #57534e !important;
+        color: #e7e5e4 !important;
       }}
     }}
   </style>
 </head>
-<body style="margin: 0; padding: 40px 0; background-color: #f7f6f2; color: #1a1a1a;">
+<body class="dark-canvas" style="margin: 0; padding: 40px 0; background-color: #f7f6f2; color: #1a1a1a;">
 
   <!-- Outer Canvas Table -->
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f6f2;">
+  <table role="presentation" class="dark-canvas" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f6f2;">
     <tr>
       <td align="center" style="padding: 20px 10px;">
         
@@ -153,24 +233,24 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
         <tr>
         <td align="center" valign="top" width="600">
         <![endif]-->
-        <table role="presentation" class="wrapper" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e2da; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); text-align: left;">
+        <table role="presentation" class="wrapper dark-card" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e2da; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); text-align: left;">
           
           <!-- BESPOKE EDITORIAL MASTHEAD -->
           <tr>
-            <td class="content-padding" style="padding: 48px 48px 30px 48px; text-align: center; border-bottom: 1px solid #1a1a1a;">
+            <td class="content-padding dark-masthead" style="padding: 48px 48px 30px 48px; text-align: center; border-bottom: 1px solid #1a1a1a;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center">
-                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: #8c827a; margin-bottom: 14px;">
+                    <div class="dark-subtitle" style="font-size: 10px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: #8c827a; margin-bottom: 14px;">
                       THE KINGDOM JOURNAL • DAILY EDITORIAL
                     </div>
-                    <h1 class="headline" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
+                    <h1 class="headline dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
                       Divine Help at Break of Day
                     </h1>
-                    <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
+                    <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
                       On the sacred mystery of God's timing, why dawn dismantles human exhaustion, and what happens when capacity runs dry.
                     </p>
-                    <div style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
+                    <div class="dark-issue-badge" style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
                       Vol. IV • Issue 46 • Friday, November 6, 2026
                     </div>
                   </td>
@@ -183,30 +263,30 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
           <tr>
             <td class="content-padding" style="padding: 38px 48px 24px 48px;">
               
-              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
                 In the forty-sixth Psalm, the scripture records an arresting promise: <em>“God is within her, she will not fall; God will help her at break of day.”</em>
               </p>
               
-              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
                 Consider the quiet precision of that timing. In ancient warfare, the final stretch of the night—the fourth watch between three and six in the morning—was when fatigue peaked and human defenses were at their absolute weakest. It was the hour when striving gave way to exhaustion.
               </p>
 
-              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
                 Yet throughout biblical history, the break of day is never an afterthought. It is heaven’s appointed hour for divine reversals. The waters of the Red Sea parted as the morning watch arrived. The manna settled with the dawn dew. And before the sun fully crested over Jerusalem on the third day, the stone was already rolled away.
               </p>
 
-              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 24px 0;">
+              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 24px 0;">
                 Drawing from this morning's live worship ministrations led by Victoria Orenze and Apostle Joshua Selman, the spiritual truth is liberating: <strong>You do not have to panic over battles God has already scheduled for dawn.</strong> When human capacity reaches its limit, divine assistance takes over.
               </p>
 
               <!-- Curated Pull Quote Accent -->
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0; border-left: 2px solid #b45309; background-color: #faf9f6;">
+              <table role="presentation" class="dark-quote-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0; border-left: 2px solid #b45309; background-color: #faf9f6;">
                 <tr>
                   <td style="padding: 16px 20px;">
-                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
+                    <div class="dark-quote-text" style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
                       “When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.”
                     </div>
-                    <div style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
+                    <div class="dark-quote-meta" style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
                       — PSALM 46:5 • VICTORIA ORENZE &amp; APOSTLE JOSHUA SELMAN
                     </div>
                   </td>
@@ -224,12 +304,12 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
           <!-- ============================================== -->
           <tr>
             <td class="content-padding" style="padding: 10px 48px 36px 48px;">
-              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;">
+              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;" class="dark-masthead">
                 
-                <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #a39c93; margin-bottom: 6px;">
+                <div class="dark-subtitle" style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #a39c93; margin-bottom: 6px;">
                   THE ARTWORK • MASTER COMPOSITION (1:1)
                 </div>
-                <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
+                <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
                   Divine Help Begins at Dawn
                 </h3>
 
@@ -239,11 +319,11 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                 </div>
 
                 <!-- INSTAGRAM READY CAPTION BOX -->
-                <div style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #c13584; padding: 18px 20px; margin-bottom: 20px; border-radius: 2px;">
+                <div class="dark-caption-box" style="background-color: #faf9f6; border: 1px solid #e5e2da; border-left: 3px solid #c13584; padding: 18px 20px; margin-bottom: 20px; border-radius: 2px;">
                   <div style="font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c13584; margin-bottom: 10px;">
                     📸 INSTAGRAM CAPTION &amp; REEL SCRIPT (TAP TO COPY)
                   </div>
-                  <div style="font-size: 13px; line-height: 1.7; color: #2e2b27;">
+                  <div style="font-size: 13px; line-height: 1.7; color: #2e2b27;" class="dark-body">
                     {ig_caption_display}
                   </div>
                 </div>
@@ -267,7 +347,7 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                         Threads
                       </a>
                       <!-- Share to Facebook -->
-                      <a href="{links['facebook']}" target="_blank" class="btn-full" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 16px; border-radius: 2px;">
+                      <a href="{links['facebook']}" target="_blank" class="btn-full dark-btn-facebook" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 16px; border-radius: 2px;">
                         Facebook
                       </a>
                     </td>
@@ -283,12 +363,12 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
           <!-- ============================================== -->
           <tr>
             <td class="content-padding" style="padding: 10px 48px 36px 48px;">
-              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;">
+              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;" class="dark-masthead">
                 
                 <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
                   THE MOBILE REFLECTION • STATUS &amp; STORY POSTER (9:16)
                 </div>
-                <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
+                <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
                   What God Builds in Secret
                 </h3>
 
@@ -298,7 +378,7 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                 </div>
 
                 <!-- Warm Intimate Reflection -->
-                <div style="background-color: #f7fcf8; border-left: 2px solid #16a34a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #2e3b2e; margin-bottom: 22px;">
+                <div class="dark-whatsapp-box" style="background-color: #f7fcf8; border-left: 2px solid #16a34a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #2e3b2e; margin-bottom: 22px;">
                   <p style="margin: 0 0 10px 0; font-weight: 600; color: #14532d; font-family: Georgia, 'Times New Roman', serif; font-size: 15px;">
                     Good morning my friend.
                   </p>
@@ -332,11 +412,11 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
 
           <!-- CLASSIC FOOTER -->
           <tr>
-            <td class="content-padding" style="padding: 32px 48px; background-color: #faf9f6; border-top: 1px solid #e5e2da; text-align: center;">
-              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-style: italic; color: #8c827a; margin: 0 0 8px 0; line-height: 1.5;">
+            <td class="content-padding dark-footer" style="padding: 32px 48px; background-color: #faf9f6; border-top: 1px solid #e5e2da; text-align: center;">
+              <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-style: italic; color: #8c827a; margin: 0 0 8px 0; line-height: 1.5;">
                 The Kingdom Journal is curated daily for personal reflection and ministry broadcast.
               </p>
-              <p style="font-size: 10px; color: #a39c93; letter-spacing: 1.5px; text-transform: uppercase; margin: 0;">
+              <p style="font-size: 10px; color: #a39c93; letter-spacing: 1.5px; text-transform: uppercase; margin: 0;" class="dark-subtitle">
                 Delivered to aondoaseerezekiel@gmail.com
               </p>
             </td>
@@ -359,6 +439,13 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
 def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     load_env_file()
     
+    # 0. Ensure fliers are synthesized and verified
+    if cloud_image_generator:
+        try:
+            cloud_image_generator.generate_daily_fliers()
+        except Exception as eg:
+            print(f"[IMAGE GENERATOR NOTICE] Using pre-existing assets: {eg}", file=sys.stderr)
+
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
     smtp_user = os.environ.get("SMTP_USER", "").strip()
@@ -444,7 +531,7 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
             server.ehlo()
             server.login(smtp_user, smtp_pass)
             server.sendmail(smtp_user, [recipient], msg.as_string())
-        print(f"[SUCCESS] Luxury Editorial Briefing (with Instagram integration) successfully delivered to {recipient}")
+        print(f"[SUCCESS] Luxury Editorial Briefing (with Dark Mode & Instagram) successfully delivered to {recipient}")
 
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
