@@ -1,11 +1,10 @@
 """
-Luxury Editorial Gospel Briefing (High-Class Edition - Issue 46)
-Topic: Divine Help at Break of Day (Psalm 46:5 • Isaiah 40:31)
-Features:
-- Complete De-AI'd Editorial Prose
-- Advanced Cross-Client Dark Mode Architecture (Apple Mail, Outlook, Gmail)
-- Autonomous Cloud Image Synthesis Hook
-- 5-Platform Social Sharing (Instagram, WhatsApp, X, Threads, Facebook)
+Luxury Editorial Gospel Briefing (High-Class Edition 2.0)
+Unified Engine orchestrating:
+1. YouTube Video Analyzer & Punchy Line Extractor (Pillar 3)
+2. Humanized De-AI Content & Caption Engine (Pillar 2)
+3. Cloud Image Generator & Studio Compositor (Pillar 1)
+4. Luxury Responsive Email & Outlook Body Builder (Pillar 4)
 """
 
 import email.utils
@@ -13,6 +12,7 @@ import os
 import smtplib
 import sys
 import urllib.parse
+from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -23,12 +23,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 try:
     import content_db
     import catch_up_scheduler
-    import youtube_api_client
+    import youtube_quote_analyzer
+    import humanized_content_engine
     import cloud_image_generator
 except ImportError:
     content_db = None
     catch_up_scheduler = None
-    youtube_api_client = None
+    youtube_quote_analyzer = None
+    humanized_content_engine = None
     cloud_image_generator = None
 
 def load_env_file():
@@ -53,7 +55,7 @@ def generate_social_intent_links(captions: dict) -> dict:
         "facebook": f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(captions['facebook'])}"
     }
 
-def build_luxury_email_html(links: dict, captions: dict, videos: list = None) -> str:
+def build_luxury_email_html(links: dict, captions: dict, essay_data: dict, quote_data: dict, videos: list = None) -> str:
     # Build the live listening section if YouTube videos are present
     youtube_html = ""
     if videos:
@@ -84,8 +86,23 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
         </table>
         """
 
+    # Build essay paragraphs
+    essay_paragraphs_html = ""
+    for p in essay_data.get("essay_paragraphs", []):
+        essay_paragraphs_html += f"""
+        <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+          {p}
+        </p>"""
+
     # Format the Instagram caption for clean display
     ig_caption_display = captions.get('instagram', '').replace('\n', '<br>')
+
+    title = essay_data.get("title", "Divine Help at Break of Day")
+    subtitle = essay_data.get("subtitle", "On the sacred mystery of God's timing and divine help in quiet seasons.")
+    quote_text = quote_data.get("quote", "")
+    speaker = quote_data.get("speaker", "Victoria Orenze & Apostle Joshua Selman")
+    scripture = quote_data.get("scripture", "Psalm 46:5 • Isaiah 40:31")
+    date_str = essay_data.get("date_str", "Friday, November 6, 2026")
 
     return f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
@@ -245,13 +262,13 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                       THE KINGDOM JOURNAL • DAILY EDITORIAL
                     </div>
                     <h1 class="headline dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
-                      Divine Help at Break of Day
+                      {title}
                     </h1>
                     <p class="dark-subtitle" style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
-                      On the sacred mystery of God's timing, why dawn dismantles human exhaustion, and what happens when capacity runs dry.
+                      {subtitle}
                     </p>
                     <div class="dark-issue-badge" style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
-                      Vol. IV • Issue 46 • Friday, November 6, 2026
+                      Vol. IV • Issue 47 • {date_str}
                     </div>
                   </td>
                 </tr>
@@ -263,31 +280,17 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
           <tr>
             <td class="content-padding" style="padding: 38px 48px 24px 48px;">
               
-              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                In the forty-sixth Psalm, the scripture records an arresting promise: <em>“God is within her, she will not fall; God will help her at break of day.”</em>
-              </p>
-              
-              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                Consider the quiet precision of that timing. In ancient warfare, the final stretch of the night—the fourth watch between three and six in the morning—was when fatigue peaked and human defenses were at their absolute weakest. It was the hour when striving gave way to exhaustion.
-              </p>
-
-              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
-                Yet throughout biblical history, the break of day is never an afterthought. It is heaven’s appointed hour for divine reversals. The waters of the Red Sea parted as the morning watch arrived. The manna settled with the dawn dew. And before the sun fully crested over Jerusalem on the third day, the stone was already rolled away.
-              </p>
-
-              <p class="dark-body" style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 24px 0;">
-                Drawing from this morning's live worship ministrations led by Victoria Orenze and Apostle Joshua Selman, the spiritual truth is liberating: <strong>You do not have to panic over battles God has already scheduled for dawn.</strong> When human capacity reaches its limit, divine assistance takes over.
-              </p>
+              {essay_paragraphs_html}
 
               <!-- Curated Pull Quote Accent -->
               <table role="presentation" class="dark-quote-box" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0; border-left: 2px solid #b45309; background-color: #faf9f6;">
                 <tr>
                   <td style="padding: 16px 20px;">
                     <div class="dark-quote-text" style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
-                      “When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.”
+                      “{quote_text}”
                     </div>
                     <div class="dark-quote-meta" style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
-                      — PSALM 46:5 • VICTORIA ORENZE &amp; APOSTLE JOSHUA SELMAN
+                      — {scripture} • {speaker}
                     </div>
                   </td>
                 </tr>
@@ -310,12 +313,12 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                   THE ARTWORK • MASTER COMPOSITION (1:1)
                 </div>
                 <h3 class="dark-heading" style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
-                  Divine Help Begins at Dawn
+                  {title}
                 </h3>
 
                 <!-- Native Studio Artwork Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_dawn" alt="Divine Help at Dawn Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
+                  <img src="cid:flyer_dawn" alt="{title} Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
                 <!-- INSTAGRAM READY CAPTION BOX -->
@@ -383,10 +386,10 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
                     Good morning my friend.
                   </p>
                   <p style="margin: 0 0 10px 0;">
-                    A quiet word for your Friday: Never underestimate the silent seasons of your life. What God builds in secret cannot be dismantled in public.
+                    A quiet word for your morning: “{quote_text}” When human capacity reaches its end, let your worship establish God's atmosphere.
                   </p>
                   <p style="margin: 0; font-size: 13px; color: #4b6350; font-style: italic;">
-                    📖 “Those who wait upon the Lord shall renew their strength; they shall mount up with wings as eagles; they shall run, and not be weary.” — Isaiah 40:31
+                    📖 “The Spirit Himself makes intercession for us with groanings that cannot be uttered.” — Romans 8:26
                   </p>
                 </div>
 
@@ -436,16 +439,48 @@ def build_luxury_email_html(links: dict, captions: dict, videos: list = None) ->
 </body>
 </html>"""
 
-def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
+def send_luxury_editorial_email(recipient: str, subject: str = None, fliers_dir: Path = None):
     load_env_file()
+    fliers_dir = fliers_dir or Path(__file__).resolve().parent.parent / "reports" / "fliers"
     
-    # 0. Ensure fliers are synthesized and verified
+    # 1. PILLAR 3: Analyze live YouTube videos to extract the best punchy line
+    youtube_insight = {
+        "title": "When Words Are Not Enough",
+        "hook_top": "When words are not enough",
+        "banner_text": "Let Your Worship Speak",
+        "quote": "When words are not enough, let your worship speak.",
+        "speaker": "Mercy Chinwo & Apostle Joshua Selman",
+        "scripture": "Romans 8:26 • Psalm 46:10",
+        "videos": []
+    }
+    if youtube_quote_analyzer:
+        try:
+            analyzed = youtube_quote_analyzer.analyze_trending_gospel_videos()
+            if analyzed and analyzed.get("quote"):
+                youtube_insight = analyzed
+                print(f"[PIPELINE STEP 1] YouTube Analysis complete. Extracted line: '{youtube_insight['quote']}'")
+        except Exception as ey:
+            print(f"[PIPELINE NOTICE] YouTube analysis fallback: {ey}", file=sys.stderr)
+
+    # 2. PILLAR 2: Generate humanized editorial essay and multi-platform captions
+    engine = humanized_content_engine.HumanizedContentEngine(
+        quote=youtube_insight.get("quote", "When words are not enough, let your worship speak."),
+        speaker=youtube_insight.get("speaker", "Mercy Chinwo & Apostle Joshua Selman"),
+        scripture=youtube_insight.get("scripture", "Romans 8:26 • Psalm 46:10")
+    )
+    essay_data = engine.generate_editorial_micro_essay()
+    captions = engine.generate_multi_platform_captions()
+    print(f"[PIPELINE STEP 2] Content engine generated editorial essay for '{essay_data['title']}'")
+
+    # 3. PILLAR 1: Ensure fliers are synthesized and verified
     if cloud_image_generator:
         try:
-            cloud_image_generator.generate_daily_fliers()
+            cloud_image_generator.generate_daily_fliers(topic_data=youtube_insight)
+            print("[PIPELINE STEP 3] Flier generator verified high-res studio assets.")
         except Exception as eg:
-            print(f"[IMAGE GENERATOR NOTICE] Using pre-existing assets: {eg}", file=sys.stderr)
+            print(f"[PIPELINE NOTICE] Flier generator using pre-existing assets: {eg}", file=sys.stderr)
 
+    # 4. PILLAR 4: Assemble luxury email
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
     smtp_user = os.environ.get("SMTP_USER", "").strip()
@@ -455,48 +490,29 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         print("[ERROR] SMTP_USER or SMTP_PASSWORD not set in environment or .env", file=sys.stderr)
         return False
 
-    # 1. Fetch live YouTube videos for context and archival
-    live_vids = []
-    if youtube_api_client:
-        try:
-            live_vids = youtube_api_client.fetch_trending_gospel_videos()
-            print(f"[YOUTUBE RADAR] Successfully fetched {len(live_vids)} trending ministrations.")
-        except Exception as ey:
-            print(f"[YOUTUBE NOTICE] Falling back: {ey}", file=sys.stderr)
+    final_subject = subject or f"🕊️ The Kingdom Journal • {essay_data['title']} (Issue 47)"
 
     msg = MIMEMultipart("related")
-    msg["Subject"] = subject
+    msg["Subject"] = final_subject
     msg["From"] = f"The Kingdom Journal <{smtp_user}>"
     msg["To"] = recipient
     msg["Date"] = email.utils.formatdate(localtime=True)
     msg["Message-ID"] = email.utils.make_msgid(domain="gmail.com")
 
-    # Full Multi-Platform Social Captions (Including Instagram)
-    captions = {
-        "instagram": (
-            "When human capacity reaches its end, divine help begins at dawn.\n\n"
-            "Psalm 46:5 gives us this quiet, unshakable verdict: “God is within her, she will not fall; God will help her at break of day.”\n\n"
-            "In ancient warfare, the fourth watch of the night—between 3:00 AM and 6:00 AM—was when human exhaustion peaked and defenses were at their weakest.\n\n"
-            "Yet throughout Scripture, dawn is heaven's appointed schedule for divine reversals:\n"
-            "• The Red Sea parted at the morning watch.\n"
-            "• Manna settled with the dawn dew.\n"
-            "• The tomb was empty before the sunrise.\n\n"
-            "Stop carrying the exhaustion of yesterday's battles. You don't have to panic over outcomes God has already scheduled for your deliverance.\n\n"
-            "#DivineHelp #Psalm46 #BreakOfDay #MorningPrayer #ApostleJoshuaSelman #VictoriaOrenze #FaithOverFear #KingdomMindset #ChristianCreatives #NigerianGospel #PraiseAndWorship #SecretPlace #DailyWord"
-        ),
-        "twitter": "When human capacity reaches its end, divine help begins at dawn.\n\nPsalm 46:5 promises that God will help her at the break of day. The darkest hour is never the conclusion; it is heaven's appointed schedule for your turnaround.\n\nRest in His timing today. 🕊️",
-        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nNever underestimate the silent seasons of your life. What God builds in secret cannot be dismantled in public.\n\nPsalm 46:5 says, “God is within her, she will not fall; God will help her at break of day.” Whatever felt exhausting this week, know that divine help is already scheduled.\n\n📖 “Those who wait upon the Lord shall renew their strength.” — Isaiah 40:31\n\nHave a peaceful, favored day! Forward this to someone who needs encouragement today. ✨",
-        "threads": "A thought for your Friday morning:\n\nIn ancient times, the fourth watch of the night—just before dawn—was when exhaustion was deepest and defenses were weakest.\n\nYet throughout scripture, dawn is precisely when God moves: the Red Sea parted at dawn, manna fell at dawn, and the tomb was empty at dawn.\n\nYou don't have to carry anxiety over battles God has already scheduled for your deliverance. What are you trusting Him for today?",
-        "facebook": "“When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.” (Psalm 46:5)\n\nStop carrying the exhaustion of yesterday's striving. When your strength runs dry, divine assistance takes over. Step out today with quiet confidence in His covenant."
-    }
-
     links = generate_social_intent_links(captions)
-    html_content = build_luxury_email_html(links, captions, videos=live_vids)
+    html_content = build_luxury_email_html(
+        links=links,
+        captions=captions,
+        essay_data=essay_data,
+        quote_data=youtube_insight,
+        videos=youtube_insight.get("videos", [])
+    )
+    
     plain_text = (
-        "The Kingdom Journal • Morning Edition (Issue 46)\n\n"
-        "Divine Help at Break of Day\n"
-        "“When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.” — Psalm 46:5\n\n"
-        "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions (Instagram, X, Threads, Facebook, WhatsApp)."
+        f"The Kingdom Journal • Morning Edition (Issue 47)\n\n"
+        f"{essay_data['title']}\n"
+        f"“{youtube_insight['quote']}” — {youtube_insight['scripture']}\n\n"
+        f"Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions (Instagram, WhatsApp, X, Threads, Facebook)."
     )
 
     alt_part = MIMEMultipart("alternative")
@@ -531,23 +547,23 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
             server.ehlo()
             server.login(smtp_user, smtp_pass)
             server.sendmail(smtp_user, [recipient], msg.as_string())
-        print(f"[SUCCESS] Luxury Editorial Briefing (with Dark Mode & Instagram) successfully delivered to {recipient}")
+        print(f"[SUCCESS] High-accuracy luxury briefing successfully delivered to {recipient}")
 
         if content_db:
-            content_db.record_dispatch(subject, recipient, "SUCCESS")
+            content_db.record_dispatch(final_subject, recipient, "SUCCESS")
             content_db.record_quote(
-                quote_text="When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.",
-                speaker="Victoria Orenze & Apostle Joshua Selman",
-                scripture="Psalm 46:5 • Isaiah 40:31"
+                quote_text=youtube_insight["quote"],
+                speaker=youtube_insight["speaker"],
+                scripture=youtube_insight["scripture"]
             )
-            for lv in live_vids:
+            for lv in youtube_insight.get("videos", []):
                 content_db.record_video(
                     video_id=lv.get("video_id", "live_asset"),
                     title=lv.get("title", ""),
                     channel=lv.get("channel", ""),
-                    published_at=lv.get("published_at", "")
+                    published_at=datetime.now().isoformat()
                 )
-            print("[DATABASE] Today's fresh topic and video assets archived in SQLite memory.")
+            print("[DATABASE] Today's fresh YouTube insight and video assets archived in SQLite memory.")
 
         if catch_up_scheduler:
             catch_up_scheduler.save_state("SUCCESS")
@@ -558,9 +574,4 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         return False
 
 if __name__ == "__main__":
-    fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
-    send_luxury_editorial_email(
-        recipient="aondoaseerezekiel@gmail.com",
-        subject="🕊️ The Kingdom Journal • Divine Help at Break of Day (Issue 46 - Complete Edition)",
-        fliers_dir=fliers_dir
-    )
+    send_luxury_editorial_email(recipient="aondoaseerezekiel@gmail.com")

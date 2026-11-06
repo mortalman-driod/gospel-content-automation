@@ -1,9 +1,11 @@
 """
-Cloud Image Generator & Autonomous Studio Compositor
-Runs inside GitHub Actions daily at 6:45 AM before email dispatch.
-Generates 1:1 Square and 9:16 Vertical viral fliers using either:
+Cloud Image Generator & Autonomous Studio Compositor (Accuracy Model 2.0)
+Generates 1:1 Square and 9:16 Vertical viral fliers using:
 1. Google Imagen 3 / Gemini 2.0 API (when GEMINI_API_KEY is configured in GitHub Secrets)
-2. Studio-Grade Autonomous Compositor (using bundled Google Fonts & high-res backgrounds)
+2. Studio-Grade Autonomous Compositor with:
+   - Dynamic auto-scaling font engine (prevents text clipping and overflow)
+   - Strict safe-zone margins (8% for 1:1, 12% for 9:16)
+   - Bundled Google Fonts (Playfair Display & Montserrat)
 """
 
 import json
@@ -12,7 +14,7 @@ import sys
 import textwrap
 import urllib.request
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = BASE_DIR / "assets"
@@ -38,7 +40,6 @@ def get_font(font_name: str, size: int):
             return ImageFont.truetype(str(fpath), size)
         except Exception:
             pass
-    # Fallback search in Windows or Linux system paths
     for p in [Path("C:/Windows/Fonts"), Path("/usr/share/fonts")]:
         alt = p / font_name
         if alt.is_file():
@@ -48,8 +49,28 @@ def get_font(font_name: str, size: int):
                 pass
     return ImageFont.load_default()
 
+def fit_text_to_box(draw: ImageDraw.ImageDraw, text: str, font_name: str, max_width: int, max_height: int, initial_size: int, min_size: int = 16):
+    """Dynamically steps down font size until text wraps and fits inside bounding box."""
+    size = initial_size
+    while size >= min_size:
+        font = get_font(font_name, size)
+        wrap_chars = max(12, int(max_width / (size * 0.52)))
+        lines = textwrap.wrap(text, width=wrap_chars)
+        total_h = len(lines) * (size + 10)
+        max_line_w = 0
+        for l in lines:
+            bbox = draw.textbbox((0, 0), l, font=font)
+            max_line_w = max(max_line_w, bbox[2] - bbox[0])
+        
+        if max_line_w <= max_width and total_h <= max_height:
+            return font, lines, size
+        size -= 2
+
+    font = get_font(font_name, min_size)
+    lines = textwrap.wrap(text, width=max(12, int(max_width / (min_size * 0.52))))
+    return font, lines, min_size
+
 def generate_via_imagen_api(prompt: str, aspect_ratio: str, output_path: Path, api_key: str) -> bool:
-    """Calls Google Imagen 3 API to generate an authentic image."""
     try:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key={api_key}"
         payload = {
@@ -85,13 +106,13 @@ def render_studio_composite(
     target_dim: tuple = (1080, 1080),
     accent_color: tuple = (217, 119, 6) # Amber/Gold
 ):
-    """Studio-grade compositor using bundled Google Fonts and crisp anti-aliased rendering."""
+    """High-accuracy compositor with auto-scaling text and safe-zone clipping protection."""
     FLIERS_DIR.mkdir(parents=True, exist_ok=True)
     tw, th = target_dim
+    is_square = (tw == th)
 
     if base_art_path and base_art_path.is_file():
         img = Image.open(base_art_path).convert("RGBA")
-        # Smart crop & center
         sw, sh = img.size
         aspect_src = sw / sh
         aspect_tgt = tw / th
@@ -105,7 +126,7 @@ def render_studio_composite(
             cropped = img.crop((0, oy, sw, oy + nh))
         canvas = cropped.resize((tw, th), Image.Resampling.LANCZOS)
     else:
-        # Generate rich deep sanctuary gradient if no base image provided
+        # Deep rich sanctuary gradient if base image is not provided
         canvas = Image.new("RGBA", (tw, th), (15, 23, 42, 255))
         draw_c = ImageDraw.Draw(canvas)
         for y in range(th):
@@ -114,132 +135,160 @@ def render_studio_composite(
             b = int(38 + (55 - 38) * (y / th))
             draw_c.line([(0, y), (tw, y)], fill=(r, g, b, 255))
 
-    # Add dark vignette for high contrast readability
+    # Multi-pass atmospheric gradient vignette
     vignette = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
     v_draw = ImageDraw.Draw(vignette)
     
-    # Top and bottom dark gradient
-    for y in range(int(th * 0.45)):
-        ratio = y / (th * 0.45)
-        alpha = int(180 * (1 - ratio))
+    # Top gradient
+    top_vignette_limit = int(th * 0.42)
+    for y in range(top_vignette_limit):
+        ratio = y / top_vignette_limit
+        alpha = int(190 * (1 - ratio))
         v_draw.line([(0, y), (tw, y)], fill=(8, 10, 15, alpha))
         
-    for y in range(int(th * 0.65), th):
-        ratio = (y - int(th * 0.65)) / (th * 0.35)
-        alpha = int(220 * (ratio ** 1.2))
+    # Bottom gradient
+    bottom_vignette_start = int(th * 0.60)
+    for y in range(bottom_vignette_start, th):
+        ratio = (y - bottom_vignette_start) / (th - bottom_vignette_start)
+        alpha = int(230 * (ratio ** 1.1))
         v_draw.line([(0, y), (tw, y)], fill=(8, 10, 15, alpha))
 
     final_canvas = Image.alpha_composite(canvas, vignette)
     draw = ImageDraw.Draw(final_canvas)
 
+    # Safe Zone Calculations
+    safe_margin_x = int(tw * 0.08) # 8% horizontal margin
+    safe_margin_y = int(th * 0.08) if is_square else int(th * 0.12)
+    usable_width = tw - (safe_margin_x * 2)
+
     # Outer Thin Gold Border
-    border_margin = 28
     draw.rectangle(
-        [(border_margin, border_margin), (tw - border_margin, th - border_margin)],
+        [(safe_margin_x // 2, safe_margin_y // 2), (tw - safe_margin_x // 2, th - safe_margin_y // 2)],
         outline=(217, 119, 6, 140),
         width=2
     )
 
-    # Load Google Fonts
-    font_serif = get_font("PlayfairDisplay-Bold.ttf", 36 if tw == 1080 and th == 1080 else 42)
-    font_banner = get_font("Montserrat-Bold.ttf", 44 if tw == 1080 and th == 1080 else 52)
-    font_quote = get_font("PlayfairDisplay-Bold.ttf", 28 if tw == 1080 and th == 1080 else 32)
-    font_meta = get_font("Montserrat-Bold.ttf", 18 if tw == 1080 and th == 1080 else 22)
-
-    # 1. Top Hook
-    start_y = int(th * 0.08)
-    hook_lines = textwrap.wrap(hook_top.upper(), width=28)
-    curr_y = start_y
+    # 1. Top Hook with Auto-Scaling
+    hook_font, hook_lines, hook_size = fit_text_to_box(
+        draw=draw,
+        text=hook_top.upper(),
+        font_name="PlayfairDisplay-Bold.ttf",
+        max_width=usable_width,
+        max_height=int(th * 0.12),
+        initial_size=36 if is_square else 42,
+        min_size=20
+    )
+    
+    curr_y = safe_margin_y
     for hline in hook_lines:
-        # Subtle drop shadow
-        draw.text((tw // 2 + 1, curr_y + 1), hline, font=font_serif, fill=(0, 0, 0, 220), anchor="mt")
-        draw.text((tw // 2, curr_y), hline, font=font_serif, fill=(250, 250, 249, 255), anchor="mt")
-        curr_y += 48
+        draw.text((tw // 2 + 1, curr_y + 1), hline, font=hook_font, fill=(0, 0, 0, 220), anchor="mt")
+        draw.text((tw // 2, curr_y), hline, font=hook_font, fill=(250, 250, 249, 255), anchor="mt")
+        curr_y += hook_size + 10
 
-    # 2. Textured Banner
+    # 2. Dynamic Banner with Auto-Fit
     curr_y += 12
-    bbox = draw.textbbox((0, 0), banner_text.upper(), font=font_banner)
-    bw = bbox[2] - bbox[0] + 48
-    bh = bbox[3] - bbox[1] + 24
+    banner_font, banner_lines, b_size = fit_text_to_box(
+        draw=draw,
+        text=banner_text.upper(),
+        font_name="Montserrat-Bold.ttf",
+        max_width=usable_width - 40,
+        max_height=int(th * 0.10),
+        initial_size=42 if is_square else 48,
+        min_size=24
+    )
+
+    # Measure combined banner box
+    banner_full_text = " ".join(banner_lines)
+    bbox = draw.textbbox((0, 0), banner_full_text, font=banner_font)
+    bw = min(usable_width, (bbox[2] - bbox[0]) + 48)
+    bh = (len(banner_lines) * (b_size + 8)) + 18
     bx1 = (tw - bw) // 2
     by1 = curr_y
     bx2 = bx1 + bw
     by2 = by1 + bh
 
-    # Draw rounded banner
-    draw.rounded_rectangle([(bx1, by1), (bx2, by2)], radius=8, fill=(217, 119, 6, 240), outline=(245, 158, 11, 255), width=2)
-    draw.text((tw // 2, by1 + 10), banner_text.upper(), font=font_banner, fill=(15, 23, 42, 255), anchor="mt")
+    # Draw rounded ribbon banner
+    draw.rounded_rectangle([(bx1, by1), (bx2, by2)], radius=8, fill=(217, 119, 6, 245), outline=(245, 158, 11, 255), width=2)
+    b_text_y = by1 + 10
+    for bline in banner_lines:
+        draw.text((tw // 2, b_text_y), bline, font=banner_font, fill=(15, 23, 42, 255), anchor="mt")
+        b_text_y += b_size + 8
 
     # 3. Vector Gold Divider Line
-    curr_y = by2 + 24
-    draw.line([(tw // 2 - 120, curr_y), (tw // 2 + 120, curr_y)], fill=(217, 119, 6, 200), width=2)
+    curr_y = by2 + 20
+    draw.line([(tw // 2 - 100, curr_y), (tw // 2 + 100, curr_y)], fill=(217, 119, 6, 200), width=2)
     draw.ellipse([(tw // 2 - 4, curr_y - 4), (tw // 2 + 4, curr_y + 4)], fill=(245, 158, 11, 255))
 
-    # 4. Body Quote (Lower Section for optimal reading)
-    quote_y = int(th * 0.76) if th > 1080 else int(th * 0.72)
-    quote_lines = textwrap.wrap(f'"{body_quote}"', width=32 if tw == 1080 and th == 1080 else 28)
+    # 4. Body Quote (Lower Safe Section with Auto-Scaling)
+    quote_box_height = int(th * 0.18)
+    quote_font, quote_lines, q_size = fit_text_to_box(
+        draw=draw,
+        text=f'"{body_quote}"',
+        font_name="PlayfairDisplay-Bold.ttf",
+        max_width=usable_width - 20,
+        max_height=quote_box_height,
+        initial_size=28 if is_square else 32,
+        min_size=18
+    )
+
+    quote_y = th - safe_margin_y - quote_box_height - 30
     for qline in quote_lines:
-        draw.text((tw // 2 + 1, quote_y + 1), qline, font=font_quote, fill=(0, 0, 0, 240), anchor="mt")
-        draw.text((tw // 2, quote_y), qline, font=font_quote, fill=(245, 245, 244, 255), anchor="mt")
-        quote_y += 38
+        draw.text((tw // 2 + 1, quote_y + 1), qline, font=quote_font, fill=(0, 0, 0, 240), anchor="mt")
+        draw.text((tw // 2, quote_y), qline, font=quote_font, fill=(245, 245, 244, 255), anchor="mt")
+        quote_y += q_size + 10
 
     # 5. Speaker & Scripture Badge
-    quote_y += 14
-    draw.text((tw // 2, quote_y), speaker_scripture.upper(), font=font_meta, fill=(217, 119, 6, 240), anchor="mt")
+    font_meta = get_font("Montserrat-Bold.ttf", 16 if is_square else 18)
+    draw.text((tw // 2, quote_y + 8), speaker_scripture.upper(), font=font_meta, fill=(217, 119, 6, 240), anchor="mt")
 
-    # Convert to RGB and save
+    # Save final artifact
     final_canvas.convert("RGB").save(str(output_path), "JPEG", quality=95)
-    print(f"[STUDIO COMPOSITOR] Rendered high-res flier at {output_path.name}")
+    print(f"[STUDIO COMPOSITOR 2.0] High-accuracy flier generated: {output_path.name}")
     return True
 
-def generate_daily_fliers():
+def generate_daily_fliers(topic_data: dict = None):
     load_env()
     FLIERS_DIR.mkdir(parents=True, exist_ok=True)
     gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
 
+    data = topic_data or {
+        "hook_top": "When human capacity reaches its end",
+        "banner_text": "Divine Help Begins at Dawn",
+        "quote": "When human capacity reaches its end, divine help begins at dawn. You do not have to panic over battles God has already scheduled for your deliverance.",
+        "speaker": "Victoria Orenze & Apostle Joshua Selman",
+        "scripture": "Psalm 46:5 • Isaiah 40:31"
+    }
+
     square_out = FLIERS_DIR / "flyer_dawn_square.jpg"
     story_out = FLIERS_DIR / "flyer_secret_place_story.jpg"
 
-    # Prompts for today's topic
-    sq_prompt = (
-        "A high-impact viral Christian gospel quote flyer for today: Divine Help at Break of Day. "
-        "A handsome young Black male worshipper with eyes closed in serene prayer holding a gold-gilded Holy Bible, "
-        "golden sunrise dawn light streaming through an airy sanctuary window. Crisp typography reading: "
-        "'WHEN HUMAN CAPACITY REACHES ITS END, DIVINE HELP BEGINS AT DAWN. Psalm 46:5', 8k resolution, cinematic."
-    )
-    story_prompt = (
-        "A vertical 9:16 mobile wallpaper and status graphic poster. A graceful young Black female believer seated "
-        "in peaceful morning prayer over an open gold-edged Holy Bible beside an amber lantern glow. "
-        "Typography: 'NEVER UNDERESTIMATE THE SILENT SEASONS • WHAT GOD BUILDS IN SECRET cannot be dismantled in public • Isaiah 40:31', 8k."
-    )
-
-    # 1. Try Imagen API if key is present
+    # 1. Cloud Imagen API if configured
     if gemini_key:
         print("[CLOUD GENERATOR] GEMINI_API_KEY detected. Attempting cloud Imagen synthesis...")
+        sq_prompt = f"Viral Christian quote flier for {data['banner_text']}. African Christian worshipper, gold Bible, warm light, 8k."
+        st_prompt = f"Vertical 9:16 Christian poster for {data['quote'][:60]}. Believer in prayer, warm lantern, 8k."
         sq_ok = generate_via_imagen_api(sq_prompt, "1:1", square_out, gemini_key)
-        st_ok = generate_via_imagen_api(story_prompt, "9:16", story_out, gemini_key)
+        st_ok = generate_via_imagen_api(st_prompt, "9:16", story_out, gemini_key)
         if sq_ok and st_ok:
             return True
 
-    # 2. Studio Compositor fallback
-    print("[CLOUD GENERATOR] Utilizing Studio Compositor with Google Fonts...")
-    # Use existing high-res photographic bases if available
+    # 2. Autonomous Studio Compositor 2.0
+    print("[CLOUD GENERATOR] Executing Studio Compositor 2.0 with dynamic auto-scaling...")
     base_sq = square_out if square_out.is_file() else None
     base_st = story_out if story_out.is_file() else None
 
-    # If already exists and valid, we keep the existing photorealistic assets
-    if base_sq and base_st and base_sq.stat().st_size > 100000 and base_st.stat().st_size > 100000:
-        print(f"[CLOUD GENERATOR] High-res studio assets verified: {square_out.name} ({base_sq.stat().st_size} bytes), {story_out.name} ({base_st.stat().st_size} bytes)")
+    # Keep existing high-res photographic artwork if verified
+    if base_sq and base_st and base_sq.stat().st_size > 150000 and base_st.stat().st_size > 150000:
+        print(f"[CLOUD GENERATOR] High-res photographic artwork verified: {square_out.name}, {story_out.name}")
         return True
 
-    # Otherwise synthesize fresh
     render_studio_composite(
         base_art_path=base_sq,
         output_path=square_out,
-        hook_top="When human capacity reaches its end",
-        banner_text="Divine Help Begins at Dawn",
-        body_quote="You do not have to panic over battles God has already scheduled for your deliverance.",
-        speaker_scripture="Psalm 46:5 • Victoria Orenze & Apostle Joshua Selman",
+        hook_top=data.get("hook_top", "When human capacity reaches its end"),
+        banner_text=data.get("banner_text", "Divine Help Begins at Dawn"),
+        body_quote=data.get("quote", "When human capacity reaches its end, divine help begins at dawn."),
+        speaker_scripture=f"{data.get('scripture', 'Psalm 46:5')} • {data.get('speaker', 'Joshua Selman')}",
         target_dim=(1080, 1080)
     )
 
@@ -248,8 +297,8 @@ def generate_daily_fliers():
         output_path=story_out,
         hook_top="Never underestimate the silent seasons",
         banner_text="What God Builds in Secret",
-        body_quote="What God builds in secret cannot be dismantled in public.",
-        speaker_scripture="Isaiah 40:31 • Apostle Joshua Selman",
+        body_quote=data.get("quote", "What God builds in secret cannot be dismantled in public."),
+        speaker_scripture=f"{data.get('scripture', 'Isaiah 40:31')} • {data.get('speaker', 'Joshua Selman')}",
         target_dim=(1080, 1920)
     )
 
