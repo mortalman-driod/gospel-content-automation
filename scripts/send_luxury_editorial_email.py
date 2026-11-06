@@ -19,12 +19,10 @@ try:
     import content_db
     import catch_up_scheduler
     import youtube_api_client
-    from hybrid_flier_canvas import render_hybrid_flier
 except ImportError:
     content_db = None
     catch_up_scheduler = None
     youtube_api_client = None
-    render_hybrid_flier = None
 
 def load_env_file():
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -38,39 +36,6 @@ def load_env_file():
                 if k and k not in os.environ:
                     os.environ[k] = v
 
-def ensure_flyers(fliers_dir: Path):
-    """Ensures required high-resolution flyers exist, rendering via canvas if missing."""
-    fliers_dir.mkdir(parents=True, exist_ok=True)
-    base_art = fliers_dir / "gemini_gospel_flyer.jpg"
-    sq_path = fliers_dir / "flyer_praise_square.jpg"
-    vert_path = fliers_dir / "flyer_praise_whatsapp.jpg"
-
-    if render_hybrid_flier and base_art.is_file():
-        if not sq_path.is_file():
-            render_hybrid_flier(
-                background_art=base_art,
-                output_path=sq_path,
-                hook_top="Put on the Garment of",
-                highlight_word="PRAISE",
-                body_quote="Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness.",
-                speaker="Nathaniel Bassey & Apostle Joshua Selman",
-                scripture="Isaiah 61:3",
-                callout_badge="Joy is a spiritual weapon.",
-                target_dim=(1080, 1080)
-            )
-        if not vert_path.is_file():
-            render_hybrid_flier(
-                background_art=base_art,
-                output_path=vert_path,
-                hook_top="Exchange Heaviness for",
-                highlight_word="DIVINE JOY",
-                body_quote="When praise precedes the breakthrough, faith ceases to be a wish—it becomes an unstoppable kingdom verdict.",
-                speaker="Apostle Joshua Selman • Nathaniel Bassey",
-                scripture="Psalm 30:11-12",
-                callout_badge="Walk in victory today.",
-                target_dim=(1080, 1920)
-            )
-
 def generate_social_intent_links(captions: dict) -> dict:
     return {
         "twitter": f"https://twitter.com/intent/tweet?text={urllib.parse.quote(captions['twitter'])}",
@@ -80,118 +45,183 @@ def generate_social_intent_links(captions: dict) -> dict:
     }
 
 def build_luxury_email_html(links: dict) -> str:
-    return f"""<!DOCTYPE html>
-<html lang="en">
+    return f"""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="x-apple-disable-message-reformatting" />
   <title>The Kingdom Journal • Morning Edition</title>
+  <!--[if mso]>
+  <style type="text/css">
+    table {{border-collapse:collapse;border-spacing:0;margin:0;}}
+    div, td, a, span, p {{font-family: Georgia, 'Times New Roman', serif !important;}}
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    body {{
+      margin: 0;
+      padding: 0;
+      background-color: #f7f6f2;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
+      -webkit-font-smoothing: antialiased;
+    }}
+    img {{
+      border: 0;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }}
+    a {{
+      text-decoration: none;
+    }}
+    @media only screen and (max-width: 620px) {{
+      .wrapper {{
+        width: 100% !important;
+        padding: 10px !important;
+      }}
+      .content-padding {{
+        padding: 24px 20px !important;
+      }}
+      .headline {{
+        font-size: 26px !important;
+        line-height: 1.25 !important;
+      }}
+      .mobile-stack {{
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        margin-bottom: 12px !important;
+      }}
+    }}
+  </style>
 </head>
-<body style="margin: 0; padding: 40px 0; background-color: #fafaf9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; -webkit-font-smoothing: antialiased;">
+<body style="margin: 0; padding: 40px 0; background-color: #f7f6f2; color: #1a1a1a;">
 
-  <!-- Outer Canvas -->
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #fafaf9;">
+  <!-- Outer Canvas Table -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f7f6f2;">
     <tr>
-      <td align="center">
+      <td align="center" style="padding: 20px 10px;">
         
-        <!-- Classic Document Container -->
-        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 2px; overflow: hidden; box-shadow: 0 4px 25px rgba(0, 0, 0, 0.04); border: 1px solid #e7e5e4; margin: 0 auto; text-align: left;">
+        <!-- Main Document Card (Outlook & Modern Responsive) -->
+        <!--[if mso]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+        <table role="presentation" class="wrapper" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e5e2da; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05); text-align: left;">
           
           <!-- BESPOKE EDITORIAL MASTHEAD -->
           <tr>
-            <td style="padding: 44px 44px 28px 44px; text-align: center; border-bottom: 1px solid #1c1917;">
-              <div style="font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: #78716c; margin-bottom: 12px;">
-                THE KINGDOM JOURNAL • DAILY EDITORIAL
-              </div>
-              <h1 style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1c1917; margin: 0 0 10px 0; letter-spacing: -0.5px;">
-                The Garment of Praise
-              </h1>
-              <p style="font-family: Georgia, serif; font-size: 15px; font-style: italic; color: #78716c; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.5;">
-                On replacing the spirit of heaviness, praise as divine alignment, and why joy is an act of spiritual defiance.
-              </p>
-              <div style="border-top: 1px solid #f5f5f4; padding-top: 10px; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #a8a29e;">
-                Vol. IV • Issue 44 • Friday, November 6, 2026
-              </div>
+            <td class="content-padding" style="padding: 48px 48px 30px 48px; text-align: center; border-bottom: 1px solid #1a1a1a;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td align="center">
+                    <div style="font-size: 10px; font-weight: 700; letter-spacing: 3.5px; text-transform: uppercase; color: #8c827a; margin-bottom: 14px;">
+                      THE KINGDOM JOURNAL • DAILY EDITORIAL
+                    </div>
+                    <h1 class="headline" style="font-family: Georgia, 'Times New Roman', serif; font-size: 32px; font-weight: 400; line-height: 1.25; color: #1a1a1a; margin: 0 0 12px 0; letter-spacing: -0.5px;">
+                      Send Judah First
+                    </h1>
+                    <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; font-style: italic; color: #6e675f; margin: 0 auto 16px auto; max-width: 480px; line-height: 1.55;">
+                      On praise as strategic defiance, the mystery of breakthrough before manifestation, and why thanksgiving leads the battle.
+                    </p>
+                    <div style="border-top: 1px solid #f0ede6; padding-top: 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #a39c93;">
+                      Vol. IV • Issue 45 • Friday, November 6, 2026
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
 
           <!-- THE MORNING ESSAY (NO AI BULLETS) -->
           <tr>
-            <td style="padding: 36px 44px 20px 44px;">
-              <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 18px 0;">
-                In the sixty-first chapter of Isaiah, the prophet outlines a divine exchange that defies all human calculation: beauty for ashes, the oil of joy for mourning, and the garment of praise for the spirit of heaviness.
+            <td class="content-padding" style="padding: 38px 48px 24px 48px;">
+              
+              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+                In the twentieth chapter of Second Chronicles, King Jehoshaphat stood before an overwhelming military alliance. Three hostile nations had surrounded Jerusalem, and human reason demanded archers, barricades, and vanguard cavalry.
               </p>
-              <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 18px 0;">
-                Notice the deliberate distinction. Heaviness is identified as a spirit—an invisible weight that attempts to settle over your thoughts, paralyze your momentum, and whisper that your efforts are in vain. But praise is described as a garment. A garment is never passive. It is an intentional choice you make before you step out into the world.
-              </p>
-              <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 20px 0;">
-                You do not wait until you feel warm before putting on a coat. In the same way, the kingdom never calls us to wait for pleasant circumstances before we choose to worship.
-              </p>
-              <p style="font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #292524; margin: 0 0 24px 0;">
-                Reflecting on this morning's live worship gatherings—from the sustained fervor of Nathaniel Bassey's Hallelujah Challenge to Apostle Joshua Selman's teachings on spiritual alignment—one reality becomes clear: joy is not an accidental emotional reaction. Joy is a weapon of warfare. When you choose thanksgiving in the face of pressure, you disarm heaviness because light and despair cannot occupy the same altar.
+              
+              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+                Instead, the prophet Jahaziel delivered an instruction that defied all conventional military strategy: <em>Appoint worshippers to march at the very front of the army.</em>
               </p>
 
-              <!-- Curated Quote Accent -->
-              <div style="border-left: 2px solid #b45309; padding: 8px 0 8px 20px; margin: 28px 0;">
-                <div style="font-family: Georgia, serif; font-size: 18px; font-style: italic; color: #1c1917; line-height: 1.5;">
-                  “Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.”
-                </div>
-                <div style="font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #78716c; margin-top: 6px;">
-                  — Isaiah 61:3 • Nathaniel Bassey &amp; Apostle Joshua Selman
-                </div>
-              </div>
+              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 18px 0;">
+                Judah—whose name literally signifies <em>praise</em>—was dispatched ahead of the spears. Before a single sword was unclasped, the moment their voices lifted in thanksgiving, supernatural ambushes scattered the opposition.
+              </p>
+
+              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #2e2b27; margin: 0 0 24px 0;">
+                Reflecting on this morning's live worship ministrations led by Nathaniel Bassey and Apostle Joshua Selman, the spiritual principle is unmistakable: <strong>Praise is not a celebration of a victory already completed; it is the strategic declaration of who God remains while the outcome is still contested.</strong> The breakthrough does not begin when the trial ends—it begins the moment your song changes.
+              </p>
+
+              <!-- Curated Pull Quote Accent -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0; border-left: 2px solid #b45309; background-color: #faf9f6;">
+                <tr>
+                  <td style="padding: 16px 20px;">
+                    <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 17px; font-style: italic; color: #1a1a1a; line-height: 1.55;">
+                      “The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.”
+                    </div>
+                    <div style="font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8c827a; margin-top: 8px;">
+                      — 2 CHRONICLES 20:21-22 • NATHANIEL BASSEY &amp; APOSTLE JOSHUA SELMAN
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
             </td>
           </tr>
 
           <!-- ============================================== -->
-          <!-- PART I: THE SQUARE ARTWORK & REFLECTION       -->
+          <!-- PART I: THE SQUARE MASTER ARTWORK              -->
           <!-- ============================================== -->
           <tr>
-            <td style="padding: 10px 44px 36px 44px;">
-              <div style="border-top: 1px solid #f5f5f4; padding-top: 28px;">
+            <td class="content-padding" style="padding: 10px 48px 36px 48px;">
+              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;">
                 
-                <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #a8a29e; margin-bottom: 6px;">
-                  THE ARTWORK • MASTER COMPOSITION
+                <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #a39c93; margin-bottom: 6px;">
+                  THE ARTWORK • MASTER COMPOSITION (1:1)
                 </div>
-                <h3 style="font-family: Georgia, serif; font-size: 20px; font-weight: normal; color: #1c1917; margin: 0 0 16px 0;">
-                  Put on the Garment of Praise
+                <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
+                  Send Judah First: Praise as Strategic Defiance
                 </h3>
 
-                <!-- Clean Artwork Display -->
+                <!-- Native Studio Artwork Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_praise_square" alt="The Garment of Praise Artwork" style="max-width: 100%; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
+                  <img src="cid:flyer_judah" alt="Send Judah First Artwork" width="504" style="max-width: 100%; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
-                <!-- Editorial Post Draft -->
-                <div style="background-color: #fafaf9; border-left: 2px solid #1c1917; padding: 18px 20px; font-size: 14px; line-height: 1.75; color: #44403c; margin-bottom: 20px;">
-                  <p style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 15px; color: #1c1917;">
-                    Heaviness is a spirit, but praise is a garment.
+                <!-- Editorial Social Copy Block -->
+                <div style="background-color: #faf9f6; border-left: 2px solid #1a1a1a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #3d3935; margin-bottom: 22px;">
+                  <p style="margin: 0 0 12px 0; font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #1a1a1a;">
+                    The breakthrough doesn't start when the trial ends. It begins when your song changes.
                   </p>
                   <p style="margin: 0 0 12px 0;">
-                    You don't wait to feel happy before you put on your clothes—and you don't wait for life to become simple before choosing to worship.
+                    When Jehoshaphat faced three invading armies, he didn't put his swordsmen at the front—he sent worshippers. Judah means praise, and praise goes first.
                   </p>
                   <p style="margin: 0 0 12px 0; font-style: italic; color: #92400e;">
-                    When you offer God your gratitude in the middle of uncertainty, you break the cycle of anxious striving and anchor your spirit in His unbroken peace.
+                    Praise is not a celebration of what went right; it is an uncompromising declaration of who God remains. Whatever feels heavy this morning, lead with worship.
                   </p>
-                  <div style="font-size: 12px; color: #a8a29e; border-top: 1px solid #f5f5f4; padding-top: 8px;">
-                    #GarmentOfPraise #HallelujahChallenge #NathanielBassey #ApostleJoshuaSelman #FaithOverFear #MorningDevotion
+                  <div style="font-size: 11px; color: #8c827a; border-top: 1px solid #e5e2da; padding-top: 10px; letter-spacing: 0.5px;">
+                    #SendJudahFirst #TheKingdomJournal #NathanielBassey #ApostleJoshuaSelman #FaithOverFear #MorningDevotion
                   </div>
                 </div>
 
-                <!-- Classic Understated Action Buttons -->
-                <table width="100%" cellspacing="0" cellpadding="0">
+                <!-- Classic Action Buttons Table -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                   <tr>
-                    <td align="left">
-                      <a href="{links['twitter']}" style="display: inline-block; background-color: #1c1917; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 9px 18px; border-radius: 2px;">
+                    <td class="mobile-stack" align="left">
+                      <a href="{links['twitter']}" target="_blank" style="display: inline-block; background-color: #1a1a1a; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
                         Post to X
                       </a>
-                      &nbsp;
-                      <a href="{links['threads']}" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 9px 18px; border-radius: 2px;">
+                      &nbsp;&nbsp;
+                      <a href="{links['threads']}" target="_blank" style="display: inline-block; background-color: #44403c; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 20px; border-radius: 2px;">
                         Post on Threads
                       </a>
                     </td>
-                    <td align="right">
-                      <a href="{links['facebook']}" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 8px 16px; border-radius: 2px;">
+                    <td class="mobile-stack" align="right">
+                      <a href="{links['facebook']}" target="_blank" style="display: inline-block; border: 1px solid #d6d3d1; color: #292524; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 10px 18px; border-radius: 2px;">
                         Share to Facebook
                       </a>
                     </td>
@@ -203,40 +233,40 @@ def build_luxury_email_html(links: dict) -> str:
           </tr>
 
           <!-- ============================================== -->
-          <!-- PART II: THE MOBILE REFLECTION (WHATSAPP)     -->
+          <!-- PART II: THE MOBILE REFLECTION (WHATSAPP 9:16) -->
           <!-- ============================================== -->
           <tr>
-            <td style="padding: 10px 44px 36px 44px;">
-              <div style="border-top: 1px solid #f5f5f4; padding-top: 28px;">
+            <td class="content-padding" style="padding: 10px 48px 36px 48px;">
+              <div style="border-top: 1px solid #f0ede6; padding-top: 30px;">
                 
-                <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
-                  THE MOBILE REFLECTION • STATUS CARD
+                <div style="font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #15803d; margin-bottom: 6px;">
+                  THE MOBILE REFLECTION • STATUS POSTER (9:16)
                 </div>
-                <h3 style="font-family: Georgia, serif; font-size: 20px; font-weight: normal; color: #1c1917; margin: 0 0 16px 0;">
-                  Exchange Heaviness for Joy
+                <h3 style="font-family: Georgia, 'Times New Roman', serif; font-size: 21px; font-weight: normal; color: #1a1a1a; margin: 0 0 16px 0;">
+                  Give God Your Midnight
                 </h3>
 
                 <!-- Clean Vertical Flyer Display -->
                 <div style="text-align: center; margin: 16px 0 24px 0;">
-                  <img src="cid:flyer_praise_whatsapp" alt="Divine Joy Status Card" style="max-width: 280px; height: auto; border-radius: 2px; border: 1px solid #e7e5e4; display: block; margin: 0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.04);" />
+                  <img src="cid:flyer_midnight" alt="Give God Your Midnight Poster" width="300" style="max-width: 300px; width: 100%; height: auto; border: 1px solid #e5e2da; display: block; margin: 0 auto; box-shadow: 0 6px 24px rgba(0,0,0,0.06);" />
                 </div>
 
-                <!-- Intimate, Warm Message -->
-                <div style="background-color: #fafaf9; border-left: 2px solid #16a34a; padding: 18px 20px; font-size: 14px; line-height: 1.75; color: #44403c; margin-bottom: 20px;">
-                  <p style="margin: 0 0 10px 0; font-weight: 600; color: #1c1917;">
+                <!-- Warm Intimate Reflection -->
+                <div style="background-color: #f7fcf8; border-left: 2px solid #16a34a; padding: 20px 22px; font-size: 14px; line-height: 1.75; color: #2e3b2e; margin-bottom: 22px;">
+                  <p style="margin: 0 0 10px 0; font-weight: 600; color: #14532d; font-family: Georgia, 'Times New Roman', serif; font-size: 15px;">
                     Good morning my friend.
                   </p>
                   <p style="margin: 0 0 10px 0;">
-                    A quiet word for your Friday: In Isaiah 61:3, God promises <em>“the garment of praise for the spirit of heaviness.”</em> If you've carried weariness this week, lay it down today. When you dress your mind in gratitude, God clothes you in strength.
+                    A word for your Friday: Never let yesterday's weariness steal today's gratitude. Give God your midnight, and watch Him clear your morning.
                   </p>
-                  <p style="margin: 0; font-size: 13px; color: #78716c;">
-                    📖 <em>“You turned my wailing into dancing; you removed my sackcloth and clothed me with joy.”</em> — Psalm 30:11
+                  <p style="margin: 0; font-size: 13px; color: #4b6350; font-style: italic;">
+                    📖 “At midnight Paul and Silas were praying and singing hymns to God, and the other prisoners were listening to them. Suddenly there was such a violent earthquake that the foundations of the prison were shaken.” — Acts 16:25-26
                   </p>
                 </div>
 
                 <!-- Pre-filled WhatsApp Button -->
                 <div style="text-align: right;">
-                  <a href="{links['whatsapp']}" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 9px 20px; border-radius: 2px;">
+                  <a href="{links['whatsapp']}" target="_blank" style="display: inline-block; background-color: #15803d; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 11px 22px; border-radius: 2px;">
                     Send via WhatsApp
                   </a>
                 </div>
@@ -247,17 +277,22 @@ def build_luxury_email_html(links: dict) -> str:
 
           <!-- CLASSIC FOOTER -->
           <tr>
-            <td style="padding: 28px 44px; background-color: #fafaf9; border-top: 1px solid #e7e5e4; text-align: center;">
-              <p style="font-family: Georgia, serif; font-size: 13px; font-style: italic; color: #78716c; margin: 0 0 6px 0;">
-                The Kingdom Journal is curated daily for personal reflection and ministry distribution.
+            <td class="content-padding" style="padding: 32px 48px; background-color: #faf9f6; border-top: 1px solid #e5e2da; text-align: center;">
+              <p style="font-family: Georgia, 'Times New Roman', serif; font-size: 13px; font-style: italic; color: #8c827a; margin: 0 0 8px 0; line-height: 1.5;">
+                The Kingdom Journal is curated daily for personal reflection and ministry broadcast.
               </p>
-              <p style="font-size: 10px; color: #a8a29e; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
-                Dispatched to aondoaseerezekiel@gmail.com
+              <p style="font-size: 10px; color: #a39c93; letter-spacing: 1.5px; text-transform: uppercase; margin: 0;">
+                Delivered to aondoaseerezekiel@gmail.com
               </p>
             </td>
           </tr>
 
         </table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
 
       </td>
     </tr>
@@ -268,7 +303,6 @@ def build_luxury_email_html(links: dict) -> str:
 
 def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     load_env_file()
-    ensure_flyers(fliers_dir)
     
     smtp_host = os.environ.get("SMTP_HOST", "smtp.gmail.com")
     smtp_port = int(os.environ.get("SMTP_PORT", "587"))
@@ -284,20 +318,20 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     msg["From"] = f"The Kingdom Journal <{smtp_user}>"
     msg["To"] = recipient
 
-    # Fresh Humanized Captions for Issue 44 (The Garment of Praise)
+    # Fresh Humanized Captions for Issue 45 (Send Judah First)
     captions = {
-        "twitter": "Heaviness is a spirit, but praise is a garment.\n\nYou don't wait to feel cheerful before you put on your clothes—and you don't wait for life to become easy before you choose to worship.\n\nJoy is not an emotional accident; it is an act of spiritual defiance.\n\nPut on praise today. 🕊️",
-        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nIn Isaiah 61:3, God promises “the garment of praise for the spirit of heaviness.”\n\nNotice that praise is a garment—it is something you actively choose to put on. If you've felt drained or overwhelmed this week, don't let heaviness have the final word. Take 2 minutes right now to thank God for His faithfulness.\n\n📖 “You turned my wailing into dancing; you removed my sackcloth and clothed me with joy.” — Psalm 30:11\n\nHave a blessed and peaceful day! Forward this to someone who needs a lift today. ✨",
-        "threads": "A quick thought for Friday morning:\n\nMost people treat joy like an emotional consequence—something that only happens when all their problems are solved.\n\nScripture treats joy as a spiritual decision. Heaviness tries to dictate the room, but praise establishes God's atmosphere.\n\nYou don't wait for the trial to end to put on praise. You put on praise to remind yourself who God remains in every season. What are you grateful for today?",
-        "facebook": "“Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.” (Isaiah 61:3)\n\nHeaviness is a spirit, but praise is a garment. You don't wait to feel cheerful before you choose to worship. When you give God your gratitude in the middle of uncertainty, you break the cycle of anxiety and anchor your peace. Step out today with thanksgiving in your heart."
+        "twitter": "The breakthrough doesn't start when the trial ends.\n\nIt begins when your song changes.\n\nWhen Jehoshaphat faced three invading armies, he didn't put swordsmen at the front—he sent worshippers. Judah means praise, and praise goes first.\n\nSend Judah first today. 🕊️",
+        "whatsapp": "Good morning my friend. A quick word for your Friday:\n\nNever let yesterday's weariness steal today's gratitude. Give God your midnight, and watch Him clear your morning.\n\nIn 2 Chronicles 20, God told Jehoshaphat to put worshippers at the front lines. The moment they began to sing, God set ambushes for their victory.\n\n📖 “Praise the Lord, for His mercy endures forever.” — 2 Chronicles 20:21\n\nHave a victorious and blessed day! Forward this to someone who needs courage today. ✨",
+        "threads": "A thought for your Friday morning:\n\nMost people wait for the breakthrough before releasing their song.\n\nIn the kingdom, your song IS the breakthrough. In 2 Chronicles 20, King Jehoshaphat placed worshippers at the front lines ahead of the army. Praise wasn't the victory parade—it was the weapon.\n\nDon't wait for things to calm down before thanking God. Praise is a declaration of who He remains in every storm. What are you praising Him for today?",
+        "facebook": "“The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.” (2 Chronicles 20:21-22)\n\nWhen you face an uphill battle, do not wait until the dust settles to give God your thanksgiving. Worship is spiritual defiance. Lead with praise today and let God handle the battle."
     }
 
     links = generate_social_intent_links(captions)
     html_content = build_luxury_email_html(links)
     plain_text = (
-        "The Kingdom Journal • Morning Edition (Issue 44)\n\n"
-        "The Garment of Praise\n"
-        "“Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.” — Isaiah 61:3\n\n"
+        "The Kingdom Journal • Morning Edition (Issue 45)\n\n"
+        "Send Judah First\n"
+        "“The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.” — 2 Chronicles 20:21-22\n\n"
         "Please view this email in an HTML-compatible email client to review today's artwork and pre-filled social actions."
     )
 
@@ -306,10 +340,10 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
     alt_part.attach(MIMEText(html_content, "html", "utf-8"))
     msg.attach(alt_part)
 
-    # Attach the two brand new Issue 44 topic flyers
+    # Attach the two brand new authentic studio viral fliers
     attachments = [
-        ("flyer_praise_square", fliers_dir / "flyer_praise_square.jpg"),
-        ("flyer_praise_whatsapp", fliers_dir / "flyer_praise_whatsapp.jpg")
+        ("flyer_judah", fliers_dir / "flyer_judah_square.jpg"),
+        ("flyer_midnight", fliers_dir / "flyer_midnight_whatsapp.jpg")
     ]
 
     for cid, img_file in attachments:
@@ -338,9 +372,9 @@ def send_luxury_editorial_email(recipient: str, subject: str, fliers_dir: Path):
         if content_db:
             content_db.record_dispatch(subject, recipient, "SUCCESS")
             content_db.record_quote(
-                quote_text="Praise is not an emotional reaction to an easy season; it is the spiritual posture that disarms heaviness and summons the peace of God.",
+                quote_text="The breakthrough doesn't start when the trial ends; it begins when your song changes. Praise is not a celebration of what went right—it is a declaration of who God remains.",
                 speaker="Nathaniel Bassey & Apostle Joshua Selman",
-                scripture="Isaiah 61:3 • Psalm 30:11-12"
+                scripture="2 Chronicles 20:21-22 • Acts 16:25-26"
             )
             if youtube_api_client:
                 try:
@@ -369,6 +403,6 @@ if __name__ == "__main__":
     fliers_dir = Path(__file__).resolve().parent.parent / "reports" / "fliers"
     send_luxury_editorial_email(
         recipient="aondoaseerezekiel@gmail.com",
-        subject="🕊️ The Kingdom Journal • The Garment of Praise (Issue 44)",
+        subject="🕊️ The Kingdom Journal • Send Judah First (Issue 45)",
         fliers_dir=fliers_dir
     )
