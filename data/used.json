@@ -1,12 +1,15 @@
 {
   "used_video_ids": [
-    "C3pLDUNe87M"
+    "C3pLDUNe87M",
+    "WFaI6fIT-74"
   ],
   "used_quotes": [
-    "The night is far spent. Wake up out of sleep."
+    "The night is far spent. Wake up out of sleep.",
+    "The first few days we insisted that you shouldn't ask God. It shouldn't be transactional."
   ],
   "used_themes": [
-    "The 4 a.m. nudge is a call."
+    "The 4 a.m. nudge is a call.",
+    "HALLELUJAH CHALLENGE || DRESS AND ACT YOUR MIRACLE || OCT 2026 || DAY 22"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -15,6 +18,12 @@
       "date": "2026-11-06",
       "video_id": "C3pLDUNe87M",
       "theme": "The 4 a.m. nudge is a call."
+    },
+    {
+      "issue": 51,
+      "date": "2026-11-07",
+      "video_id": "WFaI6fIT-74",
+      "theme": "HALLELUJAH CHALLENGE || DRESS AND ACT YOUR MIRACLE || OCT 2026 || DAY 22"
     }
   ]
 }
