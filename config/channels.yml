@@ -1,5 +1,6 @@
 # The Kingdom Journal: Curated YouTube Channels
-# Uploads playlists are derived automatically: UC... -> UU...
+# Uploads playlists are derived automatically: UC... -> UU... (1 quota unit per channel)
+
 channels:
   - id: "UCq2ueL6wl7slTuInRbFpe7w"
     name: "Koinonia Global"
@@ -35,3 +36,53 @@ channels:
     name: "Mercy Chinwo Official"
     speaker: "Mercy Chinwo"
     category: "praise_adoration"
+
+  - id: "UC0LnPAjiEk6pZqd7bIzq4sw"
+    name: "Emmanuel Iren Live"
+    speaker: "Pastor Emmanuel Iren"
+    category: "apostolic_teaching"
+
+  - id: "UCXTMFK4-CSliIT1tXuRXpkg"
+    name: "Pastor Chingtok Ishaku"
+    speaker: "Pastor Chingtok Ishaku"
+    category: "intimate_worship"
+
+  - id: "UCyuK5A1Zmf8CxHD5ar3hlxg"
+    name: "TY Bello"
+    speaker: "TY Bello"
+    category: "spontaneous_worship"
+
+  - id: "UCLg4NCAJxhIvD4IRV__LOFg"
+    name: "Pastor Jerry Eze"
+    speaker: "Pastor Jerry Eze"
+    category: "morning_prayers"
+
+  - id: "UCtc3wKlT9HxkqE-xDHvxVXA"
+    name: "P.Daniel Olawande"
+    speaker: "P.Daniel Olawande"
+    category: "fire_revival"
+
+  - id: "UCiKEtpeOs6eAJjMvBRnry7g"
+    name: "Celebration Church TV"
+    speaker: "Pastor Emmanuel Iren"
+    category: "church_community"
+
+  - id: "UCSf-NCzjwcnXErUBW_qeFvA"
+    name: "Elevation Worship"
+    speaker: "Elevation Worship"
+    category: "global_worship"
+
+  - id: "UCv88VZJUuRoot7GfSO_sm-g"
+    name: "Moses Bliss"
+    speaker: "Moses Bliss"
+    category: "inspirational_praise"
+
+  - id: "UCOoO8EtJL8LMjIYogzJRfvg"
+    name: "Gaise Baba"
+    speaker: "Gaise Baba"
+    category: "urban_gospel"
+
+  - id: "UCZ4trZcPxr3DwcMbFb54rDQ"
+    name: "TRIBL"
+    speaker: "Maverick City / TRIBL"
+    category: "communal_worship"

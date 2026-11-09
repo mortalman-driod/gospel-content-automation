@@ -21,6 +21,7 @@ from .contrast import (
 from .text_layout import fit_headline, load_font, wrap_text_to_width
 from .backgrounds import (
     generate_procedural_background,
+    load_atmospheric_background,
     generate_text_free_image_prompt
 )
 
@@ -96,7 +97,8 @@ class FlyerEngine:
             bg = background_image.copy().convert("RGB")
             bg = self._crop_to_aspect(bg, width, height)
         else:
-            bg = generate_procedural_background(width, height, palette)
+            subject_hint = content.get("subject_hint") or content.get("headline", "")
+            bg = load_atmospheric_background(width, height, palette, preferred_subject=subject_hint)
 
         # Safe Margins
         if size_key == "9:16":
@@ -213,10 +215,10 @@ class FlyerEngine:
         lines, font, _, text_h = fit_headline(headline, max_w, max_h, font_family="serif", initial_size=74, min_size=48)
 
         text_y = s_top + int((s_bottom - s_top - text_h) * 0.44)
-        text_bbox = (s_left, text_y, s_right, text_y + text_h + 60)
+        text_bbox = (s_left, text_y, s_right, text_y + text_h + 110)
 
         # Apply adaptive scrim
-        bg = apply_adaptive_scrim(bg, text_bbox, colors["primary"], colors["tint"], min_contrast=4.5)
+        bg = apply_adaptive_scrim(bg, text_bbox, colors["primary"], colors["tint"], min_contrast=5.5)
         draw = ImageDraw.Draw(bg)
 
         # Accent vertical bar on the left
@@ -235,7 +237,9 @@ class FlyerEngine:
         credit_lines = wrap_text_to_width(f"— {credit}", font_credit, max_w - 48, draw)
         c_y = cur_y + 20
         for cl in credit_lines[:2]:
-            draw.text((s_left + 24, c_y), cl, font=font_credit, fill=colors["accent"])
+            # Subtle drop shadow for crisp readability over textured photos
+            draw.text((s_left + 25, c_y + 1), cl, font=font_credit, fill=(0, 0, 0))
+            draw.text((s_left + 24, c_y), cl, font=font_credit, fill=colors["primary"])
             bbox_c = draw.textbbox((0, 0), cl, font=font_credit)
             c_y += (bbox_c[3] - bbox_c[1]) + 8
 

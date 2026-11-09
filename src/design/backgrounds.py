@@ -104,3 +104,54 @@ def generate_procedural_background(
 
     img = Image.alpha_composite(img, grain_layer)
     return img.convert("RGB")
+
+def load_atmospheric_background(
+    width: int,
+    height: int,
+    palette: Dict,
+    preferred_subject: str = None
+) -> Image.Image:
+    """
+    Loads a high-resolution text-free photographic background from assets/backgrounds/,
+    center-crops to target dimensions, and falls back smoothly to procedural gradient
+    if no files exist or loading fails.
+    """
+    from pathlib import Path
+    base_dir = Path(__file__).resolve().parent.parent.parent
+    bg_dir = base_dir / "assets" / "backgrounds"
+    bg_dir.mkdir(parents=True, exist_ok=True)
+
+    valid_exts = {".jpg", ".jpeg", ".png", ".webp"}
+    available_files = [p for p in bg_dir.iterdir() if p.suffix.lower() in valid_exts]
+
+    if available_files:
+        selected_file = None
+        if preferred_subject:
+            keywords = preferred_subject.lower().split()
+            for f in available_files:
+                if any(k in f.stem.lower() for k in keywords):
+                    selected_file = f
+                    break
+        if not selected_file:
+            selected_file = random.choice(available_files)
+
+        try:
+            with Image.open(selected_file) as raw_img:
+                img = raw_img.convert("RGB")
+                img_w, img_h = img.size
+                target_ratio = width / height
+                img_ratio = img_w / img_h
+                if img_ratio > target_ratio:
+                    new_w = int(img_h * target_ratio)
+                    left = (img_w - new_w) // 2
+                    img = img.crop((left, 0, left + new_w, img_h))
+                else:
+                    new_h = int(img_w / target_ratio)
+                    top = (img_h - new_h) // 2
+                    img = img.crop((0, top, img_w, top + new_h))
+
+                return img.resize((width, height), Image.Resampling.LANCZOS)
+        except Exception:
+            pass
+
+    return generate_procedural_background(width, height, palette)
