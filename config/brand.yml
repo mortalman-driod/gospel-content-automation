@@ -43,10 +43,39 @@ palettes:
     text_secondary: "#E2C4C9"
     scrim_tint: [43, 11, 17]
 
+  - id: "royal_blue_gold"
+    name: "Royal Blue & Sunlight Gold"
+    bg_primary: "#0D47A1"
+    bg_secondary: "#1565C0"
+    accent: "#FACC15"
+    text_primary: "#FFFFFF"
+    text_secondary: "#CBD5E1"
+    scrim_tint: [13, 71, 161]
+
+  - id: "emerald_gold"
+    name: "Deep Emerald & Bright Gold"
+    bg_primary: "#064E3B"
+    bg_secondary: "#047857"
+    accent: "#F59E0B"
+    text_primary: "#F0FDF4"
+    text_secondary: "#A7F3D0"
+    scrim_tint: [6, 78, 59]
+
+  - id: "crimson_amber"
+    name: "Deep Crimson & Amber"
+    bg_primary: "#831843"
+    bg_secondary: "#9D174D"
+    accent: "#FBBF24"
+    text_primary: "#FFF1F2"
+    text_secondary: "#FBCFE8"
+    scrim_tint: [131, 24, 67]
+
 templates:
+  - "modern_quote_card"
+  - "hero_vista"
+  - "lifestyle_study"
   - "bold_statement"
   - "contrast_split"
-  - "scripture_card"
-  - "question_hook"
+  - "minimalist_brush"
   - "quiet_light"
   - "numbered_list"

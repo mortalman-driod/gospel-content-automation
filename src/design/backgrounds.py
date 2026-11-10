@@ -9,33 +9,52 @@ import random
 from typing import Dict, Tuple
 from PIL import Image, ImageDraw
 
-SYMBOLIC_SUBJECTS = [
-    "solitary bronze oil lamp burning on a rustic wooden table in a dimly lit sacred chamber",
-    "golden dawn light streaming through a weathered tall cathedral arched doorway onto stone floor",
-    "serene morning mist rising over distant mountain ridges at sunrise with deep atmospheric depth",
-    "empty wooden chair situated near a morning window bathed in gentle sacred dawn rays",
-    "ancient quiet courtyard path illuminated by warm amber lantern glow at night",
-    "silhouetted figure standing in quiet contemplative prayer on a high rocky overlook at twilight",
-    "shaft of golden celestial light breaking through dramatic parted storm clouds over still waters"
-]
+THEMED_SUBJECT_MAP = {
+    "light": [
+        "wide-angle 35mm film photograph of a majestic mountain summit overlooking golden dawn clouds with clean open sky in upper 60%",
+        "golden dawn rays breaking through morning mist over distant mountain ridges with vast calm negative space in the sky",
+        "shaft of radiant celestial morning sunlight breaking through dramatic parted clouds over still waters"
+    ],
+    "prayer": [
+        "authentic warm minimalist wooden study desk with an open Bible journal, fountain pen, and a brass desk lamp casting gentle bokeh",
+        "peaceful sunlit morning reading table with an open notebook, ceramic mug, and soft golden window light casting gentle shadows",
+        "solitary silhouette standing on a rugged rocky overlook at dusk looking out at an expansive calm pastel sunset sky"
+    ],
+    "worship": [
+        "breathtaking panoramic ocean horizon with calm waves catching gentle morning sunlight and expansive calm sky",
+        "vast tranquil mountain valley at dawn bathed in warm amber and peach morning glow with vast open sky",
+        "gentle morning light illuminating a quiet wooden sanctuary bench beside tall sunlit windows"
+    ],
+    "default": [
+        "wide-angle 35mm film photograph of rugged rocky mountain ridges during golden hour with clear gradient sky occupying the upper 60%",
+        "aesthetic warm lifestyle study workspace with open journal, laptop, potted plant, and glowing ambient lamp bokeh",
+        "peaceful misty sunrise horizon over still reflective waters with vast calm open negative space in the sky"
+    ]
+}
 
-def generate_text_free_image_prompt(theme: str, palette_name: str = "navy_gold") -> str:
-    """
-    Constructs a model-ready image prompt following Master Prompt constraints:
-    - Text-free guarantee
-    - Clear negative space
-    - No faces, no close-up hands, no letters, no watermarks
-    """
-    subject = random.choice(SYMBOLIC_SUBJECTS)
+def generate_text_free_image_prompt(theme: str, palette_name: str = "royal_blue_gold") -> str:
+    t_lower = (theme or "").lower()
+    if any(k in t_lower for k in ["light", "understanding", "glory", "mind", "sight", "illumination"]):
+        category = "light"
+    elif any(k in t_lower for k in ["prayer", "secret", "devotion", "groan", "altar", "closet", "night"]):
+        category = "prayer"
+    elif any(k in t_lower for k in ["worship", "praise", "hallelujah", "sound", "adoration", "song"]):
+        category = "worship"
+    else:
+        category = "default"
+
+    import random
+    subject = random.choice(THEMED_SUBJECT_MAP[category])
+    palette_desc = palette_name.replace("_", " ")
+
     prompt = (
-        f"{subject}, reverent contemplative mood, atmospheric volumetric light beams, "
-        f"{palette_name.replace('_', ' ')} color grading, vertical composition with vast calm negative space "
-        f"in the center for typography, cinematic 35mm film photography, shallow depth of field, 8k resolution, "
+        f"{subject}, reverent contemplative mood, natural atmospheric light, "
+        f"{palette_desc} color grading, vertical composition with vast calm negative space "
+        f"for typography, cinematic 35mm film photography, shallow depth of field, 8k resolution, "
         f"no text, no letters, no words, no signs, no typography, no logos, no watermark, "
         f"no recognizable real faces, no close-up hands, no depiction of Jesus face."
     )
     return prompt
-
 def generate_procedural_background(
     width: int,
     height: int,

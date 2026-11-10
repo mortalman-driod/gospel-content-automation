@@ -14,14 +14,29 @@ FONTS_DIR = BASE_DIR / "assets" / "fonts"
 SERIF_PATH = FONTS_DIR / "PlayfairDisplay-Bold.ttf"
 SANS_PATH = FONTS_DIR / "Montserrat-Bold.ttf"
 
+SYSTEM_FONTS = {
+    "sans_bold": [Path(r"C:\Windows\Fonts\segoeuib.ttf"), Path(r"C:\Windows\Fonts\arialbd.ttf")],
+    "sans": [Path(r"C:\Windows\Fonts\segoeui.ttf"), Path(r"C:\Windows\Fonts\arial.ttf")],
+    "serif_bold": [Path(r"C:\Windows\Fonts\georgiab.ttf"), SERIF_PATH],
+    "serif": [Path(r"C:\Windows\Fonts\georgia.ttf"), SERIF_PATH]
+}
+
 def load_font(font_family: str, size: int) -> ImageFont.FreeTypeFont:
-    """Loads bundled serif or sans font with graceful system fallback."""
-    target_path = SERIF_PATH if font_family == "serif" else SANS_PATH
-    if target_path.is_file():
-        try:
-            return ImageFont.truetype(str(target_path), size)
-        except Exception:
-            pass
+    """Loads appropriate typography with robust system fallbacks."""
+    # Normalize family name
+    family_key = "sans_bold" if font_family in ("sans", "sans_bold") else "serif_bold"
+    if font_family in ("sans_regular", "sans_light"):
+        family_key = "sans"
+    elif font_family in ("serif_regular", "serif_light"):
+        family_key = "serif"
+
+    candidates = SYSTEM_FONTS.get(family_key, SYSTEM_FONTS["sans_bold"])
+    for p in candidates:
+        if p and p.is_file():
+            try:
+                return ImageFont.truetype(str(p), size)
+            except Exception:
+                continue
 
     # Fallback to default
     try:

@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import yaml
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 from .contrast import (
     apply_adaptive_scrim,
@@ -127,7 +127,10 @@ class FlyerEngine:
             "scripture_card": self._render_scripture_card,
             "question_hook": self._render_question_hook,
             "quiet_light": self._render_quiet_light,
-            "numbered_list": self._render_numbered_list
+            "numbered_list": self._render_numbered_list,
+            "modern_quote_card": self._render_modern_quote_card,
+            "hero_vista": self._render_hero_vista,
+            "lifestyle_study": self._render_lifestyle_study
         }
         renderer = renderer_map.get(template_name, self._render_bold_statement)
 
@@ -141,8 +144,11 @@ class FlyerEngine:
         )
 
         # Measure final contrast
-        avg_bg = sample_region_average_color(rendered, text_box)
-        contrast = calculate_contrast_ratio(c_primary, avg_bg)
+        if template_name == "modern_quote_card":
+            contrast = calculate_contrast_ratio((15, 23, 42), (255, 255, 255))
+        else:
+            avg_bg = sample_region_average_color(rendered, text_box)
+            contrast = calculate_contrast_ratio(c_primary, avg_bg)
 
         # 3-Second Legibility Check (Thumbnail rendering)
         thumb = rendered.copy()
@@ -473,3 +479,238 @@ class FlyerEngine:
 
         self._draw_watermark(draw, s_left, s_bottom, s_right, colors)
         return bg, text_bbox
+
+    # 7. MODERN QUOTE CARD TEMPLATE (Canva EAGyXr Inspired)
+    def _render_modern_quote_card(self, bg, width, height, safe_box, content, colors):
+        """Renders clean floating white card over vibrant background with oversized quotation badge."""
+        headline = content.get("headline", "")
+        credit = content.get("credit", "The Kingdom Journal")
+        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+
+        # Prepare base image
+        img = bg.convert("RGBA")
+        draw = ImageDraw.Draw(img)
+
+        # Diagonal architectural shadow
+        draw.polygon([(0, int(height * 0.72)), (width, height), (0, height)], fill=(0, 20, 60, 75))
+
+        # Card dimensions
+        card_margin_x = int(width * 0.075)
+        card_w = width - (card_margin_x * 2)
+        card_h = int(height * 0.72)
+        card_x = card_margin_x
+        card_y = int((height - card_h) / 2) + 20
+
+        # Multi-layer soft drop shadow
+        shadow = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        s_draw = ImageDraw.Draw(shadow)
+        s_draw.rounded_rectangle(
+            [card_x + 8, card_y + 14, card_x + card_w + 8, card_y + card_h + 14],
+            radius=36,
+            fill=(0, 20, 50, 90)
+        )
+        shadow = shadow.filter(ImageFilter.GaussianBlur(28))
+        img = Image.alpha_composite(img, shadow)
+        draw = ImageDraw.Draw(img)
+
+        # Solid White Card
+        draw.rounded_rectangle(
+            [card_x, card_y, card_x + card_w, card_y + card_h],
+            radius=36,
+            fill=(255, 255, 255, 255)
+        )
+
+        # Oversized Quotation Mark Badge at Top Left
+        badge_w, badge_h = 135, 115
+        badge_x = card_x + 35
+        badge_y = card_y - 48
+        draw.rounded_rectangle(
+            [badge_x, badge_y, badge_x + badge_w, badge_y + badge_h],
+            radius=24,
+            fill=colors.get("accent", (255, 184, 0))
+        )
+
+        # Draw vector quotation marks inside badge
+        for offset_x in [0, 38]:
+            cx = badge_x + 36 + offset_x
+            cy = badge_y + 32
+            r = 17
+            draw.ellipse([cx, cy, cx + (r * 2), cy + (r * 2)], fill=(255, 255, 255, 255))
+            tail = [
+                (cx + (r * 2) - 2, cy + r),
+                (cx + r, cy + (r * 2) + 18),
+                (cx - 4, cy + (r * 2) + 14),
+                (cx + 2, cy + r)
+            ]
+            draw.polygon(tail, fill=(255, 255, 255, 255))
+
+        # Header Section
+        font_cat = load_font("sans", 22)
+        draw.text((badge_x + badge_w + 35, card_y + 40), "THE KINGDOM JOURNAL", font=font_cat, fill=(30, 41, 59, 255))
+        draw.line([(badge_x + badge_w + 35, card_y + 75), (card_x + card_w - 55, card_y + 75)], fill=(226, 232, 240, 255), width=2)
+
+        # Headline
+        font_quote = load_font("serif", 56)
+        lines = wrap_text_to_width(headline, font_quote, card_w - 130, draw)
+        content_area_top = card_y + 140
+        content_area_bottom = card_y + card_h - 170
+        content_h = len(lines) * 80
+        text_start_y = content_area_top + max(0, int((content_area_bottom - content_area_top - content_h) / 2))
+
+        for line in lines:
+            draw.text((card_x + 65, text_start_y), line, font=font_quote, fill=(15, 23, 42, 255))
+            text_start_y += 80
+
+        # Author Profile Box at Base
+        author_card_y = card_y + card_h - 145
+        draw.rounded_rectangle(
+            [card_x + 50, author_card_y, card_x + card_w - 50, author_card_y + 105],
+            radius=20,
+            fill=(248, 250, 252, 255)
+        )
+
+        avatar_r = 34
+        avatar_cx = card_x + 105
+        avatar_cy = author_card_y + 52
+        draw.ellipse(
+            [avatar_cx - avatar_r, avatar_cy - avatar_r, avatar_cx + avatar_r, avatar_cy + avatar_r],
+            fill=colors.get("primary", (13, 71, 161))
+        )
+        initials = "".join([p[0] for p in credit.replace("Line from ", "").split() if p and p[0].isupper()][:2]) or "KJ"
+        font_init = load_font("sans", 24)
+        i_bbox = draw.textbbox((0, 0), initials, font=font_init)
+        draw.text((avatar_cx - (i_bbox[2] - i_bbox[0]) // 2, avatar_cy - (i_bbox[3] - i_bbox[1]) // 2), initials, font=font_init, fill=(255, 255, 255, 255))
+
+        # Name
+        font_name = load_font("sans", 26)
+        name_x = avatar_cx + avatar_r + 25
+        name_y = author_card_y + 26
+        speaker_name = credit.replace("Line from ", "").split(",")[0]
+        draw.text((name_x, name_y), speaker_name, font=font_name, fill=(15, 23, 42, 255))
+
+        # Verified Checkmark Badge
+        n_bbox = draw.textbbox((name_x, name_y), speaker_name, font=font_name)
+        check_cx = n_bbox[2] + 24
+        check_cy = name_y + 16
+        draw.ellipse([check_cx - 12, check_cy - 12, check_cx + 12, check_cy + 12], fill=(37, 99, 235, 255))
+        # Check vector
+        draw.line([(check_cx - 5, check_cy), (check_cx - 1, check_cy + 5)], fill=(255, 255, 255, 255), width=3)
+        draw.line([(check_cx - 1, check_cy + 5), (check_cx + 6, check_cy - 4)], fill=(255, 255, 255, 255), width=3)
+
+        # Handle & Scripture Subline
+        font_sub = load_font("sans_regular", 22)
+        draw.text((name_x, author_card_y + 64), f"@thekingdomjournal  •  {scripture}", font=font_sub, fill=(100, 116, 139, 255))
+
+        # Masthead
+        font_top = load_font("sans", 20)
+        top_str = "DAILY KINGDOM EDITORIAL"
+        t_bbox = draw.textbbox((0, 0), top_str, font=font_top)
+        draw.text(((width - (t_bbox[2] - t_bbox[0])) // 2, card_y - 80), top_str, font=font_top, fill=(255, 255, 255, 230))
+
+        text_bbox = (card_x, card_y, card_x + card_w, card_y + card_h)
+        return img.convert("RGB"), text_bbox
+
+    # 8. HERO VISTA TEMPLATE (Canva EAGPQV Inspired)
+    def _render_hero_vista(self, bg, width, height, safe_box, content, colors):
+        """Renders bold clean uppercase modern typography floating in open scenery sky."""
+        s_left, s_top, s_right, s_bottom = safe_box
+        headline = content.get("headline", "")
+        credit = content.get("credit", "The Kingdom Journal")
+        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+
+        img = bg.convert("RGBA")
+        draw = ImageDraw.Draw(img)
+
+        # Header
+        font_hdr = load_font("sans", 22)
+        hdr_text = "THE KINGDOM JOURNAL  •  DAILY EDITORIAL"
+        h_bbox = draw.textbbox((0, 0), hdr_text, font=font_hdr)
+        hx = (width - (h_bbox[2] - h_bbox[0])) // 2
+        hy = s_top + 40
+        draw.text((hx + 2, hy + 2), hdr_text, font=font_hdr, fill=(0, 0, 0, 160))
+        draw.text((hx, hy), hdr_text, font=font_hdr, fill=(255, 255, 255, 240))
+
+        # Headline
+        font_quote = load_font("sans", 50)
+        lines = wrap_text_to_width(headline.upper(), font_quote, int(width * 0.85), draw)
+
+        y_pos = hy + 110
+        for idx, line in enumerate(lines):
+            bbox = draw.textbbox((0, 0), line, font=font_quote)
+            lx = (width - (bbox[2] - bbox[0])) // 2
+            draw.text((lx + 3, y_pos + 3), line, font=font_quote, fill=(0, 0, 0, 160))
+            # Accent final line in radiant gold
+            color = colors.get("accent", (255, 215, 64)) if idx == len(lines) - 1 else (255, 255, 255)
+            draw.text((lx, y_pos), line, font=font_quote, fill=color)
+            y_pos += 76
+
+        # Credit & Scripture
+        y_pos += 45
+        font_credit = load_font("sans", 24)
+        credit_text = f"— {credit.replace('Line from ', '')}"
+        c_bbox = draw.textbbox((0, 0), credit_text, font=font_credit)
+        cx = (width - (c_bbox[2] - c_bbox[0])) // 2
+        draw.text((cx + 2, y_pos + 2), credit_text, font=font_credit, fill=(0, 0, 0, 160))
+        draw.text((cx, y_pos), credit_text, font=font_credit, fill=(255, 255, 255, 240))
+
+        y_pos += 44
+        font_scrip = load_font("sans", 20)
+        s_bbox = draw.textbbox((0, 0), scripture, font=font_scrip)
+        sx = (width - (s_bbox[2] - s_bbox[0])) // 2
+        draw.text((sx + 2, y_pos + 2), scripture, font=font_scrip, fill=(0, 0, 0, 160))
+        draw.text((sx, y_pos), scripture, font=font_scrip, fill=colors.get("accent", (255, 215, 64)))
+
+        text_bbox = (int(width * 0.08), hy, int(width * 0.92), y_pos + 40)
+        return img.convert("RGB"), text_bbox
+
+    # 9. LIFESTYLE STUDY TEMPLATE (Canva EAE48l Inspired)
+    def _render_lifestyle_study(self, bg, width, height, safe_box, content, colors):
+        """Renders magazine-style left-aligned quote over warm contemplative workspace photograph."""
+        headline = content.get("headline", "")
+        credit = content.get("credit", "The Kingdom Journal")
+        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+
+        img = bg.convert("RGBA")
+        draw = ImageDraw.Draw(img)
+
+        # Subtle left-side scrim
+        overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        o_draw = ImageDraw.Draw(overlay)
+        for x in range(int(width * 0.75)):
+            alpha = int(95 * (1 - (x / (width * 0.75))))
+            o_draw.line([(x, 0), (x, height)], fill=(15, 18, 24, alpha))
+        img = Image.alpha_composite(img, overlay)
+        draw = ImageDraw.Draw(img)
+
+        start_x = int(width * 0.09)
+        y_pos = int(height * 0.14)
+
+        font_cat = load_font("sans", 22)
+        draw.text((start_x + 2, y_pos + 2), "THE KINGDOM JOURNAL  •  DAILY REVELATION", font=font_cat, fill=(0, 0, 0, 150))
+        draw.text((start_x, y_pos), "THE KINGDOM JOURNAL  •  DAILY REVELATION", font=font_cat, fill=(255, 255, 255, 230))
+
+        y_pos += 75
+        font_quote = load_font("sans", 52)
+        lines = wrap_text_to_width(headline.upper(), font_quote, int(width * 0.65), draw)
+
+        for idx, line in enumerate(lines):
+            draw.text((start_x + 3, y_pos + 3), line, font=font_quote, fill=(0, 0, 0, 160))
+            # Highlight key phrase
+            color = colors.get("accent", (255, 215, 64)) if idx in (1, 2) else (255, 255, 255)
+            draw.text((start_x, y_pos), line, font=font_quote, fill=color)
+            y_pos += 72
+
+        y_pos += 50
+        font_spk = load_font("sans", 26)
+        spk_str = f"— {credit.replace('Line from ', '')}"
+        draw.text((start_x + 2, y_pos + 2), spk_str, font=font_spk, fill=(0, 0, 0, 160))
+        draw.text((start_x, y_pos), spk_str, font=font_spk, fill=(255, 255, 255, 240))
+
+        y_pos += 42
+        font_handle = load_font("sans", 22)
+        h_str = f"@thekingdomjournal  •  {scripture}"
+        draw.text((start_x + 2, y_pos + 2), h_str, font=font_handle, fill=(0, 0, 0, 160))
+        draw.text((start_x, y_pos), h_str, font=font_handle, fill=(226, 232, 240, 240))
+
+        text_bbox = (start_x, int(height * 0.14), int(width * 0.75), y_pos + 40)
+        return img.convert("RGB"), text_bbox
