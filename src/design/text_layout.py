@@ -64,13 +64,14 @@ def resolve_bundled_font(font_family: str, weight: str = "bold") -> Path:
 
     return None
 
-def load_font(font_family: str, size: int) -> ImageFont.FreeTypeFont:
+def load_font(font_family: str, size: int, weight: str = "bold") -> ImageFont.FreeTypeFont:
     """
     Loads appropriate typography prioritizing bundled repository fonts first.
     Guarantees cross-platform visual consistency between Windows and Linux CI runners.
+    Supports weights: "bold", "extrabold", "black", "regular".
     """
     # 1. First priority: Bundled assets
-    font_path = resolve_bundled_font(font_family, weight="bold")
+    font_path = resolve_bundled_font(font_family, weight=weight)
     if font_path and font_path.is_file():
         try:
             return ImageFont.truetype(str(font_path), size)

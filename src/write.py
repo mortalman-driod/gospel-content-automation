@@ -309,7 +309,7 @@ VOICE & EDITORIAL RULES:
     - viral_headline_pre: The hook phrase leading into the punchline
     - viral_accent_word: The dominant contrast punchline word or phrase
     - viral_accent_color: 'yellow' or 'red'
-    - viral_subline: 2-3 lines of rhythmic, comforting pastoral wisdom
+    - viral_subline: 1-2 lines of rhythmic, comforting pastoral wisdom (MAX 110 characters. NEVER append speaker attribution or em-dashes here)
     - viral_background_archetype: Choose from 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk'.
 
 RETURN STRICT JSON matching this schema:
@@ -352,6 +352,10 @@ RETURN STRICT JSON matching this schema:
                     v_acc = raw_json.get("viral_accent_word")
                     v_col = raw_json.get("viral_accent_color", "yellow")
                     v_sub = raw_json.get("viral_subline", "When human striving ends, divine illumination takes over.")
+                    if " — " in v_sub:
+                        v_sub = v_sub.split(" — ")[0].strip()
+                    elif "—" in v_sub:
+                        v_sub = v_sub.split("—")[0].strip()
                     v_arch = raw_json.get("viral_background_archetype", "cross_sunrise")
 
                     if not v_pre or not v_acc:

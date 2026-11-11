@@ -369,19 +369,22 @@ class EmailDeliverer:
             f"X POST:\n{package.get('x_post')}\n"
         )
 
+        # Save Local Issue Assets Archive
+        out_dir = BASE_DIR / "out" / f"issue-{issue_number}"
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "email.html").write_text(html_content, encoding="utf-8")
+        (out_dir / "briefing.txt").write_text(plain_text, encoding="utf-8")
+        (out_dir / "package.json").write_text(json.dumps(package, indent=2, ensure_ascii=False), encoding="utf-8")
+
+        # Save flyer images
+        for key, img in flyer_images.items():
+            img.save(out_dir / f"{key}.png", format="PNG")
+
+        logger.info(f"Successfully archived Issue {issue_number} assets to {out_dir}")
+
         # Handle Dry-Run Output
         if dry_run:
-            out_dir = BASE_DIR / "out" / f"issue-{issue_number}"
-            out_dir.mkdir(parents=True, exist_ok=True)
-            (out_dir / "email.html").write_text(html_content, encoding="utf-8")
-            (out_dir / "briefing.txt").write_text(plain_text, encoding="utf-8")
-            (out_dir / "package.json").write_text(json.dumps(package, indent=2, ensure_ascii=False), encoding="utf-8")
-
-            # Save flyer images
-            for key, img in flyer_images.items():
-                img.save(out_dir / f"{key}.png", format="PNG")
-
-            logger.info(f"[DRY-RUN] Successfully saved Issue {issue_number} assets to {out_dir}")
+            logger.info(f"[DRY-RUN] Execution completed successfully. Live email dispatch skipped.")
             return True
 
         # Send Live Email
