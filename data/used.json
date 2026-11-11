@@ -2,18 +2,21 @@
   "used_video_ids": [
     "C3pLDUNe87M",
     "WFaI6fIT-74",
-    "8f5Lxm98aLw"
+    "8f5Lxm98aLw",
+    "pooWW6cTL5s"
   ],
   "used_quotes": [
     "The night is far spent. Wake up out of sleep.",
     "The first few days we insisted that you shouldn't ask God. It shouldn't be transactional.",
-    "There is a dimension of glory you cannot step into until your mind opens."
+    "There is a dimension of glory you cannot step into until your mind opens.",
+    "In our kingdom, we move forward by waiting."
   ],
   "used_themes": [
     "The 4 a.m. nudge is a call.",
     "HALLELUJAH CHALLENGE || DRESS AND ACT YOUR MIRACLE || OCT 2026 || DAY 22",
     "PRAYER SESSION - THE MIRACLE OF UNDERSTANDING (A DESPERATE CRY FOR LIGHT) WITH APOSTLE JOSHUA SELMAN",
-    "DAILY PROPHETIC PRAYERS (DAY 1) - THE GENERAL ASSEMBLY 2026 ||09||11||26||"
+    "DAILY PROPHETIC PRAYERS (DAY 1) - THE GENERAL ASSEMBLY 2026 ||09||11||26||",
+    "Reboot  And Prayer"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -46,6 +49,12 @@
       "date": "2026-11-10",
       "video_id": null,
       "theme": "DAILY PROPHETIC PRAYERS (DAY 1) - THE GENERAL ASSEMBLY 2026 ||09||11||26||"
+    },
+    {
+      "issue": 55,
+      "date": "2026-11-11",
+      "video_id": "pooWW6cTL5s",
+      "theme": "Reboot  And Prayer"
     }
   ]
 }
