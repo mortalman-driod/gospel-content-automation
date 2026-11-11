@@ -83,5 +83,21 @@ class TestRiskFlagScanner(unittest.TestCase):
         flags = scan_risk_flags(clean_line)
         self.assertEqual(len(flags), 0)
 
+class TestSpeakerResolver(unittest.TestCase):
+    def test_resolves_koinonia_to_selman(self):
+        from src.punchlines import resolve_speaker_name
+        speaker = resolve_speaker_name("DAILY PROPHETIC PRAYERS", "Koinonia Global")
+        self.assertEqual(speaker, "Apostle Joshua Selman")
+
+    def test_resolves_title_honorific(self):
+        from src.punchlines import resolve_speaker_name
+        speaker = resolve_speaker_name("Apostle Joshua Selman - The Power of Prayer", "Random Uploader TV")
+        self.assertEqual(speaker, "Apostle Joshua Selman")
+
+    def test_avoids_channel_branding(self):
+        from src.punchlines import resolve_speaker_name
+        speaker = resolve_speaker_name("Worship Morning Session", "Zion Media TV")
+        self.assertEqual(speaker, "The Kingdom Journal")
+
 if __name__ == "__main__":
     unittest.main()

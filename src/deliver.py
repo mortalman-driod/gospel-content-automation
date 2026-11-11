@@ -73,9 +73,11 @@ class EmailDeliverer:
         altar_invite = package.get("altar_invite", "")
         flyers = package.get("flyers", [])
 
-        # URL encoded intents
-        x_intent = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(x_post)}"
-        threads_intent = f"https://www.threads.net/intent/post?text={urllib.parse.quote(threads_post)}"
+        # URL encoded intents (with character length guards)
+        x_text = x_post[:280] if len(x_post) > 280 else x_post
+        threads_text = threads_post[:490] if len(threads_post) > 490 else threads_post
+        x_intent = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(x_text)}"
+        threads_intent = f"https://threads.com/intent/post?text={urllib.parse.quote(threads_text)}"
         wa_intent = f"https://api.whatsapp.com/send?text={urllib.parse.quote(whatsapp_status)}"
 
         # Radar rows HTML

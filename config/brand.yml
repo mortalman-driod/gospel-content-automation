@@ -71,6 +71,7 @@ palettes:
     scrim_tint: [131, 24, 67]
 
 templates:
+  - "viral_quote_poster"
   - "modern_quote_card"
   - "hero_vista"
   - "lifestyle_study"

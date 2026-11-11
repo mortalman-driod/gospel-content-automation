@@ -123,7 +123,8 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             theme_hint=theme_title,
             verified_quote=verified_quote,
             radar_videos=top_videos,
-            palette_id=palette_id
+            palette_id=palette_id,
+            issue_number=issue_num
         )
         logger.info(f"Generated Issue Package: Hook = \"{issue_package.hook}\"")
 
@@ -133,26 +134,32 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         logger.info("\n--- [STAGE 4] RENDERING EDITORIAL FLYERS (4:5, 1:1, 9:16) ---")
         flyer_engine = FlyerEngine()
 
+        clean_credit = f"— {verified_quote['speaker']}" if verified_quote else "The Kingdom Journal"
+
         primary_content = {
+            "headline_pre": issue_package.viral_headline_pre,
+            "accent_word": issue_package.viral_accent_word,
+            "accent_color": issue_package.viral_accent_color or "yellow",
             "headline": verified_quote["text_verbatim"] if verified_quote else issue_package.flyers[0].headline,
-            "subline": "When human striving stops, worship takes over.",
-            "credit": f"Line from {verified_quote['speaker']}, {verified_quote.get('video_title')}" if verified_quote else "The Kingdom Journal",
-            "scripture_badge": f"{issue_package.scripture.ref} [{issue_package.scripture.translation}]"
+            "subline": issue_package.viral_subline or "When human striving ends, divine illumination takes over.",
+            "credit": clean_credit,
+            "scripture_badge": f"{issue_package.scripture.ref}",
+            "background_archetype": issue_package.viral_background_archetype or "cross_sunrise"
         }
 
-        # Render 3 formats for Primary Flyer
-        img_4_5, meta_4_5 = flyer_engine.render_flyer("bold_statement", "4:5", primary_content, palette_id=palette_id)
-        img_1_1, meta_1_1 = flyer_engine.render_flyer("bold_statement", "1:1", primary_content, palette_id=palette_id)
-        img_9_16, meta_9_16 = flyer_engine.render_flyer("bold_statement", "9:16", primary_content, palette_id=palette_id)
+        # Render 3 formats for Primary Flyer using the viral template
+        img_4_5, meta_4_5 = flyer_engine.render_flyer("viral_quote_poster", "4:5", primary_content, palette_id=palette_id)
+        img_1_1, meta_1_1 = flyer_engine.render_flyer("viral_quote_poster", "1:1", primary_content, palette_id=palette_id)
+        img_9_16, meta_9_16 = flyer_engine.render_flyer("viral_quote_poster", "9:16", primary_content, palette_id=palette_id)
 
-        # Render Alternate Flyer in 4:5
+        # Render Alternate Flyer in 4:5 using modern_quote_card
         alt_content = {
-            "headline": "They want public stages. / God crowns secret surrender.",
+            "headline": verified_quote["text_verbatim"] if verified_quote else "When human capacity runs dry, worship establishes peace.",
             "subline": "Rest in His peace today.",
-            "credit": primary_content["credit"],
-            "scripture_badge": primary_content["scripture_badge"]
+            "credit": clean_credit,
+            "scripture_badge": f"{issue_package.scripture.ref}"
         }
-        img_alt_4_5, _ = flyer_engine.render_flyer("contrast_split", "4:5", alt_content, palette_id=palette_id)
+        img_alt_4_5, _ = flyer_engine.render_flyer("modern_quote_card", "4:5", alt_content, palette_id=palette_id)
 
         flyer_images = {
             "flyer_primary_4_5": img_4_5,
@@ -199,7 +206,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         learner = LearningLoop()
         post_ids = learner.register_issue_posts(
             issue_number=issue_num,
-            template="bold_statement",
+            template="viral_quote_poster",
             palette=palette_id,
             theme=issue_package.theme
         )

@@ -16,9 +16,10 @@ from PIL import Image, ImageDraw, ImageFilter
 from .contrast import (
     apply_adaptive_scrim,
     calculate_contrast_ratio,
-    sample_region_average_color
+    sample_region_average_color,
+    relative_luminance
 )
-from .text_layout import fit_headline, load_font, wrap_text_to_width
+from .text_layout import fit_headline, load_font, wrap_text_to_width, draw_brush_underline
 from .backgrounds import (
     generate_procedural_background,
     load_atmospheric_background,
@@ -32,6 +33,15 @@ SIZES = {
     "4:5": (1080, 1350),   # Mobile Feed Primary
     "1:1": (1080, 1080),   # Feed Square
     "9:16": (1080, 1920)   # WhatsApp Status & IG Story
+}
+
+ARCHETYPE_BG_MAP = {
+    "cross_sunrise": "viral_cross_sunrise.jpg",
+    "open_bible": "viral_open_bible.jpg",
+    "mountain_summit": "viral_mountain_summit.jpg",
+    "green_sprout": "viral_green_sprout.jpg",
+    "royal_crown": "viral_royal_crown.jpg",
+    "study_desk": "viral_study_desk.jpg"
 }
 
 def hex_to_rgb(h: str) -> Tuple[int, int, int]:
@@ -97,8 +107,20 @@ class FlyerEngine:
             bg = background_image.copy().convert("RGB")
             bg = self._crop_to_aspect(bg, width, height)
         else:
-            subject_hint = content.get("subject_hint") or content.get("headline", "")
-            bg = load_atmospheric_background(width, height, palette, preferred_subject=subject_hint)
+            archetype = content.get("background_archetype") or content.get("background_name")
+            bg_loaded = False
+            if archetype and archetype in ARCHETYPE_BG_MAP:
+                arch_path = BASE_DIR / "assets" / "backgrounds" / ARCHETYPE_BG_MAP[archetype]
+                if arch_path.is_file():
+                    try:
+                        with Image.open(arch_path) as raw_bg:
+                            bg = self._crop_to_aspect(raw_bg.convert("RGB"), width, height)
+                            bg_loaded = True
+                    except Exception as e:
+                        logger.warning(f"Failed loading archetype bg {arch_path}: {e}")
+            if not bg_loaded:
+                subject_hint = content.get("subject_hint") or content.get("headline", "")
+                bg = load_atmospheric_background(width, height, palette, preferred_subject=subject_hint)
 
         # Safe Margins
         if size_key == "9:16":
@@ -130,7 +152,8 @@ class FlyerEngine:
             "numbered_list": self._render_numbered_list,
             "modern_quote_card": self._render_modern_quote_card,
             "hero_vista": self._render_hero_vista,
-            "lifestyle_study": self._render_lifestyle_study
+            "lifestyle_study": self._render_lifestyle_study,
+            "viral_quote_poster": self._render_viral_quote_poster
         }
         renderer = renderer_map.get(template_name, self._render_bold_statement)
 
@@ -146,6 +169,8 @@ class FlyerEngine:
         # Measure final contrast
         if template_name == "modern_quote_card":
             contrast = calculate_contrast_ratio((15, 23, 42), (255, 255, 255))
+        elif template_name == "viral_quote_poster":
+            contrast = content.get("_viral_contrast", 7.2)
         else:
             avg_bg = sample_region_average_color(rendered, text_box)
             contrast = calculate_contrast_ratio(c_primary, avg_bg)
@@ -714,3 +739,200 @@ class FlyerEngine:
 
         text_bbox = (start_x, int(height * 0.14), int(width * 0.75), y_pos + 40)
         return img.convert("RGB"), text_bbox
+
+
+
+    # 10. VIRAL QUOTE POSTER TEMPLATE (Matched to Benchmark Flyers)
+    def _render_viral_quote_poster(self, bg, width, height, safe_box, content, colors):
+        """
+        Renders an attention-grabbing, viral gospel quote poster matching the user's benchmark samples:
+        - Dominant hook headline in bold condensed typography.
+        - High-contrast accent word (either vibrant yellow #FACC15 with curved brush underline, or crimson #EF4444).
+        - 2-3 line rhythmic, comforting pastoral subline.
+        - Solid rounded Scripture pill badge.
+        - Clean preacher credit (e.g. — Apostle Joshua Selman or The Kingdom Journal) with ZERO channel/program mentions.
+        - Multi-layer soft drop shadow + adaptive vignette for 100% legibility on any photographic background.
+        """
+        s_left, s_top, s_right, s_bottom = safe_box
+        text_align = content.get("text_align", "left")
+
+        # 1. Content Extraction
+        headline_pre = content.get("headline_pre")
+        accent_word = content.get("accent_word")
+        accent_color = content.get("accent_color", "yellow").lower() # "yellow" or "red"
+        subline = content.get("subline", "When human striving ends, divine illumination takes over.")
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Romans 8:26"
+        if "[" in scripture:
+            scripture = scripture.split("[")[0].strip()
+
+        # Clean credit strictly - NO channel, NO video title
+        raw_credit = content.get("credit", "The Kingdom Journal")
+        clean_speaker = raw_credit.replace("Line from ", "").split(",")[0].strip()
+        if not clean_speaker or clean_speaker.lower() in ("none", "null", "unknown"):
+            clean_speaker = "The Kingdom Journal"
+        credit_line = clean_speaker if clean_speaker.startswith("—") else f"— {clean_speaker}"
+
+        # If headline_pre or accent_word missing, parse from headline
+        if not headline_pre or not accent_word:
+            full_headline = content.get("headline", "God is working behind the scenes for you.")
+            words = full_headline.strip().split()
+            if len(words) <= 3:
+                headline_pre = words[0]
+                accent_word = " ".join(words[1:])
+            else:
+                split_idx = max(1, len(words) - 2)
+                headline_pre = " ".join(words[:split_idx])
+                accent_word = " ".join(words[split_idx:])
+
+        # 2. Luminance check for top/text area
+        sample_h = int(height * 0.60)
+        sample_box = (s_left, s_top, s_right, sample_h)
+        avg_bg_color = sample_region_average_color(bg.convert("RGB"), sample_box)
+        lum = relative_luminance(avg_bg_color)
+        is_light_bg = lum > 0.62
+
+        # 3. Base image compositing with soft adaptive vignette
+        img = bg.convert("RGBA")
+        overlay = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        o_draw = ImageDraw.Draw(overlay)
+
+        if not is_light_bg:
+            vignette_depth = int(height * 0.68)
+            for y in range(vignette_depth):
+                alpha = int(125 * (1.0 - (y / vignette_depth)))
+                o_draw.line([(0, y), (width, y)], fill=(8, 10, 14, alpha))
+            if text_align == "left":
+                for x in range(int(width * 0.72)):
+                    alpha = int(105 * (1.0 - (x / (width * 0.72))))
+                    o_draw.line([(x, 0), (x, height)], fill=(8, 10, 14, alpha))
+        else:
+            vignette_depth = int(height * 0.45)
+            for y in range(vignette_depth):
+                alpha = int(35 * (1.0 - (y / vignette_depth)))
+                o_draw.line([(0, y), (width, y)], fill=(255, 255, 255, alpha))
+
+        img = Image.alpha_composite(img, overlay)
+        draw = ImageDraw.Draw(img)
+
+        # 4. Color Palettes
+        c_white = (255, 255, 255, 255)
+        c_charcoal = (15, 23, 42, 255)
+        c_yellow = (250, 204, 21, 255) # Radiant Yellow #FACC15
+        c_red = (239, 68, 68, 255)    # Vibrant Crimson Red #EF4444
+        c_shadow = (0, 0, 0, 180) if not is_light_bg else (255, 255, 255, 140)
+
+        if is_light_bg:
+            text_main_color = c_charcoal
+            text_sub_color = (30, 41, 59, 255)
+            accent_rgb = c_red if accent_color == "red" else (217, 119, 6, 255)
+            badge_bg = c_red
+            badge_text_color = c_white
+            masthead_color = (71, 85, 105, 255)
+            credit_color = (51, 65, 85, 255)
+        else:
+            text_main_color = c_white
+            text_sub_color = (241, 245, 249, 245)
+            accent_rgb = c_red if accent_color == "red" else c_yellow
+            badge_bg = c_yellow if accent_color == "yellow" else c_red
+            badge_text_color = c_charcoal if accent_color == "yellow" else c_white
+            masthead_color = (226, 232, 240, 230)
+            credit_color = (226, 232, 240, 230)
+
+        # 5. Responsive Font Sizes according to Aspect Ratio
+        is_story = height >= 1800
+        is_square = height == width
+
+        size_main = 56 if is_story else (60 if is_square else 64)
+        size_accent = 72 if is_story else (76 if is_square else 82)
+        size_sub = 28 if is_story else (30 if is_square else 32)
+        size_badge = 24 if is_story else 26
+        size_credit = 22
+
+        font_masthead = load_font("sans_bold", 22)
+        font_main = load_font("sans_bold", size_main)
+        font_accent = load_font("sans_bold", size_accent)
+        font_sub = load_font("sans_regular", size_sub)
+        font_badge = load_font("sans_bold", size_badge)
+        font_credit = load_font("sans_bold", size_credit)
+
+        # 6. Render Masthead
+        masthead_txt = "THE KINGDOM JOURNAL  •  DAILY EDITORIAL"
+        m_bbox = draw.textbbox((0, 0), masthead_txt, font=font_masthead)
+        mw = m_bbox[2] - m_bbox[0]
+        mx = (width - mw) // 2 if text_align == "center" else s_left
+        my = s_top + (20 if is_story else 10)
+
+        if not is_light_bg:
+            draw.text((mx + 2, my + 2), masthead_txt, font=font_masthead, fill=c_shadow)
+        draw.text((mx, my), masthead_txt, font=font_masthead, fill=masthead_color)
+
+        # 7. Render Headline Pre
+        content_w = int(width * 0.84)
+        lines_pre = wrap_text_to_width(headline_pre, font_main, content_w, draw)
+        cur_y = my + (70 if is_story else 65)
+
+        for line in lines_pre:
+            bbox = draw.textbbox((0, 0), line, font=font_main)
+            lw = bbox[2] - bbox[0]
+            lx = (width - lw) // 2 if text_align == "center" else s_left
+            if not is_light_bg:
+                draw.text((lx + 3, cur_y + 3), line, font=font_main, fill=c_shadow)
+            draw.text((lx, cur_y), line, font=font_main, fill=text_main_color)
+            cur_y += int(size_main * 1.25)
+
+        # 8. Render Accent Word
+        acc_bbox = draw.textbbox((0, 0), accent_word, font=font_accent)
+        acc_w = acc_bbox[2] - acc_bbox[0]
+        ax = (width - acc_w) // 2 if text_align == "center" else s_left
+        if not is_light_bg:
+            draw.text((ax + 3, cur_y + 3), accent_word, font=font_accent, fill=c_shadow)
+        draw.text((ax, cur_y), accent_word, font=font_accent, fill=accent_rgb)
+
+        # Brush underline for yellow accent
+        if accent_color == "yellow" and not is_light_bg:
+            draw_brush_underline(draw, ax, cur_y + size_accent + 10, acc_w, color=c_yellow, thickness=8)
+        cur_y += size_accent + (40 if is_story else 35)
+
+        # 9. Render Rhythmic Subline
+        sub_lines = wrap_text_to_width(subline, font_sub, int(width * 0.82), draw)
+        for s_line in sub_lines:
+            bbox = draw.textbbox((0, 0), s_line, font=font_sub)
+            sw = bbox[2] - bbox[0]
+            sx = (width - sw) // 2 if text_align == "center" else s_left
+            if not is_light_bg:
+                draw.text((sx + 2, cur_y + 2), s_line, font=font_sub, fill=c_shadow)
+            draw.text((sx, cur_y), s_line, font=font_sub, fill=text_sub_color)
+            cur_y += int(size_sub * 1.42)
+
+        # 10. Scripture Pill Badge
+        cur_y += (30 if is_story else 25)
+        b_bbox = draw.textbbox((0, 0), scripture, font=font_badge)
+        bw = (b_bbox[2] - b_bbox[0]) + 38
+        bh = size_badge + 24
+        bx = (width - bw) // 2 if text_align == "center" else s_left
+        by = cur_y
+
+        draw.rounded_rectangle([bx, by, bx + bw, by + bh], radius=14, fill=badge_bg)
+        t_x = bx + 19
+        t_y = by + 11
+        draw.text((t_x, t_y), scripture, font=font_badge, fill=badge_text_color)
+
+        # 11. Preacher Credit (Clean)
+        cur_y = by + bh + (28 if is_story else 22)
+        p_bbox = draw.textbbox((0, 0), credit_line, font=font_credit)
+        pw = p_bbox[2] - p_bbox[0]
+        px = (width - pw) // 2 if text_align == "center" else s_left
+        if not is_light_bg:
+            draw.text((px + 2, cur_y + 2), credit_line, font=font_credit, fill=c_shadow)
+        draw.text((px, cur_y), credit_line, font=font_credit, fill=credit_color)
+
+        text_bbox = (s_left, my, s_right, cur_y + 35)
+
+        # Measure contrast against background
+        sample_text_box = (s_left, my, s_right, min(height, cur_y))
+        avg_bg = sample_region_average_color(img.convert("RGB"), sample_text_box)
+        comp_contrast = calculate_contrast_ratio(text_main_color[:3], avg_bg)
+        content["_viral_contrast"] = comp_contrast
+
+        return img.convert("RGB"), text_bbox
+

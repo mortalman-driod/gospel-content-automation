@@ -35,8 +35,9 @@ class TestDesignEngine(unittest.TestCase):
             self.assertEqual(img.size, (expected_w, expected_h))
             self.assertEqual(meta["dimensions"], f"{expected_w}x{expected_h}")
 
-    def test_all_six_templates_render_successfully(self):
+    def test_all_templates_render_successfully(self):
         templates = [
+            "viral_quote_poster", "modern_quote_card", "hero_vista", "lifestyle_study",
             "bold_statement", "contrast_split", "scripture_card",
             "question_hook", "quiet_light", "numbered_list"
         ]

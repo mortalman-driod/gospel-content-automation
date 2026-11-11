@@ -45,14 +45,22 @@ class TestWritingEngine(unittest.TestCase):
         verified_data = {
             "text_verbatim": "The night is far spent. Wake up out of sleep.",
             "speaker": "Dunsin Oyekan",
-            "video_title": "Wake Up",
+            "video_title": "Wake Up Live Broadcast",
             "url": "https://youtu.be/C3pLDUNe87M?t=280",
             "start_sec": 280
         }
-        pkg = self.writer.write_issue(theme_hint="Wake Up", verified_quote=verified_data)
+        pkg = self.writer.write_issue(theme_hint="Wake Up", verified_quote=verified_data, issue_number=3)
         self.assertIsNotNone(pkg.quote)
         self.assertEqual(pkg.quote.speaker, "Dunsin Oyekan")
         self.assertEqual(pkg.quote.text, "The night is far spent. Wake up out of sleep.")
+        # Rule: Flyer credit must be clean preacher name without video broadcast title
+        self.assertEqual(pkg.flyers[0].credit, "— Dunsin Oyekan")
+        self.assertNotIn("Live Broadcast", pkg.flyers[0].credit)
+        # Viral fields populated
+        self.assertIsNotNone(pkg.viral_headline_pre)
+        self.assertIsNotNone(pkg.viral_accent_word)
+        self.assertIn(pkg.viral_accent_color, ["yellow", "red"])
+        self.assertIn(pkg.viral_background_archetype, ["cross_sunrise", "open_bible", "mountain_summit", "green_sprout", "royal_crown", "study_desk"])
 
 if __name__ == "__main__":
     unittest.main()

@@ -124,3 +124,24 @@ def fit_headline(
     font = load_font(font_family, min_size)
     lines = wrap_text_to_width(clean_text, font, max_width, draw)
     return lines[:max_lines], font, max_width, max_height
+
+def draw_brush_underline(
+    draw: ImageDraw.ImageDraw,
+    x: int,
+    y: int,
+    width: int,
+    color=(250, 204, 21, 255),
+    thickness: int = 7
+):
+    """Draws a stylish, dynamic curved brush underline stroke like in viral posters."""
+    import math
+    pts = []
+    steps = 24
+    for i in range(steps + 1):
+        t = i / steps
+        px = x + (width * t)
+        py = y + (math.sin(t * math.pi) * 6)
+        pts.append((px, py))
+    for i in range(len(pts) - 1):
+        draw.line([pts[i], pts[i+1]], fill=color, width=thickness)
+

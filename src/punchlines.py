@@ -40,6 +40,52 @@ def load_env():
                 if k and k not in os.environ:
                     os.environ[k] = v
 
+CHANNEL_PREACHER_MAP = {
+    "koinonia global": "Apostle Joshua Selman",
+    "koinonia": "Apostle Joshua Selman",
+    "joshua selman": "Apostle Joshua Selman",
+    "apostle joshua selman": "Apostle Joshua Selman",
+    "emmanuel iren": "Pastor Emmanuel Iren",
+    "celebration church international": "Pastor Emmanuel Iren",
+    "dunsin oyekan": "Dunsin Oyekan",
+    "nathaniel bassey": "Nathaniel Bassey",
+    "nathaniel bassey main": "Nathaniel Bassey",
+    "victoria orenze": "Victoria Orenze",
+    "theophilus sunday": "Theophilus Sunday",
+    "sunmisola agbebi": "Sunmisola Agbebi",
+    "moses bliss": "Moses Bliss",
+    "harvesters": "Pastor Bolaji Idowu",
+    "harvesters tv": "Pastor Bolaji Idowu",
+    "elevation church": "Pastor Godman Akinlabi",
+    "the elevation church": "Pastor Godman Akinlabi",
+    "daystar": "Pastor Sam Adeyemi",
+    "sam adeyemi": "Pastor Sam Adeyemi",
+    "covenant christian centre": "Pastor Poju Oyemade",
+    "poju oyemade": "Pastor Poju Oyemade"
+}
+
+def resolve_speaker_name(title: str, channel: str) -> str:
+    """Resolves authentic minister name from title and channel; never returns raw channel/program titles."""
+    clean_channel = (channel or "").strip().lower()
+    for k, v in CHANNEL_PREACHER_MAP.items():
+        if k in clean_channel:
+            return v
+
+    clean_title = (title or "").strip()
+    for k, v in CHANNEL_PREACHER_MAP.items():
+        if k in clean_title.lower():
+            return v
+
+    match = re.search(r'\b(Apostle|Pastor|Minister|Evangelist|Bishop|Rev\.|Dr\.)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})', clean_title)
+    if match:
+        return f"{match.group(1)} {match.group(2)}"
+
+    banned_channel_words = ["tv", "media", "ministries", "global", "church", "network", "assembly", "highlights", "channel", "broadcast"]
+    if any(bw in clean_channel for bw in banned_channel_words):
+        return "The Kingdom Journal"
+
+    return channel or "The Kingdom Journal"
+
 def chunk_transcript(snippets: List[Dict], target_seconds: int = 60) -> List[Dict]:
     """
     Groups transcript snippets into ~60-second temporal windows.
@@ -143,7 +189,8 @@ class PunchlineExtractor:
         """
         video_id = video_meta.get("id") or video_meta.get("video_id")
         title = video_meta.get("title", "")
-        speaker = video_meta.get("channel_title") or video_meta.get("channel", "Unknown Speaker")
+        raw_speaker = video_meta.get("channel_title") or video_meta.get("channel", "")
+        speaker = resolve_speaker_name(title, raw_speaker)
 
         # Fallback if no transcript is available
         if not raw_transcript:
