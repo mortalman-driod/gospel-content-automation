@@ -131,11 +131,15 @@ class TestMasterOverhaul(unittest.TestCase):
         self.assertIn("<!--[if mso]>", html)
         self.assertIn("<table role=\"presentation\"", html)
 
-        # 2. Must not use banned low-contrast color #64748B in reflection/subtext
-        self.assertNotIn('color: #64748B; margin-top: 8px;', html)
-        # Must use WCAG AA compliant #94A3B8 or #CBD5E1
-        self.assertIn('#94A3B8', html)
-        self.assertIn('#CBD5E1', html)
+        # 2. Must adhere to Editorial Print Magazine WCAG AAA/AA light-paper ink palette
+        self.assertIn('#F4F1EA', html)  # Warm archival desk background
+        self.assertIn('#1C1917', html)  # Deep editorial charcoal ink
+        self.assertIn('#57534E', html)  # High-contrast warm taupe subtext
+        self.assertIn('#855A18', html)  # Burnished ochre editorial accent
+        # Must contain zero SaaS card boxes, zero textareas, and zero platform emojis
+        self.assertNotIn('<textarea', html)
+        self.assertNotIn('📘', html)
+        self.assertNotIn('📸', html)
 
     def test_06_image_compression_budget(self):
         """Verifies progressive JPEG optimization keeps image size under 180 KB."""
