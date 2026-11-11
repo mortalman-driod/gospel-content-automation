@@ -705,6 +705,7 @@ class FlyerEngine:
             alpha = int(95 * (1 - (x / (width * 0.75))))
             o_draw.line([(x, 0), (x, height)], fill=(15, 18, 24, alpha))
         img = Image.alpha_composite(img, overlay)
+        pre_text_bg = img.copy()
         draw = ImageDraw.Draw(img)
 
         start_x = int(width * 0.09)
@@ -812,6 +813,7 @@ class FlyerEngine:
                 o_draw.line([(0, y), (width, y)], fill=(255, 255, 255, alpha))
 
         img = Image.alpha_composite(img, overlay)
+        pre_text_bg = img.copy()
         draw = ImageDraw.Draw(img)
 
         # 4. Color Palettes
@@ -930,7 +932,7 @@ class FlyerEngine:
 
         # Measure contrast against background
         sample_text_box = (s_left, my, s_right, min(height, cur_y))
-        avg_bg = sample_region_average_color(img.convert("RGB"), sample_text_box)
+        avg_bg = sample_region_average_color(pre_text_bg.convert("RGB"), sample_text_box)
         comp_contrast = calculate_contrast_ratio(text_main_color[:3], avg_bg)
         content["_viral_contrast"] = comp_contrast
 
