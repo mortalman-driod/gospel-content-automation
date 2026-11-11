@@ -1,7 +1,8 @@
 {
-  "current_issue_number": 59,
+  "current_issue_number": 60,
   "last_successful_date": "2026-11-11",
-  "last_run_timestamp": "2026-11-11T12:55:09.316597+00:00",
+  "last_run_timestamp": "2026-11-11T14:08:31.298830+00:00",
   "last_status": "SUCCESS",
-  "consecutive_failures": 0
+  "consecutive_failures": 0,
+  "last_error": "'FlyerEngine' object has no attribute 'renderer_map'"
 }

@@ -58,63 +58,69 @@ MODELS_CASCADE = [
 
 STORYTELLING_FRAMEWORKS = [
     {
-        "id": "paradigm_shift",
-        "name": "The Paradigm Shift / Counter-Intuitive Truth",
+        "id": "concrete_encounter",
+        "name": "The Concrete Human Encounter",
         "guidance": (
-            "NARRATIVE ANGLE: The Paradigm Shift.\n"
-            "- Challenge a conventional religious assumption (e.g. that delay means denial, that God's silence is absence, or that spiritual authority comes through noise and crowds).\n"
-            "- Reframe the listener's perspective with quiet, piercing biblical truth.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Concrete Human Encounter.\n"
+            "- OPENING RULE: Open directly with a grounded human situation, dialogue, or specific struggle.\n"
+            "- Example: 'A young man spoke with me yesterday, his shoulders slumped under the weight of silent expectations...' or 'I remember speaking with a sister who had prayed for three years without an apparent shift...'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Connect that specific human reality to today's ministration with raw warmth and hope."
         )
     },
     {
-        "id": "visceral_everyday",
-        "name": "The Visceral Everyday Tension",
+        "id": "piercing_paradox",
+        "name": "The Piercing Paradoxical Truth",
         "guidance": (
-            "NARRATIVE ANGLE: The Visceral Everyday Tension.\n"
-            "- Ground the spiritual truth in modern daily life: staring at an overdue invoice, sitting in motionless evening traffic, navigating a strained workplace conversation, or feeling the heavy silence of an unanswered message.\n"
-            "- Show how God's presence invades ordinary, imperfect moments rather than idealized retreats.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Piercing Paradoxical Truth.\n"
+            "- OPENING RULE: Open directly with a sharp, unexpected, counter-intuitive spiritual truth stated in plain English.\n"
+            "- Example: 'Most spiritual burnout does not come from doing too much for God; it comes from carrying what only God was built to shoulder.'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Reframe the listener's perspective with quiet clarity."
         )
     },
     {
-        "id": "spiritual_diagnosis",
-        "name": "The Spiritual Diagnosis & Surrender",
+        "id": "daily_friction",
+        "name": "The Visceral Daily Friction",
         "guidance": (
-            "NARRATIVE ANGLE: The Spiritual Diagnosis & Surrender.\n"
-            "- Act as a tender physician of the soul. Diagnose the root of spiritual fatigue: subtle self-reliance, trying to carry what only sovereign shoulders were built to bear, or the exhausting cycle of spiritual performance.\n"
-            "- Lead the reader gently into the relief of releasing control to Christ.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Visceral Daily Friction.\n"
+            "- OPENING RULE: Open with a vivid, physical anchor from everyday modern life.\n"
+            "- Example: 'There is a heavy quiet that settles when the laptop closes at 9:00 p.m. and the house finally goes dark...' or 'Sitting in evening traffic, watching brake lights stretch into the distance, it is easy to wonder if God notices our small, private battles.'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Show how Christ invades ordinary, unglamorous moments."
         )
     },
     {
         "id": "biblical_drama",
-        "name": "The Biblical Dramatic Scene",
+        "name": "The Dramatic Biblical Moment",
         "guidance": (
-            "NARRATIVE ANGLE: The Biblical Dramatic Scene.\n"
-            "- Immerse the reader inside a visceral biblical moment with vivid cinematic texture: Peter stepping onto the dark, icy swell of Galilee; Paul and Silas singing through torn flesh at midnight in Philippi; Elijah curled under the broom tree receiving warm bread from an angel; or the disciples behind locked doors when Jesus suddenly stands among them.\n"
-            "- Bridge that ancient scene directly to the reader's battle today.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Dramatic Biblical Moment.\n"
+            "- OPENING RULE: Open inside a cinema-grade biblical scene with physical sensory texture.\n"
+            "- Example: 'Peter's feet were dripping with cold Galilean spray before his rational mind had even processed that he was walking on water.' or 'In the deepest cell in Philippi, Paul's back was bleeding against stone, yet his voice carried a song.'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Bridge that ancient grit directly to the reader's battle today."
         )
     },
     {
-        "id": "prophetic_exhortation",
-        "name": "The Urgent Prophetic Exhortation",
+        "id": "pastoral_confession",
+        "name": "The Honest Pastoral Confession",
         "guidance": (
-            "NARRATIVE ANGLE: The Urgent Prophetic Exhortation.\n"
-            "- A stirring clarion call to rise up, break agreements with defeat, shake off spiritual lethargy, refuse mediocrity, and step boldly into kingdom inheritance.\n"
-            "- Bold, energetic, hopeful, commanding.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Honest Pastoral Confession.\n"
+            "- OPENING RULE: Open with a raw, disarming personal insight from ministry or prayer.\n"
+            "- Example: 'For a long time, I treated prayer like an emergency switch instead of a breathing pattern.' or 'It took me years to realize that God is never intimidated by our honest frustration.'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Lead the reader gently into genuine intimacy with God."
         )
     },
     {
-        "id": "contemplative_sanctuary",
-        "name": "The Intimate Contemplative Sanctuary",
+        "id": "unvarnished_observation",
+        "name": "The Unvarnished Cultural Observation",
         "guidance": (
-            "NARRATIVE ANGLE: The Intimate Contemplative Sanctuary.\n"
-            "- Deep stillness, awe, beholding the majesty and gentle sovereignty of God.\n"
-            "- Contemplative devotion in the tradition of A.W. Tozer or Andrew Murray: learning to be quiet before Him until our inner storm subsides.\n"
-            "- BANNED TROPE: Do NOT mention sitting at 4 a.m., cold wood palms, or kitchen counters."
+            "NARRATIVE ANGLE: The Unvarnished Cultural Observation.\n"
+            "- OPENING RULE: Open with a sharp, perceptive observation about how people live today.\n"
+            "- Example: 'We live in an age obsessed with public announcements, but heaven has always done its heaviest work underground.'\n"
+            "- STRICTLY BANNED OPENERS: Never start with 'My friend', 'There are seasons', 'In a world', or 'Have you ever'.\n"
+            "- Anchor the observation in biblical hope."
         )
     }
 ]
@@ -165,6 +171,7 @@ class IssuePackage(BaseModel):
     viral_accent_color: Optional[str] = Field(default="yellow", description="Accent color: 'yellow' or 'red'")
     viral_subline: Optional[str] = Field(default=None, description="2-3 line comforting rhythmic pastoral subline")
     viral_background_archetype: Optional[str] = Field(default="cross_sunrise", description="Archetype canvas")
+    flyer_template: Optional[str] = Field(default="asymmetric_split", description="Template: asymmetric_split, heritage_serif, heavy_impact, quiet_light")
 
     @field_validator("x_post")
     def check_x_length(cls, v):
@@ -283,56 +290,70 @@ NO VERIFIED QUOTE AVAILABLE:
         # Dynamically fetch scripture contextually matched to today's sermon theme
         scripture = self._fetch_scripture(theme=clean_theme, quote_text=headline_for_flyer)
 
-        prompt = f"""You are the Executive Editor of 'The Kingdom Journal'—a high-class, contemplative daily publication for Nigerian and global Christian believers.
+        prompt = f"""You are the Executive Editor of 'The Kingdom Journal'—a distinguished, contemplative daily Christian publication.
+Your writing must feel 100% human-crafted: authentic, conversational, deeply spiritual, and completely free of AI clichés.
+
 Theme: {clean_theme}
 {quote_instruction}
 Scripture: "{scripture.text}" ({scripture.ref} [{scripture.translation}])
 
-STORYTELLING ANGLE (TODAY'S MANDATED FRAMEWORK):
-Framework: {framework['name']}
+TODAY'S MANDATED STORYTELLING ANGLE:
+{framework['name']}
 {framework['guidance']}
 
-VOICE & EDITORIAL RULES:
-1. Voice: First-person singular ("I", "my friend"), contemplative, warm, pastoral (reminiscent of A.W. Tozer or Oswald Chambers).
-2. Preserve authentic Nigerian English natural expressions where fitting ("till date", "per time"), never forced.
-3. BANNED CLICHES & TROPES:
-   - Absolutely NO "sitting at 4 a.m. with cold wood palms on my kitchen counter" or repeating kitchen floor/counter narratives!
-   - Never use "tapestry", "testament", "delve", "unlock", "In today's fast-paced world", or stacked academic abstractions.
-4. ABSOLUTE CHANNEL/PROGRAM PROHIBITION: Never write out YouTube channel names or video program titles in any post, reflection, or caption.
-   - HASHTAG PURITY: Absolutely NO hashtags created from video/program titles or channel names (e.g. NO #DailyPropheticPrayers, NO #TheGeneralAssembly, NO #TACTV). Use only timeless spiritual tags like #TheKingdomJournal #Prayer #HolySpirit #Grace #Faith #SecretPlace.
-5. Facebook Post: Must be copy-paste ready! Hook line first (before truncation fold), short spacious paragraphs, 3-5 tasteful emojis, closing reflective question, 5-8 hashtags at the very bottom.
-6. Altar Invite: Warmly invite the reader to turn their heart to Christ and pray in their own sincere words. NEVER write a rigid "repeat after me" formula.
-7. X Post: Memorable, piercing spiritual aphorism strictly <= 280 characters.
-8. WhatsApp Status: Personal, warm, ending with a call to forward to a friend facing pressure.
-9. Story Text: Punchy, visual, strictly <= 20 words.
-10. Viral Flyer Copy:
+VOICE & ANTI-AI EDITORIAL MANDATES:
+1. VOICE: Warm, dignified, seasoned pastoral voice (reminiscent of A.W. Tozer, Tim Keller, or Dallas Willard, with the deep spiritual authority and warmth of a seasoned Nigerian minister).
+2. STRICTLY FORBIDDEN OPENERS (ANY USE WILL BE REJECTED):
+   - NEVER begin with "My friend, ..." or "My dear friend, ..."
+   - NEVER begin with "There are seasons when..."
+   - NEVER begin with "In a world where..." or "In today's fast-paced world..."
+   - NEVER begin with "Have you ever stopped to consider..."
+   - OPEN DIRECTLY with today's mandated storytelling angle (a dialogue, a sharp paradox, or a physical life situation).
+3. 50+ BANNED AI WORDS & CLICHÉS:
+   - Do NOT use: clarion call, spiritual lethargy, lingering in shadows, tapestry, beacon, delve, testament, unlock, embark, harness, intimate sanctuary, gentle sovereign, inner storm, cease striving, myriad, juxtaposition, pivotal, cornerstone, unleash, elevate, profound reminder, resonant, multifaceted, nuanced, profound truth, deep knowing, quietude, clamour, sacred space, deep wellspring.
+4. NATURAL CADENCE (NO FORCED IDIOMS):
+   - Write with natural, unforced, dignified English. Do NOT mechanically paste phrases like "per time" or "till date" into sentences.
+5. NO SOCIAL BOT EMOJIS:
+   - NEVER use rocket ships (🚀), globes (🌍), fire (🔥), or clusters of emojis!
+   - Maximum 0 to 2 quiet, natural emojis across an entire post (e.g. a simple 🙏 or 📖).
+6. FACEBOOK BROADCAST POST:
+   - Copy-paste ready. Compelling opening line, spacious natural paragraphs (2-3 sentences each), genuine human reflection, closing reflective question, 4-6 timeless spiritual hashtags at the bottom (#TheKingdomJournal #Prayer #Faith #SecretPlace).
+7. INSTAGRAM CAPTION:
+   - Formatted with clean line breaks, reflective, personal, engaging.
+8. X POST & THREADS POST:
+   - X: A memorable, piercing spiritual aphorism strictly <= 280 characters.
+   - Threads: An incisive thought for Christian thinkers and leaders.
+9. WHATSAPP STATUS:
+   - A warm, personal morning devotional note from one friend to another. Encouraging and genuine.
+10. FLYER ART DIRECTION & SPEC:
+    - flyer_template: Choose one best suited to the ministration mood: 'asymmetric_split' (bold, overcoming), 'heritage_serif' (scripture, contemplation), 'heavy_impact' (urgent statement), or 'quiet_light' (comfort, peace).
     - viral_headline_pre: The hook phrase leading into the punchline
     - viral_accent_word: The dominant contrast punchline word or phrase
     - viral_accent_color: 'yellow' or 'red'
-    - viral_subline: 1-2 lines of rhythmic, comforting pastoral wisdom (MAX 110 characters. NEVER append speaker attribution or em-dashes here)
-    - viral_background_archetype: Choose from 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk'.
+    - viral_subline: 1-2 lines of rhythmic, comforting pastoral wisdom (MAX 100 characters. NEVER append speaker attribution or em-dashes here)
+    - viral_background_archetype: Choose matching canvas: 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk'.
 
 RETURN STRICT JSON matching this schema:
 {{
   "theme": "{clean_theme}",
   "hook": "Sharp hook under 8 words",
   "quote": {{"text": "...", "speaker": "...", "video_title": "...", "url": "...", "start_sec": 0}} or null,
-  "reflection": "100-130 word first-person contemplative essay following today's narrative framework",
+  "reflection": "100-140 word human-crafted reflection opening directly with today's mandated angle",
   "facebook_post": "Complete copy-paste ready Facebook post...",
-  "instagram_caption": "Complete Instagram caption with line breaks...",
-  "x_post": "Aphorism under 280 chars",
-  "threads_post": "Reflective thought for Christian thinkers...",
+  "instagram_caption": "Complete Instagram caption with clean paragraph spacing...",
+  "x_post": "Aphorism strictly under 280 chars",
+  "threads_post": "Reflective thought for Christian leaders...",
   "whatsapp_status": "Warm morning devotional for WhatsApp status...",
-  "story_text": "Under 20 words for vertical story",
+  "story_text": "Under 18 words for vertical story",
   "altar_invite": "Warm personal invitation to pray...",
+  "flyer_template": "asymmetric_split",
   "viral_headline_pre": "Hook phrase before accent word",
   "viral_accent_word": "Accent punchline word",
   "viral_accent_color": "yellow",
-  "viral_subline": "2-3 rhythmic pastoral lines",
+  "viral_subline": "1-2 short rhythmic pastoral lines",
   "viral_background_archetype": "cross_sunrise"
 }}
 """
-
         for attempt in range(2):
             raw_json = self._call_gemini_json(prompt)
             if raw_json and isinstance(raw_json, dict):
@@ -357,6 +378,9 @@ RETURN STRICT JSON matching this schema:
                     elif "—" in v_sub:
                         v_sub = v_sub.split("—")[0].strip()
                     v_arch = raw_json.get("viral_background_archetype", "cross_sunrise")
+                    v_template = raw_json.get("flyer_template", "asymmetric_split")
+                    if v_template not in ("asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light"):
+                        v_template = "asymmetric_split"
 
                     if not v_pre or not v_acc:
                         words = headline_for_flyer.split()
@@ -415,7 +439,8 @@ RETURN STRICT JSON matching this schema:
                         viral_accent_word=v_acc,
                         viral_accent_color=v_col,
                         viral_subline=v_sub,
-                        viral_background_archetype=v_arch
+                        viral_background_archetype=v_arch,
+                        flyer_template=v_template
                     )
                     return pkg
                 except Exception as e:

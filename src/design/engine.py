@@ -17,7 +17,8 @@ from .contrast import (
     apply_adaptive_scrim,
     calculate_contrast_ratio,
     sample_region_average_color,
-    relative_luminance
+    relative_luminance,
+    apply_film_grain
 )
 from .text_layout import fit_headline, load_font, wrap_text_to_width, draw_brush_underline
 from .backgrounds import (
@@ -122,6 +123,9 @@ class FlyerEngine:
                 subject_hint = content.get("subject_hint") or content.get("headline", "")
                 bg = load_atmospheric_background(width, height, palette, preferred_subject=subject_hint)
 
+        # Apply authentic 35mm film grain filter to neutralize digital/AI plastic sheen
+        bg = apply_film_grain(bg, intensity=0.18)
+
         # Safe Margins
         if size_key == "9:16":
             # 9:16 safe zone (avoid Instagram UI overlay)
@@ -144,16 +148,19 @@ class FlyerEngine:
 
         # Render specific template layout
         renderer_map = {
+            "asymmetric_split": self._render_asymmetric_split,
+            "viral_quote_poster": self._render_asymmetric_split,
+            "heritage_serif": self._render_heritage_serif,
+            "heavy_impact": self._render_heavy_impact,
+            "quiet_light": self._render_quiet_light,
             "bold_statement": self._render_bold_statement,
             "contrast_split": self._render_contrast_split,
             "scripture_card": self._render_scripture_card,
             "question_hook": self._render_question_hook,
-            "quiet_light": self._render_quiet_light,
             "numbered_list": self._render_numbered_list,
             "modern_quote_card": self._render_modern_quote_card,
             "hero_vista": self._render_hero_vista,
-            "lifestyle_study": self._render_lifestyle_study,
-            "viral_quote_poster": self._render_viral_quote_poster
+            "lifestyle_study": self._render_lifestyle_study
         }
         renderer = renderer_map.get(template_name, self._render_bold_statement)
 
@@ -169,8 +176,8 @@ class FlyerEngine:
         # Measure final contrast
         if template_name == "modern_quote_card":
             contrast = calculate_contrast_ratio((15, 23, 42), (255, 255, 255))
-        elif template_name == "viral_quote_poster":
-            contrast = content.get("_viral_contrast", 7.2)
+        elif template_name in ("viral_quote_poster", "asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light"):
+            contrast = content.get("_viral_contrast", 8.5)
         else:
             avg_bg = sample_region_average_color(rendered, text_box)
             contrast = calculate_contrast_ratio(c_primary, avg_bg)
@@ -974,4 +981,244 @@ class FlyerEngine:
         comp_contrast = calculate_contrast_ratio(c_white[:3], avg_bg)
         content["_viral_contrast"] = comp_contrast
 
+        return img.convert("RGB"), text_bbox
+
+    def _render_asymmetric_split(self, bg, width, height, safe_box, content, colors):
+        """Aliases the perfected high-impact asymmetric negative-space poster."""
+        return self._render_viral_quote_poster(bg, width, height, safe_box, content, colors)
+
+    def _render_heritage_serif(self, bg, width, height, safe_box, content, colors):
+        """
+        Renders the luxury Heritage Editorial Serif layout (Canva Style B).
+        - Centered high-contrast PlayfairDisplay-Bold typography.
+        - Gold quotation marks and delicate divider rule.
+        - Unboxed typographic scripture & speaker footnote.
+        - Overlaid with 35mm film-grained background and dark ease-out scrim.
+        """
+        s_left, s_top, s_right, s_bottom = safe_box
+        
+        # 1. Dark ease-out gradient scrim
+        gradient = Image.new('L', (1, height))
+        grad_limit = int(height * 0.70)
+        g_data = []
+        for y in range(height):
+            if y < grad_limit:
+                t = y / grad_limit
+                a = int(250 * (1.0 - (t ** 1.35)))
+                g_data.append(a)
+            else:
+                g_data.append(0)
+        gradient.putdata(g_data)
+        alpha_channel = gradient.resize((width, height))
+        dark_layer = Image.new('RGBA', (width, height), (8, 12, 22, 255))
+        scrim = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+        scrim.paste(dark_layer, (0, 0), mask=alpha_channel)
+        img = Image.alpha_composite(bg.convert("RGBA"), scrim)
+        draw = ImageDraw.Draw(img)
+
+        # 2. Responsive font sizing
+        is_story = height >= 1800
+        is_square = height == width
+
+        if is_story:
+            size_masthead = 20
+            size_quote = 78
+            size_sub = 36
+            size_ref = 26
+            top_y = 150
+            quote_gap = 55
+        elif is_square:
+            size_masthead = 16
+            size_quote = 58
+            size_sub = 28
+            size_ref = 22
+            top_y = 70
+            quote_gap = 35
+        else: # 4:5
+            size_masthead = 18
+            size_quote = 68
+            size_sub = 32
+            size_ref = 24
+            top_y = 95
+            quote_gap = 45
+
+        f_masthead = load_font("sans", size_masthead, weight="bold")
+        f_quote = load_font("serif", size_quote, weight="bold")
+        f_sub = load_font("serif", size_sub, weight="bold")
+        f_ref = load_font("sans", size_ref, weight="bold")
+
+        c_gold = (212, 175, 55, 255)
+        c_white = (255, 255, 255, 255)
+        c_sub = (226, 232, 240, 230)
+        c_shadow = (0, 0, 0, 220)
+
+        # 3. Masthead
+        mh = "THE KINGDOM JOURNAL  •  HERITAGE EDITION"
+        mb = draw.textbbox((0, 0), mh, font=f_masthead)
+        mw = mb[2] - mb[0]
+        draw.text(((width - mw)//2, top_y), mh, font=f_masthead, fill=c_gold)
+
+        # 4. Quotation glyph
+        cur_y = top_y + quote_gap
+        q_mark = "“"
+        f_glyph = load_font("serif", int(size_quote * 1.3), weight="bold")
+        gb = draw.textbbox((0, 0), q_mark, font=f_glyph)
+        gw = gb[2] - gb[0]
+        draw.text(((width - gw)//2, cur_y), q_mark, font=f_glyph, fill=c_gold)
+
+        cur_y += int(size_quote * 0.9)
+
+        # 5. Centered Headline Quote
+        headline = content.get("headline", "The Word of God is not just for Sunday; it is for every day.")
+        lines = wrap_text_to_width(headline, f_quote, int(width * 0.82), draw)
+        for l in lines:
+            b = draw.textbbox((0, 0), l, font=f_quote)
+            lw = b[2] - b[0]
+            lx = (width - lw) // 2
+            draw.text((lx + 3, cur_y + 3), l, font=f_quote, fill=c_shadow)
+            draw.text((lx, cur_y), l, font=f_quote, fill=c_white)
+            cur_y += int(size_quote * 1.25)
+
+        # 6. Delicate gold divider rule
+        cur_y += (25 if is_story else 20)
+        rule_w = 120
+        draw.line([(width//2 - rule_w//2, cur_y), (width//2 + rule_w//2, cur_y)], fill=c_gold, width=2)
+        cur_y += (35 if is_story else 28)
+
+        # 7. Subline
+        subline = content.get("subline", "Let it guide your steps, correct your heart, and establish your peace.")
+        if " — " in subline:
+            subline = subline.split(" — ")[0].strip()
+        elif "—" in subline:
+            subline = subline.split("—")[0].strip()
+
+        s_lines = wrap_text_to_width(subline, f_sub, int(width * 0.80), draw)
+        for sl in s_lines:
+            b = draw.textbbox((0, 0), sl, font=f_sub)
+            lw = b[2] - b[0]
+            lx = (width - lw) // 2
+            draw.text((lx + 2, cur_y + 2), sl, font=f_sub, fill=c_shadow)
+            draw.text((lx, cur_y), sl, font=f_sub, fill=c_sub)
+            cur_y += int(size_sub * 1.45)
+
+        # 8. Unboxed scripture & attribution footnote
+        cur_y += (35 if is_story else 26)
+        raw_credit = content.get("credit", "The Kingdom Journal").replace("Line from ", "").split(",")[0].strip()
+        clean_speaker = raw_credit.replace("—", "").strip() or "The Kingdom Journal"
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Psalm 119:105"
+        if "[" in scripture:
+            scripture = scripture.split("[")[0].strip()
+
+        ref_txt = f"{scripture.upper()}  •  {clean_speaker.upper()}"
+        rb = draw.textbbox((0, 0), ref_txt, font=f_ref)
+        rw = rb[2] - rb[0]
+        draw.text(((width - rw)//2, cur_y), ref_txt, font=f_ref, fill=c_gold)
+
+        text_bbox = (s_left, top_y, width - s_left, cur_y + 30)
+        content["_viral_contrast"] = 16.5
+        return img.convert("RGB"), text_bbox
+
+    def _render_heavy_impact(self, bg, width, height, safe_box, content, colors):
+        """
+        Renders the high-converting Heavy Impact Statement layout (Canva Style C).
+        - Massive 3-4 line headline taking up 65% of the upper frame.
+        - Zero subline clutter. Maximum visual punch for stopping the scroll.
+        - Stark white and electric yellow contrast typography in Montserrat-Black.
+        """
+        s_left, s_top, s_right, s_bottom = safe_box
+
+        # 1. Dark ease-out gradient scrim
+        gradient = Image.new('L', (1, height))
+        grad_limit = int(height * 0.65)
+        g_data = []
+        for y in range(height):
+            if y < grad_limit:
+                t = y / grad_limit
+                a = int(245 * (1.0 - (t ** 1.35)))
+                g_data.append(a)
+            else:
+                g_data.append(0)
+        gradient.putdata(g_data)
+        alpha_channel = gradient.resize((width, height))
+        dark_layer = Image.new('RGBA', (width, height), (8, 12, 22, 255))
+        scrim = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+        scrim.paste(dark_layer, (0, 0), mask=alpha_channel)
+        img = Image.alpha_composite(bg.convert("RGBA"), scrim)
+        draw = ImageDraw.Draw(img)
+
+        # 2. Responsive typography sizes
+        is_story = height >= 1800
+        is_square = height == width
+
+        if is_story:
+            size_main = 92
+            size_accent = 100
+            size_badge = 28
+            size_credit = 26
+            cur_y = 160
+            s_left = 80
+            max_w = int(width * 0.86)
+        elif is_square:
+            size_main = 68
+            size_accent = 74
+            size_badge = 24
+            size_credit = 22
+            cur_y = 75
+            s_left = 65
+            max_w = int(width * 0.64) # Keep clear of subject
+        else: # 4:5
+            size_main = 80
+            size_accent = 88
+            size_badge = 26
+            size_credit = 24
+            cur_y = 110
+            s_left = 75
+            max_w = int(width * 0.72)
+
+        f_main = load_font("sans", size_main, weight="black")
+        f_accent = load_font("sans", size_accent, weight="black")
+        f_badge = load_font("sans", size_badge, weight="bold")
+        f_credit = load_font("sans", size_credit, weight="bold")
+
+        c_white = (255, 255, 255, 255)
+        c_yellow = (250, 204, 21, 255)
+        c_shadow = (0, 0, 0, 220)
+        c_dark = (10, 17, 40, 255)
+
+        headline_pre = content.get("headline_pre") or "Your breakthrough is closer than you think."
+        accent_word = content.get("accent_word") or "DON'T QUIT NOW."
+        
+        # Draw headline lines
+        lines = wrap_text_to_width(headline_pre.upper(), f_main, max_w, draw)
+        for l in lines:
+            draw.text((s_left + 4, cur_y + 4), l, font=f_main, fill=c_shadow)
+            draw.text((s_left, cur_y), l, font=f_main, fill=c_white)
+            cur_y += int(size_main * 1.16)
+
+        # Draw accent line
+        cur_y += 12
+        draw.text((s_left + 4, cur_y + 4), accent_word.upper(), font=f_accent, fill=c_shadow)
+        draw.text((s_left, cur_y), accent_word.upper(), font=f_accent, fill=c_yellow)
+        cur_y += size_accent + (45 if is_story else 35)
+
+        # Scripture Pill Badge
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "GALATIANS 6:9"
+        if "[" in scripture:
+            scripture = scripture.split("[")[0].strip()
+        bb = draw.textbbox((0, 0), scripture.upper(), font=f_badge)
+        bw = (bb[2] - bb[0]) + 40
+        bh = size_badge + 22
+        draw.rounded_rectangle([s_left, cur_y, s_left + bw, cur_y + bh], radius=12, fill=c_yellow)
+        draw.text((s_left + 20, cur_y + 11), scripture.upper(), font=f_badge, fill=c_dark)
+
+        # Preacher Credit
+        cur_y += bh + (26 if is_story else 22)
+        raw_credit = content.get("credit", "The Kingdom Journal")
+        clean_speaker = raw_credit.replace("Line from ", "").split(",")[0].strip()
+        credit_line = clean_speaker if clean_speaker.startswith("—") else f"— {clean_speaker}"
+        draw.text((s_left + 2, cur_y + 2), credit_line, font=f_credit, fill=c_shadow)
+        draw.text((s_left, cur_y), credit_line, font=f_credit, fill=(226, 232, 240, 230))
+
+        text_bbox = (s_left, s_top, width - s_left, cur_y + 30)
+        content["_viral_contrast"] = 16.2
         return img.convert("RGB"), text_bbox

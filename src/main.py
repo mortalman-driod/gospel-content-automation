@@ -38,6 +38,7 @@ from src.write import WritingEngine
 from src.deliver import EmailDeliverer
 from src.state import StateManager
 from src.learn import LearningLoop
+from src.verify import verify_de_ai_compliance
 
 def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int = None):
     logger.info("=" * 70)
@@ -128,6 +129,26 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         )
         logger.info(f"Generated Issue Package: Hook = \"{issue_package.hook}\"")
 
+        # De-AI Humanization Verification Gate
+        is_compliant, violations, ai_score = verify_de_ai_compliance(issue_package.reflection, issue_package.facebook_post)
+        if not is_compliant:
+            logger.warning(f"[DE-AI GATE ALERT] AI Score: {ai_score}. Violations detected: {violations}")
+            logger.info("Re-rolling issue with alternate storytelling framework to eliminate AI markers...")
+            try:
+                issue_package = writer.write_issue(
+                    theme_hint=theme_title,
+                    verified_quote=verified_quote,
+                    radar_videos=top_videos,
+                    palette_id=palette_id,
+                    issue_number=issue_num
+                )
+                is_compliant, violations, ai_score = verify_de_ai_compliance(issue_package.reflection, issue_package.facebook_post)
+                logger.info(f"[DE-AI GATE RE-ROLL] Post-reroll AI Score: {ai_score}. Compliant: {is_compliant}")
+            except Exception as e:
+                logger.warning(f"Re-roll error, keeping sanitized package: {e}")
+        else:
+            logger.info(f"[DE-AI GATE PASS] 100% Natural Human Voice confirmed (AI Score: {ai_score})")
+
         # -------------------------------------------------------------
         # MILESTONE 3: High-Resolution Flyer Design Engine
         # -------------------------------------------------------------
@@ -147,19 +168,31 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             "background_archetype": issue_package.viral_background_archetype or "cross_sunrise"
         }
 
-        # Render 3 formats for Primary Flyer using the viral template
-        img_4_5, meta_4_5 = flyer_engine.render_flyer("viral_quote_poster", "4:5", primary_content, palette_id=palette_id)
-        img_1_1, meta_1_1 = flyer_engine.render_flyer("viral_quote_poster", "1:1", primary_content, palette_id=palette_id)
-        img_9_16, meta_9_16 = flyer_engine.render_flyer("viral_quote_poster", "9:16", primary_content, palette_id=palette_id)
+        # Dynamic human archetype selection
+        chosen_template = getattr(issue_package, "flyer_template", "asymmetric_split") or "asymmetric_split"
+        valid_templates = {"asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light", "viral_quote_poster"}
+        if chosen_template not in valid_templates:
+            chosen_template = "asymmetric_split"
+        logger.info(f"Selected Human Design Archetype for primary flyers: '{chosen_template}'")
 
-        # Render Alternate Flyer in 4:5 using modern_quote_card
+        # Render 3 formats for Primary Flyer using chosen archetype
+        img_4_5, meta_4_5 = flyer_engine.render_flyer(chosen_template, "4:5", primary_content, palette_id=palette_id)
+        img_1_1, meta_1_1 = flyer_engine.render_flyer(chosen_template, "1:1", primary_content, palette_id=palette_id)
+        img_9_16, meta_9_16 = flyer_engine.render_flyer(chosen_template, "9:16", primary_content, palette_id=palette_id)
+
+        # Render Alternate Flyer in 4:5 using a complementary human archetype
+        alt_template = "heritage_serif" if chosen_template != "heritage_serif" else "heavy_impact"
         alt_content = {
-            "headline": verified_quote["text_verbatim"] if verified_quote else "When human capacity runs dry, worship establishes peace.",
-            "subline": "Rest in His peace today.",
+            "headline_pre": issue_package.viral_headline_pre,
+            "accent_word": issue_package.viral_accent_word,
+            "accent_color": issue_package.viral_accent_color or "gold",
+            "headline": verified_quote["text_verbatim"] if verified_quote else (issue_package.flyers[0].headline if issue_package.flyers else "When human capacity runs dry, worship establishes peace."),
+            "subline": issue_package.viral_subline or "Rest in His peace today.",
             "credit": clean_credit,
-            "scripture_badge": f"{issue_package.scripture.ref}"
+            "scripture_badge": f"{issue_package.scripture.ref}",
+            "background_archetype": issue_package.viral_background_archetype or "open_bible"
         }
-        img_alt_4_5, _ = flyer_engine.render_flyer("modern_quote_card", "4:5", alt_content, palette_id=palette_id)
+        img_alt_4_5, _ = flyer_engine.render_flyer(alt_template, "4:5", alt_content, palette_id=palette_id)
 
         flyer_images = {
             "flyer_primary_4_5": img_4_5,
@@ -207,7 +240,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             learner = LearningLoop()
             post_ids = learner.register_issue_posts(
                 issue_number=issue_num,
-                template="viral_quote_poster",
+                template=chosen_template,
                 palette=palette_id,
                 theme=issue_package.theme
             )

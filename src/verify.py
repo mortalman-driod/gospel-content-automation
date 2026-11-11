@@ -346,3 +346,68 @@ def verify_preacher_quote(quote: str, transcript_text: str, threshold: float = 0
                 return True, best_ratio, clean_quote
                 
     return best_ratio >= threshold, best_ratio, clean_quote
+
+# -----------------------------------------------------------------------------
+# 100% De-AI & Humanization Verification Gate
+# -----------------------------------------------------------------------------
+
+BANNED_AI_WORDS = [
+    "clarion call", "spiritual lethargy", "lingering in shadows", "tapestry", "beacon",
+    "delve", "testament", "unlock", "fast-paced world", "embark", "harness",
+    "intimate sanctuary", "gentle sovereign", "inner storm", "cease striving", "myriad",
+    "juxtaposition", "pivotal", "cornerstone", "unleash", "elevate", "profound reminder",
+    "resonant", "multifaceted", "nuanced", "profound truth", "deep knowing", "quietude",
+    "clamour", "sacred space", "deep wellspring", "striving vs surrender",
+    "foster", "testament to", "delve into"
+]
+
+BANNED_OPENERS = [
+    "my friend", "my dear friend", "there are seasons", "in a world",
+    "in today's", "have you ever", "as believers", "sitting at 4 a.m."
+]
+
+def verify_de_ai_compliance(reflection: str, facebook_post: str = "") -> Tuple[bool, List[str], float]:
+    """
+    Evaluates text for AI fingerprints, clichés, and robotic monotony.
+    Returns (is_compliant, violations, ai_score).
+    ai_score ranges from 0.0 (completely human) to 1.0 (obviously AI).
+    """
+    import statistics
+    violations = []
+    penalties = 0.0
+
+    # 1. Banned Cliché Scanner
+    ref_lower = reflection.lower()
+    for word in BANNED_AI_WORDS:
+        if re.search(r'\b' + re.escape(word) + r'\b', ref_lower):
+            violations.append(f"AI Cliché Detected: '{word}'")
+            penalties += 0.25
+
+    # 2. Formulaic Opener Check
+    for opener in BANNED_OPENERS:
+        if ref_lower.strip().startswith(opener):
+            violations.append(f"Formulaic AI Opener Detected: Starts with '{opener}'")
+            penalties += 0.40
+
+    # 3. Sentence Length Uniformity (Burstiness Check)
+    sentences = [s.strip() for s in re.split(r'[.!?]+', reflection) if s.strip()]
+    if len(sentences) >= 4:
+        lengths = [len(s.split()) for s in sentences]
+        try:
+            std_dev = statistics.stdev(lengths)
+            if std_dev < 2.8:
+                violations.append(f"Robotic Uniform Sentence Length (StdDev {std_dev:.2f} < 2.8)")
+                penalties += 0.20
+        except Exception:
+            pass
+
+    # 4. Social Bot Emoji Clusters
+    if facebook_post:
+        if re.search(r'[🚀🔥🌍]{1,}', facebook_post):
+            violations.append("Bot Emoji Detected (rocket/fire/globe)")
+            penalties += 0.20
+
+    ai_score = min(1.0, penalties)
+    is_compliant = len(violations) == 0 and ai_score < 0.15
+    return is_compliant, violations, round(ai_score, 2)
+

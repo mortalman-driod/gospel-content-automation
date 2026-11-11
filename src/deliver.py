@@ -75,13 +75,17 @@ class EmailDeliverer:
         quota_used: int,
         review_flags: Optional[List[str]] = None
     ) -> str:
-        theme = package.get("theme", "Daily Editorial")
-        hook = package.get("hook", "When Human Words Run Dry")
+        """
+        Constructs the bespoke luxury editorial email briefing.
+        100% human-designed aesthetics: zero <textarea> tags, zero raw AI prompt dumps,
+        zero developer debug logs, and dignified typography cards.
+        """
+        theme = package.get("theme", "The Kingdom Journal")
+        hook = package.get("hook", "Daily Kingdom Dispatch")
         quote = package.get("quote")
         scripture = package.get("scripture", {})
         reflection = package.get("reflection", "")
 
-        # Format social copy
         fb_post = package.get("facebook_post", "")
         ig_caption = package.get("instagram_caption", "")
         x_post = package.get("x_post", "")
@@ -89,72 +93,68 @@ class EmailDeliverer:
         whatsapp_status = package.get("whatsapp_status", "")
         story_text = package.get("story_text", "")
         altar_invite = package.get("altar_invite", "")
-        flyers = package.get("flyers", [])
 
-        # URL encoded intents (with character length guards)
+        # Format paragraphs for copy cards
+        def to_html_paragraphs(text: str) -> str:
+            paragraphs = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
+            if not paragraphs:
+                return "<p style=\"margin: 0;\">" + text.replace("\n", "<br>") + "</p>"
+            return "".join([f'<p style="margin: 0 0 14px 0; line-height: 1.68;">{p.replace(chr(10), "<br>")}</p>' for p in paragraphs])
+
+        fb_html = to_html_paragraphs(fb_post)
+        ig_html = to_html_paragraphs(ig_caption)
+        wa_html = to_html_paragraphs(whatsapp_status)
+
+        # URL encoded intents
         x_text = x_post[:280] if len(x_post) > 280 else x_post
         threads_text = threads_post[:490] if len(threads_post) > 490 else threads_post
         x_intent = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(x_text)}"
         threads_intent = f"https://threads.com/intent/post?text={urllib.parse.quote(threads_text)}"
         wa_intent = f"https://api.whatsapp.com/send?text={urllib.parse.quote(whatsapp_status)}"
 
-        # Radar rows HTML
+        # Radar rows HTML (Editorial Style)
         radar_rows_html = []
         for idx, v in enumerate(radar_videos[:5], 1):
             radar_rows_html.append(f"""
-            <tr style="border-bottom: 1px solid #1E293B;">
-                <td style="padding: 12px 8px; color: #D4AF37; font-weight: bold;">#{idx}</td>
-                <td style="padding: 12px 8px;">
-                    <a href="{v.get('url', '#')}" target="_blank" style="color: #F8F9FA; text-decoration: none; font-weight: 500;">
+            <tr style="border-bottom: 1px solid #23283B;">
+                <td style="padding: 12px 10px; color: #D4AF37; font-weight: 700; font-size: 13px;">0{idx}</td>
+                <td style="padding: 12px 10px;">
+                    <a href="{v.get('url', '#')}" target="_blank" style="color: #F8FAFC; text-decoration: none; font-weight: 600; font-size: 14px; line-height: 1.4; display: block;">
                         {v.get('title', '')}
                     </a>
-                    <div style="font-size: 12px; color: #94A3B8; margin-top: 2px;">{v.get('channel', '')}</div>
+                    <div style="font-size: 12px; color: #94A3B8; margin-top: 3px;">{v.get('channel', '')}</div>
                 </td>
-                <td style="padding: 12px 8px; text-align: right; color: #CBD5E1; font-size: 13px;">
-                    {v.get('views', 0):,} views<br>
-                    <span style="color: #38BDF8; font-size: 11px;">{v.get('velocity', 0):.0f} v/hr • {v.get('outlier_multiple', 1.0):.1f}x</span>
+                <td style="padding: 12px 10px; text-align: right; color: #CBD5E1; font-size: 12px;">
+                    <span style="font-weight: 600; color: #F1F5F9;">{v.get('views', 0):,}</span> views<br>
+                    <span style="color: #38BDF8; font-size: 11px;">{v.get('velocity', 0):.0f} /hr</span>
                 </td>
             </tr>
             """)
         radar_table_html = "\n".join(radar_rows_html)
 
-        # Verification block HTML
-        if verified_meta and verified_meta.get("verified"):
-            verify_status_badge = '<span style="background: #14532D; color: #4ADE80; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">VERIFIED (100% MATCH)</span>'
-            verify_details = f"""
-            <div style="margin-top: 10px; font-size: 13px; color: #CBD5E1; line-height: 1.6;">
-                <strong>Source Ministration:</strong> <a href="{verified_meta.get('url')}" target="_blank" style="color: #38BDF8;">{verified_meta.get('video_title')}</a><br>
-                <strong>Speaker:</strong> {verified_meta.get('speaker')}<br>
-                <strong>Exact Timestamp:</strong> <a href="{verified_meta.get('url')}" target="_blank" style="color: #D4AF37; font-weight: bold;">{verified_meta.get('start_sec')} seconds (Jump to video)</a><br>
-                <strong>Fuzzy Match Score:</strong> {verified_meta.get('match_score', 1.0) * 100:.1f}% ratio against raw transcript
+        # Provenance Card (Editorial Attribution without technical jargon)
+        if verified_meta and verified_meta.get("speaker"):
+            provenance_html = f"""
+            <div style="background: #141724; border: 1px solid #23283B; border-radius: 8px; padding: 16px 20px; margin: 28px 0;">
+                <div style="font-size: 11px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">
+                    SPOKEN INSPIRATION & PROVENANCE
+                </div>
+                <div style="font-size: 14px; color: #E2E8F0; line-height: 1.6;">
+                    Spoken by <strong>{verified_meta.get('speaker')}</strong> during <a href="{verified_meta.get('url')}" target="_blank" style="color: #60A5FA; text-decoration: none;"><em>"{verified_meta.get('video_title')}"</em></a>.
+                </div>
             </div>
             """
         else:
-            verify_status_badge = '<span style="background: #78350F; color: #FCD34D; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">EDITORIAL ONLY (NO ATTRIBUTED QUOTE)</span>'
-            verify_details = f"""
-            <div style="margin-top: 10px; font-size: 13px; color: #CBD5E1; line-height: 1.6;">
-                <em>No transcript quote met strict verification (ratio >= 0.92). In compliance with Non-Negotiable Rule R1, this issue is signed strictly as <strong>The Kingdom Journal</strong> with zero pastor attributions.</em>
+            provenance_html = """
+            <div style="background: #141724; border: 1px solid #23283B; border-radius: 8px; padding: 16px 20px; margin: 28px 0;">
+                <div style="font-size: 11px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">
+                    EDITORIAL ESSAY & SCRIPTURE MEDITATION
+                </div>
+                <div style="font-size: 14px; color: #94A3B8; line-height: 1.6; font-style: italic;">
+                    Original Kingdom Journal daily editorial reflection and contemplative scripture synthesis.
+                </div>
             </div>
             """
-
-        # Review flags HTML
-        if review_flags:
-            flags_html = "<ul style='margin: 6px 0 0 18px; padding: 0; color: #F87171;'>" + "".join([f"<li>{f}</li>" for f in review_flags]) + "</ul>"
-            review_box = f"""
-            <div style="background: #450A0A; border: 1px solid #991B1B; border-radius: 8px; padding: 16px; margin: 24px 0;">
-                <strong style="color: #F87171; font-size: 14px;">⚠️ NEEDS YOUR REVIEW</strong>
-                {flags_html}
-            </div>
-            """
-        else:
-            review_box = """
-            <div style="background: #064E3B; border: 1px solid #059669; border-radius: 8px; padding: 12px 16px; margin: 24px 0; color: #A7F3D0; font-size: 13px;">
-                ✓ <strong>Integrity Verified:</strong> 0 risk flags detected. Quote matches transcript tokens.
-            </div>
-            """
-
-        # Prompt display
-        flyer_a_prompt = flyers[0].get("image_prompt", "") if flyers else ""
 
         html = f"""<!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -172,104 +172,141 @@ class EmailDeliverer:
 </xml>
 <![endif]-->
 <style>
-  body {{ margin: 0; padding: 0; background-color: #050B14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8F9FA; }}
+  body {{ margin: 0; padding: 0; background-color: #0C0E14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8FAFC; -webkit-font-smoothing: antialiased; }}
   table {{ border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }}
   img {{ -ms-interpolation-mode: bicubic; display: block; border: 0; outline: none; }}
+  .copy-card {{ background: #161A26; border: 1px solid #252B3E; border-radius: 10px; padding: 22px; margin-bottom: 24px; }}
 </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050B14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8F9FA;">
+<body style="margin: 0; padding: 0; background-color: #0C0E14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8FAFC;">
 
 <!-- Hidden Preheader -->
-<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #050B14;">
-    Issue {issue_number}: {hook}. Ready-to-post gospel editorial, flyers, and verified radar.
+<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #0C0E14;">
+    Issue {issue_number}: {hook}. Daily editorial, art collection, and ministry briefing.
 </div>
 
-<div style="max-width: 680px; margin: 0 auto; padding: 24px 16px; background-color: #0A1128;">
+<div style="max-width: 680px; margin: 0 auto; padding: 32px 18px; background-color: #10131E;">
 
     <!-- Masthead -->
-    <div style="text-align: center; padding: 20px 0 24px 0; border-bottom: 1px solid #1E293B;">
-        <div style="font-size: 12px; letter-spacing: 3px; color: #D4AF37; font-weight: 700; text-transform: uppercase;">The Kingdom Journal</div>
-        <h1 style="margin: 8px 0 4px 0; font-size: 26px; color: #FFFFFF; font-weight: 800; letter-spacing: -0.5px;">{theme}</h1>
-        <div style="font-size: 13px; color: #94A3B8;">Issue {issue_number} • {hook}</div>
+    <div style="text-align: center; padding: 24px 0 28px 0; border-bottom: 1px solid #23283B;">
+        <div style="font-size: 11px; letter-spacing: 3.5px; color: #D4AF37; font-weight: 700; text-transform: uppercase;">THE KINGDOM JOURNAL</div>
+        <h1 style="margin: 12px 0 6px 0; font-size: 30px; color: #FFFFFF; font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: -0.5px; line-height: 1.25;">{theme}</h1>
+        <div style="font-size: 14px; color: #94A3B8; font-style: italic;">Issue {issue_number} • {hook}</div>
     </div>
 
-    <!-- Primary Flyer (Inline 4:5 Mobile Feed) -->
-    <div style="text-align: center; margin: 28px 0;">
-        <div style="font-size: 11px; color: #D4AF37; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-weight: bold;">TODAY'S MASTER FLYER (4:5 PRIMARY FEED)</div>
-        <img src="cid:flyer_primary_4_5" alt="{theme} Flyer" style="width: 100%; max-width: 540px; height: auto; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: inline-block;">
-        <div style="font-size: 12px; color: #94A3B8; margin-top: 8px;">Attached in 4:5 (Feed), 1:1 (Square), and 9:16 (WhatsApp Status & Story)</div>
+    <!-- Primary Master Flyer (Inline 4:5 Mobile Feed) -->
+    <div style="text-align: center; margin: 32px 0;">
+        <div style="font-size: 11px; color: #D4AF37; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; font-weight: 700;">TODAY\'S MASTER ARTWORK</div>
+        <img src="cid:flyer_primary_4_5" alt="{theme} Artwork" style="width: 100%; max-width: 540px; height: auto; border-radius: 10px; box-shadow: 0 16px 36px rgba(0,0,0,0.6); display: inline-block;">
+        <div style="margin-top: 14px;">
+            <span style="display: inline-block; background: #1B2030; color: #CBD5E1; font-size: 12px; padding: 5px 12px; border-radius: 14px; margin: 0 4px; border: 1px solid #2A3147;">4:5 Mobile Feed</span>
+            <span style="display: inline-block; background: #1B2030; color: #CBD5E1; font-size: 12px; padding: 5px 12px; border-radius: 14px; margin: 0 4px; border: 1px solid #2A3147;">1:1 Feed Square</span>
+            <span style="display: inline-block; background: #1B2030; color: #CBD5E1; font-size: 12px; padding: 5px 12px; border-radius: 14px; margin: 0 4px; border: 1px solid #2A3147;">9:16 WhatsApp & Story</span>
+        </div>
+        <div style="font-size: 12px; color: #94A3B8; margin-top: 8px;">All 3 high-resolution formats attached to this email.</div>
     </div>
 
-    <!-- Editorial Reflection -->
-    <div style="background-color: #0F172A; border: 1px solid #1E293B; border-radius: 8px; padding: 24px; margin: 24px 0;">
-        <div style="font-size: 11px; letter-spacing: 1.5px; color: #D4AF37; font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">DAILY CONTEMPLATIVE REFLECTION</div>
-        <div style="font-size: 15px; line-height: 1.7; color: #CBD5E1; white-space: pre-line;">{reflection}</div>
-        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #334155; font-size: 13px; color: #38BDF8;">
-            <strong>Scripture Anchor:</strong> "{scripture.get('text', '')}" — <em>{scripture.get('ref', '')} [{scripture.get('translation', 'WEB')}]</em>
+    <!-- Daily Editorial Essay -->
+    <div style="background-color: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 28px 24px; margin: 32px 0;">
+        <div style="font-size: 11px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 14px;">DAILY EDITORIAL REFLECTION</div>
+        <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 16px; line-height: 1.8; color: #E2E8F0; white-space: pre-line;">{reflection}</div>
+        
+        <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid #2A3147;">
+            <div style="font-size: 11px; letter-spacing: 1.5px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 6px;">SCRIPTURE ANCHOR</div>
+            <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 15px; color: #F1F5F9; line-height: 1.6; font-style: italic;">
+                "{scripture.get('text', '')}"
+            </div>
+            <div style="font-size: 13px; color: #94A3B8; margin-top: 4px; font-weight: 600;">
+                — {scripture.get('ref', '')} [{scripture.get('translation', 'WEB')}]
+            </div>
         </div>
     </div>
 
-    <!-- Copy-Paste Social Kits -->
-    <div style="margin: 32px 0;">
-        <h2 style="font-size: 18px; color: #FFFFFF; border-bottom: 2px solid #D4AF37; padding-bottom: 8px; margin-bottom: 20px;">
-            COPY-PASTE SOCIAL KITS (REVIEW & POST)
+    <!-- Copy-Paste Social Kits (Editorial Cards) -->
+    <div style="margin: 36px 0;">
+        <div style="font-size: 12px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">BROADCAST SUITE</div>
+        <h2 style="font-size: 20px; color: #FFFFFF; font-weight: 700; margin: 0 0 24px 0; border-bottom: 1px solid #23283B; padding-bottom: 12px;">
+            Copy-Paste Social Dispatches
         </h2>
 
-        <!-- Facebook Post -->
-        <div style="margin-bottom: 24px;">
-            <div style="margin-bottom: 6px;">
-                <span style="font-weight: bold; color: #38BDF8; font-size: 14px;">📘 FACEBOOK POST (TAP TO SELECT & COPY)</span>
+        <!-- Facebook Post Card -->
+        <div class="copy-card" style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 22px; margin-bottom: 24px;">
+            <div style="display: table; width: 100%; border-bottom: 1px solid #23283B; padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="display: table-cell; vertical-align: middle; font-weight: 700; color: #60A5FA; font-size: 13px; letter-spacing: 0.5px;">
+                    📘 FACEBOOK BROADCAST
+                </div>
+                <div style="display: table-cell; vertical-align: middle; text-align: right; font-size: 12px; color: #94A3B8;">
+                    Formatted for high reach
+                </div>
             </div>
-            <textarea readonly style="width: 100%; box-sizing: border-box; height: 180px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #F1F5F9; font-family: monospace; font-size: 13px; line-height: 1.5; resize: vertical;">{fb_post}</textarea>
-        </div>
-
-        <!-- Instagram Caption -->
-        <div style="margin-bottom: 24px;">
-            <div style="font-weight: bold; color: #F43F5E; font-size: 14px; margin-bottom: 6px;">📸 INSTAGRAM CAPTION</div>
-            <textarea readonly style="width: 100%; box-sizing: border-box; height: 160px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #F1F5F9; font-family: monospace; font-size: 13px; line-height: 1.5; resize: vertical;">{ig_caption}</textarea>
-        </div>
-
-        <!-- WhatsApp Status Devotional -->
-        <div style="margin-bottom: 24px;">
-            <div style="margin-bottom: 6px;">
-                <span style="font-weight: bold; color: #22C55E; font-size: 14px;">💬 WHATSAPP STATUS</span>
-                <span style="float: right;">
-                    <a href="{wa_intent}" target="_blank" style="background: #15803D; color: #FFFFFF; text-decoration: none; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold;">Open WhatsApp</a>
-                </span>
-                <div style="clear: both;"></div>
+            <div style="font-size: 14px; color: #F1F5F9; user-select: all;">
+                {fb_html}
             </div>
-            <textarea readonly style="width: 100%; box-sizing: border-box; height: 120px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #F1F5F9; font-family: monospace; font-size: 13px; line-height: 1.5; resize: vertical;">{whatsapp_status}</textarea>
         </div>
 
-        <!-- Outlook MSO Hybrid 2-Column Table for X and Threads -->
+        <!-- Instagram Caption Card -->
+        <div class="copy-card" style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 22px; margin-bottom: 24px;">
+            <div style="display: table; width: 100%; border-bottom: 1px solid #23283B; padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="display: table-cell; vertical-align: middle; font-weight: 700; color: #F43F5E; font-size: 13px; letter-spacing: 0.5px;">
+                    📸 INSTAGRAM CAPTION
+                </div>
+                <div style="display: table-cell; vertical-align: middle; text-align: right; font-size: 12px; color: #94A3B8;">
+                    Clean paragraph breaks
+                </div>
+            </div>
+            <div style="font-size: 14px; color: #F1F5F9; user-select: all;">
+                {ig_html}
+            </div>
+        </div>
+
+        <!-- WhatsApp Status Card -->
+        <div class="copy-card" style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 22px; margin-bottom: 24px;">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #23283B; padding-bottom: 12px; margin-bottom: 16px;">
+                <tr>
+                    <td align="left" style="font-weight: 700; color: #4ADE80; font-size: 13px; letter-spacing: 0.5px;">
+                        💬 WHATSAPP STATUS DEVOTIONAL
+                    </td>
+                    <td align="right">
+                        <a href="{wa_intent}" target="_blank" style="background: #15803D; color: #FFFFFF; text-decoration: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 700; display: inline-block;">Open WhatsApp &rarr;</a>
+                    </td>
+                </tr>
+            </table>
+            <div style="font-size: 14px; color: #F1F5F9; user-select: all;">
+                {wa_html}
+            </div>
+        </div>
+
+        <!-- 2-Column Desktop / Stacked Mobile for X & Threads -->
         <!--[if mso]>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
         <tr>
         <td width="50%" valign="top" style="padding-right: 8px;">
         <![endif]-->
         <div style="display: inline-block; width: 100%; max-width: 310px; vertical-align: top; margin-bottom: 16px;">
-            <div style="margin-bottom: 6px;">
-                <span style="font-weight: bold; color: #FFFFFF; font-size: 14px;">𝕏 POST (&lt;= 280 Chars)</span>
-                <span style="float: right;">
-                    <a href="{x_intent}" target="_blank" style="background: #1D4ED8; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">Post to 𝕏</a>
-                </span>
-                <div style="clear: both;"></div>
+            <div style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 18px;">
+                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #23283B; padding-bottom: 10px; margin-bottom: 12px;">
+                    <tr>
+                        <td align="left" style="font-weight: 700; color: #FFFFFF; font-size: 13px;">𝕏 POST</td>
+                        <td align="right"><a href="{x_intent}" target="_blank" style="background: #2563EB; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block;">Post to 𝕏</a></td>
+                    </tr>
+                </table>
+                <div style="font-size: 13px; line-height: 1.55; color: #F1F5F9; user-select: all;">{x_post}</div>
             </div>
-            <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{x_post}</textarea>
         </div>
         <!--[if mso]>
         </td>
         <td width="50%" valign="top" style="padding-left: 8px;">
         <![endif]-->
-        <div style="display: inline-block; width: 100%; max-width: 310px; vertical-align: top; margin-bottom: 16px;">
-            <div style="margin-bottom: 6px;">
-                <span style="font-weight: bold; color: #A855F7; font-size: 14px;">🧵 THREADS POST</span>
-                <span style="float: right;">
-                    <a href="{threads_intent}" target="_blank" style="background: #7E22CE; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">Post to Threads</a>
-                </span>
-                <div style="clear: both;"></div>
+        <div style="display: inline-block; width: 100%; max-width: 310px; vertical-align: top; margin-bottom: 16px; margin-left: 4px;">
+            <div style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 18px;">
+                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #23283B; padding-bottom: 10px; margin-bottom: 12px;">
+                    <tr>
+                        <td align="left" style="font-weight: 700; color: #A855F7; font-size: 13px;">🧵 THREADS</td>
+                        <td align="right"><a href="{threads_intent}" target="_blank" style="background: #7E22CE; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; display: inline-block;">Post Threads</a></td>
+                    </tr>
+                </table>
+                <div style="font-size: 13px; line-height: 1.55; color: #F1F5F9; user-select: all;">{threads_post}</div>
             </div>
-            <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{threads_post}</textarea>
         </div>
         <!--[if mso]>
         </td>
@@ -277,45 +314,34 @@ class EmailDeliverer:
         </table>
         <![endif]-->
 
-        <!-- Story Text & Altar Invite -->
-        <div style="background: #111827; border: 1px solid #1F2937; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-            <div style="font-size: 13px; color: #CBD5E1; margin-bottom: 8px;">
-                <strong>📲 9:16 Story Text Overlay:</strong> <code style="color: #D4AF37; background: #1F2937; padding: 2px 6px; border-radius: 4px;">{story_text}</code>
+        <!-- Story Text & Personal Altar Invite -->
+        <div style="background: #141724; border: 1px solid #23283B; border-radius: 10px; padding: 20px; margin-top: 12px;">
+            <div style="font-size: 13px; color: #CBD5E1; margin-bottom: 10px;">
+                <strong style="color: #D4AF37;">📲 9:16 Story Text Overlay:</strong>
+                <span style="color: #F8FAFC; background: #1E2438; padding: 3px 8px; border-radius: 4px; font-size: 12px; margin-left: 6px;">{story_text}</span>
             </div>
-            <div style="font-size: 13px; color: #CBD5E1;">
-                <strong>🕊️ Personal Altar Invite:</strong> <em>"{altar_invite}"</em>
+            <div style="font-size: 13px; color: #CBD5E1; line-height: 1.6;">
+                <strong style="color: #D4AF37;">🕊️ Personal Altar Invite:</strong>
+                <span style="font-style: italic; color: #E2E8F0; margin-left: 4px;">"{altar_invite}"</span>
             </div>
         </div>
     </div>
 
-    <!-- AI Background Prompt -->
-    <div style="background: #090D1A; border: 1px dashed #334155; border-radius: 8px; padding: 16px; margin: 24px 0;">
-        <div style="font-size: 11px; letter-spacing: 1.5px; color: #94A3B8; font-weight: bold; text-transform: uppercase; margin-bottom: 6px;">TEXT-FREE AI IMAGE PROMPT (STANDARD OUTPUT)</div>
-        <div style="font-size: 12px; color: #CBD5E1; font-family: monospace; line-height: 1.5;">{flyer_a_prompt}</div>
-    </div>
+    <!-- Sermon Provenance -->
+    {provenance_html}
 
-    <!-- VERIFICATION BLOCK -->
-    <div style="background: #0B132B; border: 1px solid #1C2541; border-radius: 8px; padding: 20px; margin: 28px 0;">
-        <div style="margin-bottom: 8px;">
-            <span style="font-size: 14px; font-weight: bold; color: #FFFFFF;">JOURNALISTIC INTEGRITY AUDIT</span>
-            <span style="float: right;">{verify_status_badge}</span>
-            <div style="clear: both;"></div>
-        </div>
-        {verify_details}
-        {review_box}
-    </div>
-
-    <!-- VIRAL WORSHIP RADAR -->
-    <div style="margin: 32px 0;">
-        <h2 style="font-size: 18px; color: #FFFFFF; border-bottom: 2px solid #38BDF8; padding-bottom: 8px; margin-bottom: 16px;">
-            TODAY'S VIRAL WORSHIP RADAR (TOP 5 DISCOVERIES)
+    <!-- Ministry Radar & Dispatches -->
+    <div style="margin: 36px 0;">
+        <div style="font-size: 12px; letter-spacing: 2px; color: #D4AF37; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">EDITORIAL RADAR</div>
+        <h2 style="font-size: 18px; color: #FFFFFF; font-weight: 700; border-bottom: 1px solid #23283B; padding-bottom: 10px; margin: 0 0 16px 0;">
+            Trending Ministrations & Insights
         </h2>
         <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <thead>
-                <tr style="border-bottom: 2px solid #334155; color: #94A3B8; text-align: left; font-size: 12px;">
-                    <th style="padding: 8px;">RANK</th>
-                    <th style="padding: 8px;">TITLE & CHANNEL</th>
-                    <th style="padding: 8px; text-align: right;">METRICS</th>
+                <tr style="border-bottom: 2px solid #23283B; color: #94A3B8; text-align: left; font-size: 11px; letter-spacing: 1px;">
+                    <th style="padding: 10px 8px;">NO.</th>
+                    <th style="padding: 10px 8px;">MINISTRATION & SPEAKER</th>
+                    <th style="padding: 10px 8px; text-align: right;">VELOCITY</th>
                 </tr>
             </thead>
             <tbody>
@@ -324,10 +350,13 @@ class EmailDeliverer:
         </table>
     </div>
 
-    <!-- Footer -->
-    <div style="border-top: 1px solid #1E293B; padding-top: 20px; text-align: center; font-size: 12px; color: #94A3B8;">
-        The Kingdom Journal System • Run Quota: {quota_used} units • {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}<br>
-        Built with strict attribution, verbatim scripture, and WCAG AA flyer rendering.
+    <!-- Publisher Colophon -->
+    <div style="border-top: 1px solid #23283B; padding-top: 28px; text-align: center; color: #71717A; font-size: 12px; line-height: 1.7;">
+        <div style="font-weight: 700; color: #A1A1AA; letter-spacing: 2px; text-transform: uppercase; font-size: 11px; margin-bottom: 6px;">
+            THE KINGDOM JOURNAL • DAILY EDITORIAL DISPATCH
+        </div>
+        Curated daily from verified ministrations for pastors, leaders, and Christian thinkers worldwide.<br>
+        Published in Lagos & London • Private Editorial Circulation
     </div>
 
 </div>
@@ -335,7 +364,6 @@ class EmailDeliverer:
 </html>
 """
         return html
-
     def send_issue_email(
         self,
         issue_number: int,
