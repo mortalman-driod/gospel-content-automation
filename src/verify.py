@@ -311,3 +311,38 @@ def scan_risk_flags(text: str) -> List[str]:
 def format_timestamp_url(video_id: str, start_sec: int) -> str:
     """Creates timestamped YouTube link: youtu.be/<id>?t=<sec>"""
     return f"https://youtu.be/{video_id}?t={int(start_sec)}"
+
+
+def verify_preacher_quote(quote: str, transcript_text: str, threshold: float = 0.92) -> Tuple[bool, float, str]:
+    """
+    Direct string fuzzy verification of quote against raw transcript text.
+    Returns (is_verified, score, clean_quote).
+    """
+    clean_quote = normalize_text_for_match(quote)
+    clean_transcript = normalize_text_for_match(transcript_text)
+    
+    if not clean_quote or not clean_transcript:
+        return False, 0.0, quote
+        
+    if clean_quote in clean_transcript:
+        return True, 1.0, clean_quote
+        
+    words = clean_quote.split()
+    window_size = len(words)
+    transcript_words = clean_transcript.split()
+    
+    if len(transcript_words) < window_size:
+        ratio = difflib.SequenceMatcher(None, clean_quote, clean_transcript).ratio()
+        return ratio >= threshold, ratio, clean_quote
+        
+    best_ratio = 0.0
+    # Sliding window check
+    for i in range(len(transcript_words) - window_size + 1):
+        window_text = " ".join(transcript_words[i:i + window_size])
+        ratio = difflib.SequenceMatcher(None, clean_quote, window_text).ratio()
+        if ratio > best_ratio:
+            best_ratio = ratio
+            if best_ratio >= threshold:
+                return True, best_ratio, clean_quote
+                
+    return best_ratio >= threshold, best_ratio, clean_quote

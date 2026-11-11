@@ -61,7 +61,15 @@ CHANNEL_PREACHER_MAP = {
     "daystar": "Pastor Sam Adeyemi",
     "sam adeyemi": "Pastor Sam Adeyemi",
     "covenant christian centre": "Pastor Poju Oyemade",
-    "poju oyemade": "Pastor Poju Oyemade"
+    "poju oyemade": "Pastor Poju Oyemade",
+    "celebration church tv": "Pastor Emmanuel Iren",
+    "celebration church": "Pastor Emmanuel Iren",
+    "streams of joy": "Pastor Jerry Eze",
+    "streams of joy international": "Pastor Jerry Eze",
+    "jerry eze": "Pastor Jerry Eze",
+    "pastor jerry eze": "Pastor Jerry Eze",
+    "the god life club": "Pastor Chingtok Ishaku",
+    "chingtok ishaku": "Pastor Chingtok Ishaku"
 }
 
 def resolve_speaker_name(title: str, channel: str) -> str:
@@ -80,7 +88,7 @@ def resolve_speaker_name(title: str, channel: str) -> str:
     if match:
         return f"{match.group(1)} {match.group(2)}"
 
-    banned_channel_words = ["tv", "media", "ministries", "global", "church", "network", "assembly", "highlights", "channel", "broadcast"]
+    banned_channel_words = ["tv", "media", "ministries", "global", "church", "network", "assembly", "highlights", "channel", "broadcast", "music", "records", "sounds", "official", "sessions"]
     if any(bw in clean_channel for bw in banned_channel_words):
         return "The Kingdom Journal"
 

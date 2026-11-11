@@ -1,12 +1,12 @@
 """
 Milestone 5: Institutional Delivery Engine (src/deliver.py)
-Constructs responsive, audited HTML email briefing with:
+Constructs responsive, audited HTML email briefings with:
 1. Hidden preheader & plain text alternative.
-2. Inline 4:5 primary flyer + file attachments (4:5, 1:1, 9:16 primary, 4:5 alternate).
-3. Plain selectable copy-paste blocks for Facebook, IG, X, Threads, WhatsApp, Story.
-4. Transparent VERIFY section with real links, timestamps, view counts, and match scores.
-5. Live Radar table with real clickable links and outlier multiples.
-6. Genuine working share intents (X, Threads, WhatsApp) and zero fake buttons.
+2. Progressive JPEG optimized inline 4:5 primary flyer (< 180 KB payload).
+3. Outlook MSO-compliant hybrid tables (banning unsupported Flexbox in email body).
+4. WCAG AA verified color palettes (subtext >= 7.0:1 contrast).
+5. Transparent VERIFY section with real links, timestamps, view counts, and match scores.
+6. Genuine working share intents (X, Threads, WhatsApp) with zero fake buttons.
 """
 
 import email
@@ -14,6 +14,7 @@ import email.mime.application
 import email.mime.image
 import email.mime.multipart
 import email.mime.text
+import io
 import json
 import logging
 import os
@@ -38,6 +39,23 @@ def load_env():
                 v = v.strip().strip('"').strip("'")
                 if k and k not in os.environ:
                     os.environ[k] = v
+
+def optimize_email_asset(pil_img: Image.Image, max_kb: int = 180) -> bytes:
+    """
+    Compresses poster render to a progressive JPEG under max_kb for rapid email loading.
+    Eliminates multi-megabyte payloads that cause Gmail message clipping.
+    """
+    rgb_img = pil_img.convert("RGB")
+    quality = 85
+    buf = io.BytesIO()
+    rgb_img.save(buf, format="JPEG", quality=quality, optimize=True, progressive=True)
+    
+    while len(buf.getvalue()) > (max_kb * 1024) and quality > 40:
+        quality -= 5
+        buf = io.BytesIO()
+        rgb_img.save(buf, format="JPEG", quality=quality, optimize=True, progressive=True)
+        
+    return buf.getvalue()
 
 class EmailDeliverer:
     def __init__(self):
@@ -139,11 +157,25 @@ class EmailDeliverer:
         flyer_a_prompt = flyers[0].get("image_prompt", "") if flyers else ""
 
         html = f"""<!DOCTYPE html>
-<html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>The Kingdom Journal • Issue {issue_number}</title>
+<!--[if mso]>
+<xml>
+  <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+  </o:OfficeDocumentSettings>
+</xml>
+<![endif]-->
+<style>
+  body {{ margin: 0; padding: 0; background-color: #050B14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8F9FA; }}
+  table {{ border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }}
+  img {{ -ms-interpolation-mode: bicubic; display: block; border: 0; outline: none; }}
+</style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #050B14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #F8F9FA;">
 
@@ -165,13 +197,13 @@ class EmailDeliverer:
     <div style="text-align: center; margin: 28px 0;">
         <div style="font-size: 11px; color: #D4AF37; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; font-weight: bold;">TODAY'S MASTER FLYER (4:5 PRIMARY FEED)</div>
         <img src="cid:flyer_primary_4_5" alt="{theme} Flyer" style="width: 100%; max-width: 540px; height: auto; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); display: inline-block;">
-        <div style="font-size: 12px; color: #64748B; margin-top: 8px;">Attached in 4:5 (Feed), 1:1 (Square), and 9:16 (WhatsApp Status & Story)</div>
+        <div style="font-size: 12px; color: #94A3B8; margin-top: 8px;">Attached in 4:5 (Feed), 1:1 (Square), and 9:16 (WhatsApp Status & Story)</div>
     </div>
 
     <!-- Editorial Reflection -->
     <div style="background-color: #0F172A; border: 1px solid #1E293B; border-radius: 8px; padding: 24px; margin: 24px 0;">
         <div style="font-size: 11px; letter-spacing: 1.5px; color: #D4AF37; font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">DAILY CONTEMPLATIVE REFLECTION</div>
-        <div style="font-size: 15px; line-height: 1.7; color: #E2E8F0; white-space: pre-line;">{reflection}</div>
+        <div style="font-size: 15px; line-height: 1.7; color: #CBD5E1; white-space: pre-line;">{reflection}</div>
         <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #334155; font-size: 13px; color: #38BDF8;">
             <strong>Scripture Anchor:</strong> "{scripture.get('text', '')}" — <em>{scripture.get('ref', '')} [{scripture.get('translation', 'WEB')}]</em>
         </div>
@@ -185,7 +217,7 @@ class EmailDeliverer:
 
         <!-- Facebook Post -->
         <div style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="margin-bottom: 6px;">
                 <span style="font-weight: bold; color: #38BDF8; font-size: 14px;">📘 FACEBOOK POST (TAP TO SELECT & COPY)</span>
             </div>
             <textarea readonly style="width: 100%; box-sizing: border-box; height: 180px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #F1F5F9; font-family: monospace; font-size: 13px; line-height: 1.5; resize: vertical;">{fb_post}</textarea>
@@ -199,38 +231,58 @@ class EmailDeliverer:
 
         <!-- WhatsApp Status Devotional -->
         <div style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="margin-bottom: 6px;">
                 <span style="font-weight: bold; color: #22C55E; font-size: 14px;">💬 WHATSAPP STATUS</span>
-                <a href="{wa_intent}" target="_blank" style="background: #15803D; color: #FFFFFF; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold;">Open WhatsApp</a>
+                <span style="float: right;">
+                    <a href="{wa_intent}" target="_blank" style="background: #15803D; color: #FFFFFF; text-decoration: none; padding: 5px 12px; border-radius: 4px; font-size: 12px; font-weight: bold;">Open WhatsApp</a>
+                </span>
+                <div style="clear: both;"></div>
             </div>
             <textarea readonly style="width: 100%; box-sizing: border-box; height: 120px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 12px; color: #F1F5F9; font-family: monospace; font-size: 13px; line-height: 1.5; resize: vertical;">{whatsapp_status}</textarea>
         </div>
 
-        <!-- X (Twitter) & Threads -->
-        <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 280px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-weight: bold; color: #FFFFFF; font-size: 14px;">𝕏 POST (<= 280 Chars)</span>
-                    <a href="{x_intent}" target="_blank" style="background: #1D4ED8; color: #FFFFFF; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold;">Post to 𝕏</a>
-                </div>
-                <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{x_post}</textarea>
+        <!-- Outlook MSO Hybrid 2-Column Table for X and Threads -->
+        <!--[if mso]>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 24px;">
+        <tr>
+        <td width="50%" valign="top" style="padding-right: 8px;">
+        <![endif]-->
+        <div style="display: inline-block; width: 100%; max-width: 310px; vertical-align: top; margin-bottom: 16px;">
+            <div style="margin-bottom: 6px;">
+                <span style="font-weight: bold; color: #FFFFFF; font-size: 14px;">𝕏 POST (&lt;= 280 Chars)</span>
+                <span style="float: right;">
+                    <a href="{x_intent}" target="_blank" style="background: #1D4ED8; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">Post to 𝕏</a>
+                </span>
+                <div style="clear: both;"></div>
             </div>
-
-            <div style="flex: 1; min-width: 280px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span style="font-weight: bold; color: #A855F7; font-size: 14px;">🧵 THREADS POST</span>
-                    <a href="{threads_intent}" target="_blank" style="background: #7E22CE; color: #FFFFFF; text-decoration: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: bold;">Post to Threads</a>
-                </div>
-                <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{threads_post}</textarea>
-            </div>
+            <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{x_post}</textarea>
         </div>
+        <!--[if mso]>
+        </td>
+        <td width="50%" valign="top" style="padding-left: 8px;">
+        <![endif]-->
+        <div style="display: inline-block; width: 100%; max-width: 310px; vertical-align: top; margin-bottom: 16px;">
+            <div style="margin-bottom: 6px;">
+                <span style="font-weight: bold; color: #A855F7; font-size: 14px;">🧵 THREADS POST</span>
+                <span style="float: right;">
+                    <a href="{threads_intent}" target="_blank" style="background: #7E22CE; color: #FFFFFF; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: bold;">Post to Threads</a>
+                </span>
+                <div style="clear: both;"></div>
+            </div>
+            <textarea readonly style="width: 100%; box-sizing: border-box; height: 100px; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 10px; color: #F1F5F9; font-family: monospace; font-size: 12px; line-height: 1.4;">{threads_post}</textarea>
+        </div>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
 
         <!-- Story Text & Altar Invite -->
         <div style="background: #111827; border: 1px solid #1F2937; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-            <div style="font-size: 13px; color: #E5E7EB; margin-bottom: 8px;">
+            <div style="font-size: 13px; color: #CBD5E1; margin-bottom: 8px;">
                 <strong>📲 9:16 Story Text Overlay:</strong> <code style="color: #D4AF37; background: #1F2937; padding: 2px 6px; border-radius: 4px;">{story_text}</code>
             </div>
-            <div style="font-size: 13px; color: #E5E7EB;">
+            <div style="font-size: 13px; color: #CBD5E1;">
                 <strong>🕊️ Personal Altar Invite:</strong> <em>"{altar_invite}"</em>
             </div>
         </div>
@@ -244,9 +296,10 @@ class EmailDeliverer:
 
     <!-- VERIFICATION BLOCK -->
     <div style="background: #0B132B; border: 1px solid #1C2541; border-radius: 8px; padding: 20px; margin: 28px 0;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="margin-bottom: 8px;">
             <span style="font-size: 14px; font-weight: bold; color: #FFFFFF;">JOURNALISTIC INTEGRITY AUDIT</span>
-            {verify_status_badge}
+            <span style="float: right;">{verify_status_badge}</span>
+            <div style="clear: both;"></div>
         </div>
         {verify_details}
         {review_box}
@@ -272,7 +325,7 @@ class EmailDeliverer:
     </div>
 
     <!-- Footer -->
-    <div style="border-top: 1px solid #1E293B; padding-top: 20px; text-align: center; font-size: 12px; color: #64748B;">
+    <div style="border-top: 1px solid #1E293B; padding-top: 20px; text-align: center; font-size: 12px; color: #94A3B8;">
         The Kingdom Journal System • Run Quota: {quota_used} units • {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}<br>
         Built with strict attribution, verbatim scripture, and WCAG AA flyer rendering.
     </div>
@@ -295,7 +348,7 @@ class EmailDeliverer:
         dry_run: bool = False
     ) -> bool:
         """
-        Dispatches the complete issue briefing email via SMTP with inline flyer and attached PNGs.
+        Dispatches the complete issue briefing email via SMTP with progressive JPEG inline flyer and attached PNGs.
         If dry_run is True, writes email and assets to out/issue-<N>/ and returns True without sending.
         """
         html_content = self.build_email_html(
@@ -347,14 +400,12 @@ class EmailDeliverer:
         msg_related = email.mime.multipart.MIMEMultipart("related")
         msg_related.attach(email.mime.text.MIMEText(html_content, "html", "utf-8"))
 
-        # Attach inline flyer image
+        # Attach optimized progressive JPEG inline flyer (< 180 KB)
         if "flyer_primary_4_5" in flyer_images:
-            import io
-            buf = io.BytesIO()
-            flyer_images["flyer_primary_4_5"].save(buf, format="PNG")
-            img_part = email.mime.image.MIMEImage(buf.getvalue(), _subtype="png")
+            jpeg_bytes = optimize_email_asset(flyer_images["flyer_primary_4_5"], max_kb=180)
+            img_part = email.mime.image.MIMEImage(jpeg_bytes, _subtype="jpeg")
             img_part.add_header("Content-ID", "<flyer_primary_4_5>")
-            img_part.add_header("Content-Disposition", "inline", filename="flyer_primary_4_5.png")
+            img_part.add_header("Content-Disposition", "inline", filename="flyer_primary_4_5.jpg")
             msg_related.attach(img_part)
 
         msg_alt.attach(msg_related)
@@ -362,7 +413,6 @@ class EmailDeliverer:
 
         # Attach all flyer PNGs as standalone downloads
         for fname, img in flyer_images.items():
-            import io
             buf = io.BytesIO()
             img.save(buf, format="PNG")
             part = email.mime.application.MIMEApplication(buf.getvalue(), Name=f"{fname}.png")

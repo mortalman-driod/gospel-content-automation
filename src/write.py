@@ -1,32 +1,27 @@
 """
-Milestone 4: The Kingdom Journal Writing Engine (src/write.py)
-Generates high-class, contemplative editorial copy strictly validated against a Pydantic JSON schema.
-Enforces:
-1. Dynamic 6-Framework Storytelling Model (Paradigm Shift, Everyday Tension, Diagnosis, Biblical Drama, Prophetic, Sanctuary).
-2. Strict prohibition of repetitive tropes (e.g. no '4 a.m. kitchen counter' repetition).
-3. Inspiration-only ministration rule: never output YouTube channel or video broadcast titles in consumer copy.
-4. Clean preacher attribution ('— Apostle Joshua Selman' or 'The Kingdom Journal') for verified verbatim quotes.
-5. Verbatim Scripture retrieved from scripture engine and validated against biblical canon.
-6. Structured viral flyer copy generation (headline_pre, accent_word, accent_color, subline, background_archetype).
-7. Distinct, copy-paste ready platform text (Facebook, IG, X, Threads, WhatsApp, Story).
+Milestone 4: Institutional Editorial & Copywriting Engine (src/write.py)
+Transforms verified transcripts and thematic hints into high-converting,
+pastorally rich social assets across 6 rotating storytelling frameworks.
+Strictly eliminates all bot hallmarks, channel/program mentions, and enforces SSOT quote parity.
 """
 
 import json
 import logging
 import os
 import re
+import urllib.parse
 import urllib.request
 from pathlib import Path
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 from src.verify import validate_scripture_reference, scan_risk_flags
+from src.scripture import get_scripture_for_theme
 from src.design.backgrounds import generate_text_free_image_prompt
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 logger = logging.getLogger("kingdom_journal.write")
 
-# Load environment
 def load_env():
     env_file = BASE_DIR / ".env"
     if env_file.is_file():
@@ -133,7 +128,7 @@ class QuotePayload(BaseModel):
     start_sec: int = Field(description="Start time in seconds")
 
 class ScripturePayload(BaseModel):
-    ref: str = Field(description="Scripture reference e.g. Romans 8:26")
+    ref: str = Field(description="Scripture reference e.g. Hebrews 11:1")
     text: str = Field(description="Verbatim scripture text")
     translation: str = Field(default="WEB", description="Bible translation code")
 
@@ -143,6 +138,12 @@ class FlyerSpec(BaseModel):
     subline: Optional[str] = None
     credit: str
     image_prompt: str
+    scripture_badge: Optional[str] = None
+    scripture_ref: Optional[str] = None
+    headline_pre: Optional[str] = None
+    accent_word: Optional[str] = None
+    accent_color: Optional[str] = "yellow"
+    background_archetype: Optional[str] = "cross_sunrise"
 
 class IssuePackage(BaseModel):
     theme: str
@@ -213,23 +214,26 @@ class WritingEngine:
                 continue
         return None
 
-    def _fetch_scripture(self, preferred_ref: Optional[str] = None) -> ScripturePayload:
-        """Retrieves verified scripture from local scripture engine."""
-        import sys
-        sys.path.insert(0, str(BASE_DIR / "scripts"))
+    def _fetch_scripture(
+        self,
+        theme: str = "",
+        quote_text: str = "",
+        preferred_ref: Optional[str] = None
+    ) -> ScripturePayload:
+        """Retrieves verified scripture dynamically matched to sermon theme with zero monoculture defaults."""
         try:
-            import scripture_engine
-            res = scripture_engine.get_scripture(preferred_ref or "Romans 8:26")
+            res = get_scripture_for_theme(theme=theme, quote_text=quote_text, preferred_ref=preferred_ref)
             is_valid, canon_ref, _ = validate_scripture_reference(res["reference"])
             return ScripturePayload(
                 ref=canon_ref if is_valid else res["reference"],
                 text=res["text"],
                 translation=res.get("translation", "WEB")
             )
-        except Exception:
+        except Exception as e:
+            logger.warning(f"Scripture retrieval fallback: {e}")
             return ScripturePayload(
-                ref="Romans 8:26",
-                text="In the same way, the Spirit also helps our weaknesses, for we don't know how to pray as we ought; but the Spirit himself makes intercession for us with groanings which can't be uttered.",
+                ref="Psalm 119:105",
+                text="Your word is a lamp to my feet, and a light for my path.",
                 translation="WEB"
             )
 
@@ -253,9 +257,6 @@ class WritingEngine:
         if verified_quote:
             quote_text = verified_quote["text_verbatim"]
             speaker = verified_quote["speaker"]
-            video_title = verified_quote.get("video_title", "Live Ministration")
-            url = verified_quote.get("url", "")
-            start_sec = verified_quote.get("start_sec", 0)
             quote_instruction = f"""
 VERIFIED SPOKEN INSIGHT:
 - Exact Verbatim Line: "{quote_text}"
@@ -279,7 +280,8 @@ NO VERIFIED QUOTE AVAILABLE:
             flyer_credit = "The Kingdom Journal"
             headline_for_flyer = "When human striving ends, sovereign peace takes over."
 
-        scripture = self._fetch_scripture()
+        # Dynamically fetch scripture contextually matched to today's sermon theme
+        scripture = self._fetch_scripture(theme=clean_theme, quote_text=headline_for_flyer)
 
         prompt = f"""You are the Executive Editor of 'The Kingdom Journal'—a high-class, contemplative daily publication for Nigerian and global Christian believers.
 Theme: {clean_theme}
@@ -304,11 +306,11 @@ VOICE & EDITORIAL RULES:
 8. WhatsApp Status: Personal, warm, ending with a call to forward to a friend facing pressure.
 9. Story Text: Punchy, visual, strictly <= 20 words.
 10. Viral Flyer Copy:
-    - viral_headline_pre: The hook phrase leading into the punchline (e.g. 'There is a dimension of glory you cannot touch until your' or 'God\'s Word is not an argument; it is your daily')
-    - viral_accent_word: The dominant contrast punchline word or phrase (e.g. 'mind opens.' or 'life & peace.' or 'conqueror!')
+    - viral_headline_pre: The hook phrase leading into the punchline
+    - viral_accent_word: The dominant contrast punchline word or phrase
     - viral_accent_color: 'yellow' or 'red'
-    - viral_subline: 2-3 lines of rhythmic, comforting pastoral wisdom (e.g. 'When human striving ends, divine illumination takes over. Stop fighting the locked door.')
-    - viral_background_archetype: Choose the best matching visual: 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', or 'study_desk'.
+    - viral_subline: 2-3 lines of rhythmic, comforting pastoral wisdom
+    - viral_background_archetype: Choose from 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk'.
 
 RETURN STRICT JSON matching this schema:
 {{
@@ -345,27 +347,13 @@ RETURN STRICT JSON matching this schema:
                             start_sec=verified_quote.get("start_sec", 0)
                         )
 
-                    # Build flyers specs
-                    flyers = [
-                        FlyerSpec(
-                            template="viral_quote_poster",
-                            headline=headline_for_flyer,
-                            subline=raw_json.get("viral_subline", "When human striving ends, worship takes over."),
-                            credit=flyer_credit,
-                            image_prompt=generate_text_free_image_prompt(theme_hint, palette_id)
-                        ),
-                        FlyerSpec(
-                            template="modern_quote_card",
-                            headline=headline_for_flyer,
-                            subline=None,
-                            credit=flyer_credit,
-                            image_prompt=generate_text_free_image_prompt(theme_hint, palette_id)
-                        )
-                    ]
-
-                    # Parse viral fields
+                    # Parse viral fields with SSOT synchronization
                     v_pre = raw_json.get("viral_headline_pre")
                     v_acc = raw_json.get("viral_accent_word")
+                    v_col = raw_json.get("viral_accent_color", "yellow")
+                    v_sub = raw_json.get("viral_subline", "When human striving ends, divine illumination takes over.")
+                    v_arch = raw_json.get("viral_background_archetype", "cross_sunrise")
+
                     if not v_pre or not v_acc:
                         words = headline_for_flyer.split()
                         if len(words) > 3:
@@ -375,25 +363,55 @@ RETURN STRICT JSON matching this schema:
                             v_pre = words[0] if words else "Trust in God"
                             v_acc = "always."
 
+                    # Build flyers specs carrying dynamic scripture anchor
+                    flyers = [
+                        FlyerSpec(
+                            template="viral_quote_poster",
+                            headline=headline_for_flyer,
+                            subline=v_sub,
+                            credit=flyer_credit,
+                            image_prompt=generate_text_free_image_prompt(theme_hint, palette_id),
+                            scripture_badge=scripture.ref,
+                            scripture_ref=scripture.ref,
+                            headline_pre=v_pre,
+                            accent_word=v_acc,
+                            accent_color=v_col,
+                            background_archetype=v_arch
+                        ),
+                        FlyerSpec(
+                            template="modern_quote_card",
+                            headline=headline_for_flyer,
+                            subline=None,
+                            credit=flyer_credit,
+                            image_prompt=generate_text_free_image_prompt(theme_hint, palette_id),
+                            scripture_badge=scripture.ref,
+                            scripture_ref=scripture.ref,
+                            headline_pre=v_pre,
+                            accent_word=v_acc,
+                            accent_color=v_col,
+                            background_archetype=v_arch
+                        )
+                    ]
+
                     pkg = IssuePackage(
                         theme=clean_theme_title(raw_json.get("theme", clean_theme)),
                         hook=raw_json.get("hook", "When human words run dry"),
                         quote=q_obj,
                         scripture=scripture,
-                        reflection=raw_json.get("reflection", "There are seasons where human vocabulary reaches its end..."),
+                        reflection=raw_json.get("reflection", "In the stillness of prayer, we discover that God's grace speaks louder than our fears."),
                         facebook_post=raw_json.get("facebook_post", ""),
                         instagram_caption=raw_json.get("instagram_caption", ""),
-                        x_post=raw_json.get("x_post", "When striving stops, worship takes over."),
+                        x_post=raw_json.get("x_post", "When striving ends, prayer begins."),
                         threads_post=raw_json.get("threads_post", ""),
                         whatsapp_status=raw_json.get("whatsapp_status", ""),
-                        story_text=raw_json.get("story_text", "Rest in His presence today."),
-                        altar_invite=raw_json.get("altar_invite", "Take a quiet moment today to speak with the Father."),
+                        story_text=raw_json.get("story_text", "Rest in His peace."),
+                        altar_invite=raw_json.get("altar_invite", "Take a quiet moment right where you are to turn your burdens over to Jesus."),
                         flyers=flyers,
                         viral_headline_pre=v_pre,
                         viral_accent_word=v_acc,
-                        viral_accent_color=raw_json.get("viral_accent_color", "yellow"),
-                        viral_subline=raw_json.get("viral_subline", "When human striving ends, divine illumination takes over."),
-                        viral_background_archetype=raw_json.get("viral_background_archetype", "cross_sunrise")
+                        viral_accent_color=v_col,
+                        viral_subline=v_sub,
+                        viral_background_archetype=v_arch
                     )
                     return pkg
                 except Exception as e:
@@ -440,23 +458,6 @@ RETURN STRICT JSON matching this schema:
             f"{tags}"
         )
 
-        flyers = [
-            FlyerSpec(
-                template="viral_quote_poster",
-                headline=headline,
-                subline="When human striving ends, divine illumination takes over.",
-                credit=credit,
-                image_prompt=generate_text_free_image_prompt(theme, palette_id)
-            ),
-            FlyerSpec(
-                template="modern_quote_card",
-                headline="They want public stages. / God crowns secret surrender.",
-                subline="Rest in His peace today.",
-                credit=credit,
-                image_prompt=generate_text_free_image_prompt(theme, palette_id)
-            )
-        ]
-
         words = headline.split()
         if len(words) > 3:
             v_pre = " ".join(words[:-2])
@@ -465,23 +466,68 @@ RETURN STRICT JSON matching this schema:
             v_pre = "There is divine glory in"
             v_acc = "quiet surrender."
 
+        flyers = [
+            FlyerSpec(
+                template="viral_quote_poster",
+                headline=headline,
+                subline="When human striving ends, divine illumination takes over.",
+                credit=credit,
+                image_prompt=generate_text_free_image_prompt(theme, palette_id),
+                scripture_badge=scripture.ref,
+                scripture_ref=scripture.ref,
+                headline_pre=v_pre,
+                accent_word=v_acc,
+                accent_color="yellow",
+                background_archetype="cross_sunrise"
+            ),
+            FlyerSpec(
+                template="modern_quote_card",
+                headline="They want public stages. / God crowns secret surrender.",
+                subline="Rest in His peace today.",
+                credit=credit,
+                image_prompt=generate_text_free_image_prompt(theme, palette_id),
+                scripture_badge=scripture.ref,
+                scripture_ref=scripture.ref,
+                headline_pre=v_pre,
+                accent_word=v_acc,
+                accent_color="yellow",
+                background_archetype="cross_sunrise"
+            )
+        ]
+
         return IssuePackage(
             theme=theme,
             hook="When Human Words Run Dry",
             quote=q_payload,
             scripture=scripture,
             reflection=(
-                f"We often imagine that spiritual authority is forged in public volume. But truth is quieter than that. "
-                f"In the middle of demanding schedules and unfinished tasks, God invites us into an interior stillness. "
-                f"Today, release the anxiety of trying to orchestrate your own vindication. Rest in His sovereign keeping."
+                f"I used to believe that faith meant having an answer for every crisis. But the older I get in God, "
+                f"the more I realize that peace is found when our questions run out of breath.\n\n"
+                f"In {scripture.ref}, God promises that His word remains our lamp and guide. Not a spotlight ten miles ahead, "
+                f"but a gentle lamp for the very next step. Stop demanding to see the whole horizon. "
+                f"Trust the Shepherd for today."
             ),
             facebook_post=fb,
-            instagram_caption=fb,
-            x_post="When human striving ends, sovereign peace takes over. Rest in Him today. #KingdomMindset",
-            threads_post="A quiet thought for today: authority is never forged in public stages. It is given in secret.",
-            whatsapp_status="Grace and peace to you today my friend. When pressure rises, worship takes over. Have a blessed day!",
-            story_text="Be still, and remember who sits on the throne.",
-            altar_invite="If you have been running on your own strength, pause right now and hand the steering wheel to Jesus.",
+            instagram_caption=(
+                f"You don't need louder striving today. You need quiet surrender.\n\n"
+                f"\"{headline}\" {credit}\n\n"
+                f"Scripture: {scripture.ref} — \"{scripture.text}\"\n\n"
+                f"Drop an Amen if you are resting in His timing today.\n\n"
+                f"{tags}"
+            ),
+            x_post=f"{headline} {credit} #TheKingdomJournal"[:280],
+            threads_post=(
+                f"A profound lesson from today's secret place: {headline}\n\n"
+                f"True spiritual strength is rarely loud. It is the steady conviction that God is at work even when we cannot see the outcome."
+            ),
+            whatsapp_status=(
+                f"🕊️ *Morning Devotional • The Kingdom Journal*\n\n"
+                f"\"{headline}\"\n\n"
+                f"📖 *{scripture.ref}:* \"{scripture.text}\"\n\n"
+                f"Whatever feels heavy this morning, hand it over to Him. Share this with someone who needs peace today."
+            ),
+            story_text="God is working behind the scenes for you.",
+            altar_invite="If you need peace today, pause where you are: 'Lord Jesus, I surrender my striving into Your hands.'",
             flyers=flyers,
             viral_headline_pre=v_pre,
             viral_accent_word=v_acc,

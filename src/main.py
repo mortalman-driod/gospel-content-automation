@@ -71,7 +71,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         # -------------------------------------------------------------
         logger.info("\n--- [STAGE 1] DISCOVERING PROVEN-VIRAL MINISTRATIONS ---")
         discover_engine = DiscoverEngine()
-        discovery_res = discover_engine.run_discovery()
+        discovery_res = discover_engine.run_discovery(issue_number=issue_num)
         top_videos = discovery_res.get("top_5", [])
         quota_used = discovery_res.get("quota_units_used", 0)
 
@@ -202,15 +202,16 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         # -------------------------------------------------------------
         # MILESTONE 7: Register Learning Loop Rows
         # -------------------------------------------------------------
-        logger.info("\n--- [STAGE 7] REGISTERING PERFORMANCE TRACKING IDS ---")
-        learner = LearningLoop()
-        post_ids = learner.register_issue_posts(
-            issue_number=issue_num,
-            template="viral_quote_poster",
-            palette=palette_id,
-            theme=issue_package.theme
-        )
-        logger.info(f"Registered performance post tracking IDs: {', '.join(post_ids[:3])}...")
+        if not dry_run:
+            logger.info("\n--- [STAGE 7] REGISTERING PERFORMANCE TRACKING IDS ---")
+            learner = LearningLoop()
+            post_ids = learner.register_issue_posts(
+                issue_number=issue_num,
+                template="viral_quote_poster",
+                palette=palette_id,
+                theme=issue_package.theme
+            )
+            logger.info(f"Registered performance post tracking IDs: {', '.join(post_ids[:3])}...")
 
         logger.info("\n" + "=" * 70)
         logger.info(f"THE KINGDOM JOURNAL ISSUE #{issue_num} COMPLETED SUCCESSFULLY!")

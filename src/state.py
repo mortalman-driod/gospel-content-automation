@@ -1,7 +1,7 @@
 """
 Milestone 6: State & Operations Engine (src/state.py)
 Manages single source of truth (data/state.json), idempotency locks,
-36-hour watchdog timer, and 30-day deduplication memory (data/used.json).
+36-hour watchdog timer, and 30-day deduplication memory (data/used.json) with automated pruning.
 """
 
 import json
@@ -86,6 +86,21 @@ class StateManager:
             pass
         return None
 
+    def prune_used_history(self, days_retention: int = 30):
+        """
+        Prunes historical entries older than days_retention from used.json.
+        Guarantees deduplication without unbounded file growth.
+        """
+        cutoff_date = (datetime.now(timezone.utc) - timedelta(days=days_retention)).strftime("%Y-%m-%d")
+        history = self.used_data.get("history", [])
+        fresh_history = [h for h in history if h.get("date", "") >= cutoff_date]
+        self.used_data["history"] = fresh_history
+
+        active_vids = {h["video_id"] for h in fresh_history if h.get("video_id")}
+        self.used_data["used_video_ids"] = [
+            vid for vid in self.used_data.get("used_video_ids", []) if vid in active_vids
+        ]
+
     def record_success(
         self,
         issue_number: int,
@@ -130,6 +145,9 @@ class StateManager:
             "video_id": video_id,
             "theme": theme
         })
+
+        # Prune entries older than 30 days
+        self.prune_used_history(days_retention=30)
 
         self.used_file.write_text(json.dumps(self.used_data, indent=2), encoding="utf-8")
         logger.info(f"State successfully committed for Issue {issue_number} on {today_str}.")

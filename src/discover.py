@@ -288,8 +288,8 @@ class DiscoverEngine:
         candidates.sort(key=lambda x: x["composite_score"], reverse=True)
         return candidates
 
-    def run_discovery(self) -> dict:
-        """Executes full discovery pass and returns top 5 with metrics and quota report."""
+    def run_discovery(self, issue_number: int = 1) -> dict:
+        """Executes full discovery pass with rotated search queries and returns top 5 with metrics."""
         print(f"[DISCOVER] Starting discovery run across {len(self.channels)} curated channels...")
         all_video_ids = []
 
@@ -300,9 +300,10 @@ class DiscoverEngine:
                 vids = self.fetch_recent_channel_videos(ch_id, max_results=6)
                 all_video_ids.extend(vids)
 
-        # 2. Discovery search (1 call to keep quota minimal, costs 100 units)
-        query = self.queries[0] if self.queries else "worship ministration live gospel 2026"
-        print(f"[DISCOVER] Running search discovery for: '{query}'...")
+        # 2. Discovery search rotated deterministically by issue_number
+        query_idx = issue_number % len(self.queries) if self.queries else 0
+        query = self.queries[query_idx] if self.queries else "worship ministration live gospel 2026"
+        print(f"[DISCOVER] Running search discovery for query [{query_idx+1}/{len(self.queries)}]: '{query}'...")
         search_vids = self.discovery_search(query, max_results=8)
         all_video_ids.extend(search_vids)
 

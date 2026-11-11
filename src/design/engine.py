@@ -510,7 +510,7 @@ class FlyerEngine:
         """Renders clean floating white card over vibrant background with oversized quotation badge."""
         headline = content.get("headline", "")
         credit = content.get("credit", "The Kingdom Journal")
-        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Psalm 119:105"
 
         # Prepare base image
         img = bg.convert("RGBA")
@@ -641,7 +641,7 @@ class FlyerEngine:
         s_left, s_top, s_right, s_bottom = safe_box
         headline = content.get("headline", "")
         credit = content.get("credit", "The Kingdom Journal")
-        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Psalm 119:105"
 
         img = bg.convert("RGBA")
         draw = ImageDraw.Draw(img)
@@ -693,7 +693,7 @@ class FlyerEngine:
         """Renders magazine-style left-aligned quote over warm contemplative workspace photograph."""
         headline = content.get("headline", "")
         credit = content.get("credit", "The Kingdom Journal")
-        scripture = content.get("scripture_badge", "Romans 8:26 (WEB)")
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Psalm 119:105"
 
         img = bg.convert("RGBA")
         draw = ImageDraw.Draw(img)
@@ -762,7 +762,7 @@ class FlyerEngine:
         accent_word = content.get("accent_word")
         accent_color = content.get("accent_color", "yellow").lower() # "yellow" or "red"
         subline = content.get("subline", "When human striving ends, divine illumination takes over.")
-        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Romans 8:26"
+        scripture = content.get("scripture_badge") or content.get("scripture_ref") or "Psalm 119:105"
         if "[" in scripture:
             scripture = scripture.split("[")[0].strip()
 
