@@ -312,7 +312,7 @@ VOICE & EDITORIAL RULES:
 
 RETURN STRICT JSON matching this schema:
 {{
-  "theme": "{theme_hint}",
+  "theme": "{clean_theme}",
   "hook": "Sharp hook under 8 words",
   "quote": {{"text": "...", "speaker": "...", "video_title": "...", "url": "...", "start_sec": 0}} or null,
   "reflection": "100-130 word first-person contemplative essay following today's narrative framework",
@@ -376,7 +376,7 @@ RETURN STRICT JSON matching this schema:
                             v_acc = "always."
 
                     pkg = IssuePackage(
-                        theme=raw_json.get("theme", theme_hint),
+                        theme=clean_theme_title(raw_json.get("theme", clean_theme)),
                         hook=raw_json.get("hook", "When human words run dry"),
                         quote=q_obj,
                         scripture=scripture,
