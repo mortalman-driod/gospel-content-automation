@@ -165,7 +165,10 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             "subline": issue_package.viral_subline or "When human striving ends, divine illumination takes over.",
             "credit": clean_credit,
             "scripture_badge": f"{issue_package.scripture.ref}",
-            "background_archetype": issue_package.viral_background_archetype or "cross_sunrise"
+            "background_archetype": issue_package.viral_background_archetype or "cross_sunrise",
+            "emotional_tone": getattr(issue_package, "emotional_tone", None),
+            "emphasized_words": getattr(issue_package, "emphasized_words", None),
+            "typography_style": getattr(issue_package, "typography_style", None),
         }
 
         # Dynamic human archetype selection
@@ -180,8 +183,9 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         img_1_1, meta_1_1 = flyer_engine.render_flyer(chosen_template, "1:1", primary_content, palette_id=palette_id)
         img_9_16, meta_9_16 = flyer_engine.render_flyer(chosen_template, "9:16", primary_content, palette_id=palette_id)
 
-        # Render Alternate Flyer in 4:5 using a complementary human archetype
+        # Render Alternate Flyer in 4:5 using a complementary art direction
         alt_template = "heritage_serif" if chosen_template != "heritage_serif" else "heavy_impact"
+        alt_bg = "open_bible" if primary_content["background_archetype"] != "open_bible" else "royal_crown"
         alt_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
@@ -190,7 +194,9 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             "subline": issue_package.viral_subline or "Rest in His peace today.",
             "credit": clean_credit,
             "scripture_badge": f"{issue_package.scripture.ref}",
-            "background_archetype": issue_package.viral_background_archetype or "open_bible"
+            "background_archetype": alt_bg,
+            "emotional_tone": getattr(issue_package, "emotional_tone", None),
+            "emphasized_words": getattr(issue_package, "emphasized_words", None),
         }
         img_alt_4_5, _ = flyer_engine.render_flyer(alt_template, "4:5", alt_content, palette_id=palette_id)
 

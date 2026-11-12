@@ -53,9 +53,8 @@ def clean_theme_title(raw_title: str) -> str:
 MODELS_CASCADE = [
     "gemini-2.5-flash",
     "gemini-flash-latest",
-    "gemini-2.5-flash-lite",
-    "gemini-flash-lite-latest",
-    "gemini-3-flash-preview"
+    "gemini-3-flash-preview",
+    "gemini-flash-lite-latest"
 ]
 
 STORYTELLING_FRAMEWORKS = [
@@ -174,6 +173,9 @@ class IssuePackage(BaseModel):
     viral_subline: Optional[str] = Field(default=None, description="2-3 line comforting rhythmic pastoral subline")
     viral_background_archetype: Optional[str] = Field(default="cross_sunrise", description="Archetype canvas")
     flyer_template: Optional[str] = Field(default="asymmetric_split", description="Template: asymmetric_split, heritage_serif, heavy_impact, quiet_light")
+    emotional_tone: Optional[str] = Field(default=None, description="Quote emotion: 'encouragement', 'authority', 'reflection', 'grace', or 'victory'")
+    emphasized_words: Optional[List[str]] = Field(default=None, description="1-3 verbatim emotionally critical words/short phrase appearing inside the quote for contrasting display treatment")
+    typography_style: Optional[str] = Field(default=None, description="Optional art style: encouragement_brush, authority_condensed, reflection_editorial, grace_calligraphy, victory_statement")
 
     @field_validator("x_post")
     def check_x_length(cls, v):

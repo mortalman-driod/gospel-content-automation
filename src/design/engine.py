@@ -20,7 +20,23 @@ from .contrast import (
     relative_luminance,
     apply_film_grain
 )
-from .text_layout import fit_headline, load_font, wrap_text_to_width, draw_brush_underline
+from .text_layout import (
+    fit_headline,
+    load_font,
+    wrap_text_to_width,
+    draw_brush_underline,
+    load_art_font,
+    draw_supersampled_brush_arc,
+    draw_painterly_strip,
+    draw_optical_text,
+    draw_pill_badge,
+    fit_mixed_headline,
+    draw_mixed_headline,
+)
+from .typography_system import (
+    select_art_direction,
+    extract_emphasized_words,
+)
 from .backgrounds import (
     generate_procedural_background,
     load_atmospheric_background,
@@ -115,7 +131,8 @@ class FlyerEngine:
                 if arch_path.is_file():
                     try:
                         with Image.open(arch_path) as raw_bg:
-                            bg = self._crop_to_aspect(raw_bg.convert("RGB"), width, height)
+                            focal_x = 0.27 if archetype == "mountain_summit" else 0.5
+                            bg = self._crop_to_aspect(raw_bg.convert("RGB"), width, height, focal_x=focal_x)
                             bg_loaded = True
                     except Exception as e:
                         logger.warning(f"Failed loading archetype bg {arch_path}: {e}")
@@ -123,8 +140,9 @@ class FlyerEngine:
                 subject_hint = content.get("subject_hint") or content.get("headline", "")
                 bg = load_atmospheric_background(width, height, palette, preferred_subject=subject_hint)
 
-        # Apply authentic 35mm film grain filter to neutralize digital/AI plastic sheen
-        bg = apply_film_grain(bg, intensity=0.18)
+        # Apply 35mm grain pre-pass only for legacy templates; art-directed templates apply subtle finish post-text
+        if template_name not in ("viral_quote_poster", "asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light"):
+            bg = apply_film_grain(bg, intensity=0.18)
 
         # Safe Margins
         if size_key == "9:16":
@@ -148,11 +166,11 @@ class FlyerEngine:
 
         # Render specific template layout
         renderer_map = {
-            "asymmetric_split": self._render_asymmetric_split,
-            "viral_quote_poster": self._render_asymmetric_split,
-            "heritage_serif": self._render_heritage_serif,
-            "heavy_impact": self._render_heavy_impact,
-            "quiet_light": self._render_quiet_light,
+            "asymmetric_split": self._render_art_asymmetric,
+            "viral_quote_poster": self._render_art_asymmetric,
+            "heritage_serif": self._render_art_serif,
+            "heavy_impact": self._render_art_impact,
+            "quiet_light": self._render_art_quiet,
             "bold_statement": self._render_bold_statement,
             "contrast_split": self._render_contrast_split,
             "scripture_card": self._render_scripture_card,
@@ -198,15 +216,18 @@ class FlyerEngine:
 
         return rendered, metadata
 
-    def _crop_to_aspect(self, img: Image.Image, target_w: int, target_h: int) -> Image.Image:
-        """Center-crops and resizes an image to exactly fill target dimensions."""
+    def _crop_to_aspect(self, img: Image.Image, target_w: int, target_h: int, focal_x: float = 0.5) -> Image.Image:
+        """Subject-aware crop and resize to exactly fill target dimensions."""
         img_w, img_h = img.size
         target_ratio = target_w / target_h
         img_ratio = img_w / img_h
 
         if img_ratio > target_ratio:
             new_w = int(img_h * target_ratio)
-            left = (img_w - new_w) // 2
+            if abs(focal_x - 0.5) < 0.01:
+                left = (img_w - new_w) // 2
+            else:
+                left = max(0, min(img_w - new_w, int(img_w * focal_x - new_w * 0.34)))
             img = img.crop((left, 0, left + new_w, img_h))
         else:
             new_h = int(img_w / target_ratio)
@@ -984,8 +1005,459 @@ class FlyerEngine:
         return img.convert("RGB"), text_bbox
 
     def _render_asymmetric_split(self, bg, width, height, safe_box, content, colors):
-        """Aliases the perfected high-impact asymmetric negative-space poster."""
-        return self._render_viral_quote_poster(bg, width, height, safe_box, content, colors)
+        """Aliases the art-directed multi-font typography compositor."""
+        return self._render_art_directed_flyer(bg, width, height, safe_box, content, colors)
+
+    def _render_art_asymmetric(self, bg, width, height, safe_box, content, colors):
+        """Primary entry point for emotionally matched multi-hierarchy flyers."""
+        return self._render_art_directed_flyer(bg, width, height, safe_box, content, colors)
+
+    def _render_art_serif(self, bg, width, height, safe_box, content, colors):
+        """Editorial Serif + Italic Inline art direction variant."""
+        return self._render_art_directed_flyer(
+            bg, width, height, safe_box, content, colors, force_style="reflection_editorial"
+        )
+
+    def _render_art_impact(self, bg, width, height, safe_box, content, colors):
+        """Heavy Condensed + Painterly Highlight Strip art direction variant."""
+        return self._render_art_directed_flyer(
+            bg, width, height, safe_box, content, colors, force_style="authority_condensed"
+        )
+
+    def _render_art_quiet(self, bg, width, height, safe_box, content, colors):
+        """Classic Serif + Expressive Brush Script art direction variant."""
+        return self._render_art_directed_flyer(
+            bg, width, height, safe_box, content, colors, force_style="grace_calligraphy"
+        )
+
+    @staticmethod
+    def _extract_hero_anchor_split(headline: str, emphasized_words: list):
+        """
+        Determines whether primary emphasized phrase qualifies cleanly as a
+        Start-Anchor or End-Anchor hero script lockup without altering reading order.
+        Returns: (mode, anchor_phrase, body_text, remaining_emph)
+        mode is one of: 'prefix', 'suffix', or 'inline'.
+        """
+        import re
+        if not emphasized_words:
+            return "inline", None, headline, []
+
+        words = headline.strip().split()
+        if len(words) < 5:
+            return "inline", None, headline, emphasized_words
+
+        anchor_raw = emphasized_words[0].strip()
+        anchor_tokens = [re.sub(r'^[^\w]+|[^\w]+$', '', t.lower()) for t in anchor_raw.split() if t.strip()]
+        if not anchor_tokens or len(anchor_tokens) > 3 or len(anchor_raw) > 18:
+            return "inline", None, headline, emphasized_words
+
+        head_norm = [re.sub(r'^[^\w]+|[^\w]+$', '', w.lower()) for w in words]
+        n = len(anchor_tokens)
+
+        if head_norm[:n] == anchor_tokens and len(words) - n >= 3:
+            anchor_exact = " ".join(words[:n])
+            body_text = " ".join(words[n:])
+            return "prefix", anchor_exact, body_text, emphasized_words[1:]
+
+        if head_norm[-n:] == anchor_tokens and len(words) - n >= 2:
+            anchor_exact = " ".join(words[-n:])
+            body_text = " ".join(words[:-n])
+            rem = [e for e in emphasized_words[1:] if e.lower() not in anchor_exact.lower()]
+            return "suffix", anchor_exact, body_text, rem
+
+        return "inline", None, headline, emphasized_words
+
+    @staticmethod
+    def _apply_soft_veil(
+        canvas: Image.Image,
+        zone_box: tuple,
+        tint_rgb: tuple,
+        max_alpha: int
+    ) -> Image.Image:
+        """
+        Applies a feathered elliptical/vertical atmospheric tint localized smoothly
+        over zone_box only when contrast requires subtle reinforcement.
+        """
+        if max_alpha <= 4:
+            return canvas
+        w, h = canvas.size
+        zx1, zy1, zx2, zy2 = zone_box
+        pad_x = int(w * 0.08)
+        pad_y = int(h * 0.08)
+        vy1 = max(0, zy1 - pad_y)
+        vy2 = min(h, zy2 + pad_y)
+
+        veil = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        vdraw = ImageDraw.Draw(veil)
+        vh = max(1, vy2 - vy1)
+        for y in range(vy1, vy2):
+            t = (y - vy1) / vh
+            if t < 0.16:
+                a = int(max_alpha * (t / 0.16))
+            elif t > 0.72:
+                a = int(max_alpha * ((1.0 - t) / 0.28))
+            else:
+                a = max_alpha
+            vdraw.line([(0, y), (w, y)], fill=(tint_rgb[0], tint_rgb[1], tint_rgb[2], a))
+
+        from PIL import ImageFilter
+        veil = veil.filter(ImageFilter.GaussianBlur(radius=28))
+        return Image.alpha_composite(canvas.convert("RGBA"), veil)
+
+    def _render_art_directed_flyer(
+        self,
+        bg: Image.Image,
+        width: int,
+        height: int,
+        safe_box: tuple,
+        content: dict,
+        colors: dict,
+        force_style: str = None
+    ) -> Image.Image:
+        """
+        World-class Art-Directed Typography Engine implementing 5 hierarchical type roles
+        across 5 complementary Style Directions (A-E), adaptive luminance polarity,
+        organic painterly strips, 2x supersampled brush arcs, and subject-aware safe zones.
+        """
+        canvas = bg.convert("RGBA")
+        aspect_ratio_val = width / max(1, height)
+        if 0.90 <= aspect_ratio_val <= 1.10:
+            size_key = "1:1"
+        elif aspect_ratio_val < 0.65:
+            size_key = "9:16"
+        else:
+            size_key = "4:5"
+
+        # 1. Resolve Quote & Hierarchy Copy
+        headline = (content.get("headline") or "").strip()
+        if not headline:
+            pre = (content.get("headline_pre") or "").strip()
+            acc = (content.get("accent_word") or "").strip()
+            headline = f"{pre} {acc}".strip() or "Walk in quiet strength today."
+
+        subline = (content.get("subline") or "").strip()
+        scripture_badge = (content.get("scripture_badge") or "").strip()
+        credit = (content.get("credit") or "").strip()
+        bg_archetype = (content.get("background_archetype") or "cross_sunrise").strip()
+        accent_hint = (content.get("accent_color") or "yellow").strip()
+        explicit_style = force_style or content.get("typography_style")
+        tone = content.get("emotional_tone")
+
+        # 2. Resolve 1-4 Emphasized Words strictly present inside headline
+        raw_emph = content.get("emphasized_words")
+        emphasized_words = []
+        if isinstance(raw_emph, list) and raw_emph:
+            h_low = headline.lower()
+            for item in raw_emph:
+                s = str(item).strip()
+                if s and s.lower() in h_low:
+                    emphasized_words.append(s)
+        elif content.get("accent_word"):
+            aw = str(content["accent_word"]).strip()
+            if aw and aw.lower() in headline.lower():
+                emphasized_words = [aw]
+
+        if not emphasized_words:
+            emphasized_words = extract_emphasized_words(headline, max_words=3)
+
+        # Enforce 4-word total ceiling on emphasized phrases
+        capped_emph = []
+        total_ewords = 0
+        for ep in emphasized_words:
+            wc = len(ep.split())
+            if total_ewords + wc <= 4 or not capped_emph:
+                capped_emph.append(ep)
+                total_ewords += wc
+        emphasized_words = capped_emph[:3]
+
+        # 3. Probe Safe Zone Luminance & Select Adaptive Polarity Art Direction
+        prelim = select_art_direction(
+            tone, bg_archetype, headline, accent_hint, explicit_style, bg_luminance=None
+        )
+        zone = prelim["zones"].get(size_key, prelim["zones"]["4:5"])
+        zx1 = int(zone["x1"] * width)
+        zy1 = int(zone["y1"] * height)
+        zx2 = int(zone["x2"] * width)
+        zy2 = int(zone["y2"] * height)
+        z_align = zone.get("align", "center")
+
+        avg_bg_raw = sample_region_average_color(canvas, (zx1, zy1, zx2, zy2))
+        bg_lum = relative_luminance(avg_bg_raw)
+
+        art = select_art_direction(
+            tone, bg_archetype, headline, accent_hint, explicit_style, bg_luminance=bg_lum
+        )
+        style_cfg = art["style"]
+        harmony = art["harmony"]
+        fonts_cfg = style_cfg["fonts"]
+        treatment = style_cfg["treatment"]
+        badge_style = style_cfg["badge_style"]
+        support_rules = style_cfg["support_rules"]
+        accent_scale = style_cfg["accent_scale"]
+        line_leading = style_cfg["line_leading"]
+        is_dark_text = harmony["is_dark_text"]
+
+        # Apply subtle localized scrim ONLY when contrast needs reinforcement
+        raw_contrast = calculate_contrast_ratio(harmony["primary"][:3], avg_bg_raw)
+        accent_contrast = calculate_contrast_ratio(harmony["accent"][:3], avg_bg_raw)
+        if is_dark_text:
+            # Lift slightly with translucent luminous veil only if medium blue sky < 5.0 contrast on accent
+            if raw_contrast < 5.4 or accent_contrast < 4.5:
+                deficit = max(5.4 - raw_contrast, 4.5 - accent_contrast, 0.4)
+                veil_alpha = min(135, int(48 + deficit * 38))
+                canvas = self._apply_soft_veil(canvas, (zx1, zy1, zx2, zy2), (246, 249, 253), veil_alpha)
+        else:
+            if raw_contrast < 5.8:
+                deficit = 5.8 - raw_contrast
+                veil_alpha = min(165, int(55 + deficit * 32))
+                canvas = self._apply_soft_veil(canvas, (zx1, zy1, zx2, zy2), (8, 12, 22), veil_alpha)
+
+        # Measure real pre-text contrast on the finalized atmospheric canvas
+        pre_text_bg = sample_region_average_color(canvas, (zx1, zy1, zx2, zy2))
+        final_contrast = calculate_contrast_ratio(harmony["primary"][:3], pre_text_bg)
+        content["_viral_contrast"] = round(final_contrast, 2)
+
+        # Soft optical separation only over moderately textured backgrounds
+        use_soft_backing = (raw_contrast < 6.4 and treatment != "paint_strip_highlight")
+
+        # 4. Pre-measure Supporting Text, Scripture Badge & Detail Roles for Vertical Budget
+        zone_w = max(280, zx2 - zx1)
+        zone_h = max(320, zy2 - zy1)
+        tight_vertical = zone_h < 500
+        anchor_x = zx1 + zone_w // 2 if z_align == "center" else zx1
+
+        draw_probe = ImageDraw.Draw(canvas)
+
+        # Role 5 (optional quiet masthead eyebrow ONLY on tall airy layouts)
+        show_eyebrow = zone_h >= 540
+        eyebrow_text = "THE KINGDOM JOURNAL"
+        font_eyebrow = load_art_font(fonts_cfg["detail"], 15)
+        eyebrow_h = 30 if show_eyebrow else 0
+
+        # Role 3 (Supporting Text)
+        sup_lines = []
+        font_support = None
+        support_step = 0
+        support_h = 0
+        if subline:
+            sup_max_w = int(zone_w * 0.90) if z_align == "center" else int(zone_w * 0.96)
+            for s_size in ([24, 21] if tight_vertical else [26, 23, 20]):
+                font_support = load_art_font(fonts_cfg["support"], s_size)
+                sup_lines = wrap_text_to_width(subline, font_support, sup_max_w, draw_probe)
+                if len(sup_lines) <= 3:
+                    break
+            sup_lines = sup_lines[:3]
+            support_step = int(font_support.size * 1.32)
+            support_h = len(sup_lines) * support_step
+
+        # Role 4 (Scripture Reference Badge)
+        ref_text = ""
+        font_ref = None
+        badge_h = 0
+        if scripture_badge:
+            ref_text = scripture_badge.upper() if "condensed_ref" in fonts_cfg["reference"] else scripture_badge
+            font_ref = load_art_font(fonts_cfg["reference"], 23 if tight_vertical else 25)
+            rb = draw_probe.textbbox((0, 0), ref_text, font=font_ref)
+            badge_h = (rb[3] - rb[1]) + 20
+
+        # Role 5 (Credit)
+        font_detail = load_art_font(fonts_cfg["detail"], 19 if tight_vertical else 20)
+        detail_h = 26 if credit else 0
+
+        gap_sup = 14 if tight_vertical else 20
+        gap_badge = 16 if tight_vertical else 22
+        gap_cred = 10 if tight_vertical else 14
+
+        bottom_h = (
+            (gap_sup + support_h if sup_lines else 0)
+            + (gap_badge + badge_h if ref_text else 0)
+            + (gap_cred + detail_h if credit else 0)
+        )
+
+        avail_headline_h = max(170, zone_h - eyebrow_h - bottom_h - 10)
+
+        # 5. Layout Hero Quote (Hero Script Lockup vs Mixed-Font Inline Composition)
+        hero_mode, anchor_phrase, body_text, rem_emph = (
+            self._extract_hero_anchor_split(headline, emphasized_words)
+            if treatment == "hero_anchor_script"
+            else ("inline", None, headline, emphasized_words)
+        )
+
+        if hero_mode in ("prefix", "suffix"):
+            # Size Hero Script anchor dramatically while preserving room for body quote
+            max_anchor_sz = 112 if not tight_vertical else 92
+            min_anchor_sz = 64
+            font_anchor = load_art_font(fonts_cfg["accent"], min_anchor_sz)
+            for asz in range(max_anchor_sz, min_anchor_sz - 2, -4):
+                fa = load_art_font(fonts_cfg["accent"], asz)
+                ab = draw_probe.textbbox((0, 0), anchor_phrase, font=fa)
+                if (ab[2] - ab[0]) <= int(zone_w * 0.94):
+                    font_anchor = fa
+                    break
+
+            ab = draw_probe.textbbox((0, 0), anchor_phrase, font=font_anchor)
+            anchor_w = ab[2] - ab[0]
+            anchor_h = (ab[3] - ab[1]) + 16
+            arc_h = 18
+
+            rem_avail_h = max(110, avail_headline_h - anchor_h - arc_h)
+            body_lines, font_body, font_body_acc, body_h = fit_mixed_headline(
+                body_text,
+                rem_emph,
+                zone_w,
+                rem_avail_h,
+                fonts_cfg["display"],
+                "serif_italic" if fonts_cfg["display"] != "serif_italic" else fonts_cfg["display"],
+                initial_size=60 if not tight_vertical else 52,
+                min_size=30,
+                accent_scale=1.06,
+                max_lines=4,
+                line_leading=line_leading,
+                draw=draw_probe,
+            )
+            headline_block_h = anchor_h + arc_h + body_h
+        else:
+            # Pure inline multi-font composition across 1-5 lines
+            eff_acc_scale = min(accent_scale, 1.22) if treatment == "hero_anchor_script" else accent_scale
+            mixed_lines, font_base, font_acc, headline_block_h = fit_mixed_headline(
+                headline,
+                emphasized_words,
+                zone_w,
+                avail_headline_h,
+                fonts_cfg["display"],
+                fonts_cfg["accent"],
+                initial_size=72 if not tight_vertical else 62,
+                min_size=32,
+                accent_scale=eff_acc_scale,
+                max_lines=5,
+                line_leading=line_leading,
+                draw=draw_probe,
+            )
+
+        # 6. Compute Vertically Balanced Starting Coordinate
+        total_lockup_h = eyebrow_h + headline_block_h + bottom_h
+        extra_v = max(0, zone_h - total_lockup_h)
+        cur_y = zy1 + int(extra_v * 0.36)
+
+        # Render Eyebrow if enabled
+        if show_eyebrow:
+            eb = draw_probe.textbbox((0, 0), eyebrow_text, font=font_eyebrow)
+            ew = eb[2] - eb[0]
+            ex = anchor_x - ew // 2 if z_align == "center" else zx1
+            canvas = draw_optical_text(
+                canvas, (ex - eb[0], cur_y), eyebrow_text, font_eyebrow,
+                harmony["detail"], soft_backing=False, backing_is_dark=not is_dark_text
+            )
+            cur_y += eyebrow_h
+
+        # Render Main Quote + Emphasized Script / Painterly Strip / Inline Italic
+        if hero_mode == "prefix":
+            ab = ImageDraw.Draw(canvas).textbbox((0, 0), anchor_phrase, font=font_anchor)
+            aw = ab[2] - ab[0]
+            ax = anchor_x - aw // 2 if z_align == "center" else zx1
+            canvas = draw_optical_text(
+                canvas, (ax - ab[0], cur_y - ab[1]), anchor_phrase, font_anchor,
+                harmony["primary"], soft_backing=use_soft_backing, backing_is_dark=not is_dark_text
+            )
+            arc_y = cur_y + (ab[3] - ab[1]) + 10
+            canvas = draw_supersampled_brush_arc(
+                canvas, ax, arc_y, aw, color=harmony["underline"], thickness=10, arch_height=7.5
+            )
+            cur_y = arc_y + 18
+            canvas, cur_y, _ = draw_mixed_headline(
+                canvas, body_lines, zx1, cur_y, zone_w, z_align,
+                font_body, font_body_acc, harmony["primary"], harmony["accent"],
+                line_leading=line_leading, treatment="inline_color",
+                soft_backing=use_soft_backing, backing_is_dark=not is_dark_text,
+            )
+        elif hero_mode == "suffix":
+            canvas, cur_y, _ = draw_mixed_headline(
+                canvas, body_lines, zx1, cur_y, zone_w, z_align,
+                font_body, font_body_acc, harmony["primary"], harmony["accent"],
+                line_leading=line_leading, treatment="inline_color",
+                soft_backing=use_soft_backing, backing_is_dark=not is_dark_text,
+            )
+            cur_y += 2
+            ab = ImageDraw.Draw(canvas).textbbox((0, 0), anchor_phrase, font=font_anchor)
+            aw = ab[2] - ab[0]
+            ax = anchor_x - aw // 2 if z_align == "center" else zx1
+            anchor_color = harmony["primary"] if is_dark_text else harmony["accent"]
+            canvas = draw_optical_text(
+                canvas, (ax - ab[0], cur_y - ab[1]), anchor_phrase, font_anchor,
+                anchor_color, soft_backing=use_soft_backing, backing_is_dark=not is_dark_text
+            )
+            arc_y = cur_y + (ab[3] - ab[1]) + 10
+            canvas = draw_supersampled_brush_arc(
+                canvas, ax, arc_y, aw, color=harmony["underline"], thickness=9, arch_height=7.0
+            )
+            cur_y = arc_y + 14
+        else:
+            mix_treatment = "paint_strip_highlight" if treatment == "paint_strip_highlight" else "inline_color"
+            canvas, cur_y, last_span = draw_mixed_headline(
+                canvas, mixed_lines, zx1, cur_y, zone_w, z_align,
+                font_base, font_acc, harmony["primary"], harmony["accent"],
+                line_leading=line_leading, treatment=mix_treatment,
+                strip_bg_color=harmony["strip_bg"], strip_text_color=harmony["strip_fg"],
+                soft_backing=use_soft_backing, backing_is_dark=not is_dark_text,
+            )
+            if last_span and treatment in ("hero_anchor_script", "inline_italic_accent"):
+                sx, sy_bot, sw = last_span
+                if sy_bot + 10 < zy2:
+                    canvas = draw_supersampled_brush_arc(
+                        canvas, sx, sy_bot, max(54, sw),
+                        color=harmony["underline"], thickness=8, arch_height=5.5
+                    )
+                    cur_y = max(cur_y, sy_bot + 10)
+
+        # Render Role 3: Supporting Message
+        if sup_lines:
+            cur_y += gap_sup
+            sdraw = ImageDraw.Draw(canvas)
+            for idx, sline in enumerate(sup_lines):
+                sb = sdraw.textbbox((0, 0), sline, font=font_support)
+                sw = sb[2] - sb[0]
+                sx = anchor_x - sw // 2 if z_align == "center" else zx1
+                canvas = draw_optical_text(
+                    canvas, (sx - sb[0], cur_y), sline, font_support,
+                    harmony["support"], soft_backing=use_soft_backing, backing_is_dark=not is_dark_text
+                )
+                if support_rules and z_align == "center":
+                    rdraw = ImageDraw.Draw(canvas)
+                    rule_col = (*harmony["support"][:3], 150)
+                    if len(sup_lines) == 1:
+                        rule_y = cur_y + int(font_support.size * 0.62)
+                        if sx - 42 > zx1:
+                            rdraw.line([(sx - 38, rule_y), (sx - 12, rule_y)], fill=rule_col, width=2)
+                        if sx + sw + 42 < zx2:
+                            rdraw.line([(sx + sw + 12, rule_y), (sx + sw + 38, rule_y)], fill=rule_col, width=2)
+                    elif idx == 0:
+                        div_y = cur_y - 8
+                        rdraw.line([(anchor_x - 36, div_y), (anchor_x + 36, div_y)], fill=rule_col, width=2)
+                cur_y += support_step
+
+        # Render Role 4: Scripture Reference Pill / Brush Ribbon
+        if ref_text:
+            cur_y += gap_badge
+            canvas, cur_y = draw_pill_badge(
+                canvas, anchor_x, cur_y, ref_text, font_ref,
+                harmony["badge_bg"], harmony["badge_fg"],
+                align=z_align, style=badge_style, pad_x=24, pad_y=10
+            )
+
+        # Render Role 5: Understated Speaker Credit / Detail
+        if credit:
+            cur_y += gap_cred
+            cdraw = ImageDraw.Draw(canvas)
+            cb = cdraw.textbbox((0, 0), credit, font=font_detail)
+            cw = cb[2] - cb[0]
+            cx = anchor_x - cw // 2 if z_align == "center" else zx1
+            canvas = draw_optical_text(
+                canvas, (cx - cb[0], cur_y), credit, font_detail,
+                harmony["detail"], soft_backing=False, backing_is_dark=not is_dark_text
+            )
+
+        # 7. Subtle Photographic Print Grain
+        return apply_film_grain(canvas.convert("RGB"), intensity=0.05), (zx1, zy1, zx2, zy2)
 
     def _render_heritage_serif(self, bg, width, height, safe_box, content, colors):
         """
