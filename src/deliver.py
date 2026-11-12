@@ -152,6 +152,8 @@ class EmailDeliverer:
         x_intent = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(x_text)}"
         threads_intent = f"https://threads.com/intent/post?text={urllib.parse.quote(threads_text)}"
         wa_intent = f"https://api.whatsapp.com/send?text={urllib.parse.quote(whatsapp_status)}"
+        fb_text = fb_post[:400] if len(fb_post) > 400 else fb_post
+        fb_intent = f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(fb_text)}"
 
         # Clean Editorial Provenance Citation
         if verified_meta and verified_meta.get("speaker"):
@@ -352,9 +354,18 @@ class EmailDeliverer:
               <!-- Facebook Row -->
               <tr>
                 <td style="padding: 22px 0; border-bottom: 1px solid #EBE6DC;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 2px; color: #1C1917; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">
-                    FACEBOOK &middot; LONG-FORM DISPATCH
-                  </div>
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 10px;">
+                    <tr>
+                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 2px; color: #1C1917; font-weight: 700; text-transform: uppercase;">
+                        FACEBOOK &middot; LONG-FORM DISPATCH
+                      </td>
+                      <td align="right">
+                        <a href="{fb_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #855A18; text-decoration: underline;">
+                          Share &rarr;
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
                   <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #292524; user-select: all; word-wrap: break-word;">
                     {fb_html}
                   </div>
@@ -364,9 +375,18 @@ class EmailDeliverer:
               <!-- Instagram Row -->
               <tr>
                 <td style="padding: 22px 0; border-bottom: 1px solid #EBE6DC;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 2px; color: #1C1917; font-weight: 700; text-transform: uppercase; margin-bottom: 10px;">
-                    INSTAGRAM &middot; FEED CAPTION
-                  </div>
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 10px;">
+                    <tr>
+                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; letter-spacing: 2px; color: #1C1917; font-weight: 700; text-transform: uppercase;">
+                        INSTAGRAM &middot; FEED CAPTION
+                      </td>
+                      <td align="right">
+                        <a href="https://www.instagram.com/" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #855A18; text-decoration: underline;">
+                          Open Instagram &rarr;
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
                   <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #292524; user-select: all; word-wrap: break-word;">
                     {ig_html}
                   </div>

@@ -51,9 +51,11 @@ def clean_theme_title(raw_title: str) -> str:
     return "The Secret Place"
 
 MODELS_CASCADE = [
-    "gemini-3-flash-preview",
     "gemini-2.5-flash",
-    "gemini-flash-latest"
+    "gemini-flash-latest",
+    "gemini-2.5-flash-lite",
+    "gemini-flash-lite-latest",
+    "gemini-3-flash-preview"
 ]
 
 STORYTELLING_FRAMEWORKS = [
@@ -448,7 +450,7 @@ RETURN STRICT JSON matching this schema:
 
         # Deterministic Fail-Soft Degradation
         logger.info("Degrading to verified deterministic editorial package.")
-        return self._build_deterministic_package(theme_hint, verified_quote, scripture, palette_id, framework)
+        return self._build_deterministic_package(clean_theme, verified_quote, scripture, palette_id, framework)
 
     def _build_deterministic_package(
         self,
@@ -458,6 +460,7 @@ RETURN STRICT JSON matching this schema:
         palette_id: str,
         framework: Optional[Dict] = None
     ) -> IssuePackage:
+        theme = clean_theme_title(theme)
         if framework is None:
             framework = STORYTELLING_FRAMEWORKS[0]
 
