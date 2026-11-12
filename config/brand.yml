@@ -7,6 +7,15 @@ brand:
   watermark: "THE KINGDOM JOURNAL"
 
 palettes:
+  - id: "terracotta_amber"
+    name: "Warm Terracotta & Burnt Amber"
+    bg_primary: "#431407"
+    bg_secondary: "#9A3412"
+    accent: "#D97706"
+    text_primary: "#FFFBEB"
+    text_secondary: "#FDE68A"
+    scrim_tint: [67, 20, 7]
+
   - id: "navy_gold"
     name: "Midnight & Gold"
     bg_primary: "#0A1128"

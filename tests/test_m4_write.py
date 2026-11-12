@@ -59,7 +59,7 @@ class TestWritingEngine(unittest.TestCase):
         # Viral fields populated
         self.assertIsNotNone(pkg.viral_headline_pre)
         self.assertIsNotNone(pkg.viral_accent_word)
-        self.assertIn(pkg.viral_accent_color, ["yellow", "gold", "red", "cobalt", "emerald", "amber"])
+        self.assertIn(pkg.viral_accent_color, ["terracotta", "yellow", "gold", "red", "cobalt", "emerald", "amber"])
         self.assertIn(
             pkg.viral_background_archetype,
             [
@@ -74,6 +74,7 @@ class TestWritingEngine(unittest.TestCase):
                 "deep_cobalt_wave",
                 "emerald_white_wave",
                 "crimson_cream_wave",
+                "terracotta_amber_wave",
             ],
         )
 

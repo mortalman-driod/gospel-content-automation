@@ -64,6 +64,7 @@ ARCHETYPE_BG_MAP = {
     "deep_cobalt_wave": "viral_deep_cobalt_wave.jpg",
     "emerald_white_wave": "viral_emerald_white_wave.jpg",
     "crimson_cream_wave": "viral_crimson_cream_wave.jpg",
+    "terracotta_amber_wave": "viral_terracotta_amber_wave.jpg",
 }
 
 FRAMED_GEOMETRIC_CANVASES = {
@@ -71,6 +72,7 @@ FRAMED_GEOMETRIC_CANVASES = {
     "deep_cobalt_wave",
     "emerald_white_wave",
     "crimson_cream_wave",
+    "terracotta_amber_wave",
 }
 
 def hex_to_rgb(h: str) -> Tuple[int, int, int]:

@@ -327,13 +327,14 @@ VOICE & ANTI-AI EDITORIAL MANDATES:
    - 'deep_cobalt_wave': Rich royal blue wave + gold curve -> best for authority, hope, triumph, overcoming (renders Crisp White + Electric Solar Yellow).
    - 'emerald_white_wave': Clean ivory paper + forest/lime waves -> best for spiritual growth, fruitfulness, healing, peace (renders Deep Forest Emerald + Crimson/Gold).
    - 'crimson_cream_wave': Warm parchment + bold scarlet waves -> best for urgency, prayer fire, the Cross, consecration (renders Obsidian Black + Vivid Scarlet).
+   - 'terracotta_amber_wave': Warm linen center framed by deep terracotta (#9A3412) & burnt amber (#D97706) waves -> best for courage, devotion, steadfast endurance, spiritual warmth.
    - 'golden_sunburst_clouds': Warm sunlit sky + amber clouds -> best for worship, dawn mercy, revival, joy (renders Rich Espresso + Copper-Crimson).
    - 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk' also available for photographic themes.
    Return:
    - `flyer_template`: 'asymmetric_split', 'heritage_serif', 'heavy_impact', or 'quiet_light'
    - `emotional_tone`: 'encouragement', 'authority', 'reflection', 'grace', or 'victory'
    - `emphasized_words`: 1-3 exact words present verbatim inside the quote headline to spotlight in contrasting type/color
-   - `viral_headline_pre`, `viral_accent_word`, `viral_accent_color` ('yellow', 'red', or 'gold'), `viral_subline` (max 90 chars, NO em-dashes), `viral_background_archetype` (from the 11 canvases above).
+   - `viral_headline_pre`, `viral_accent_word`, `viral_accent_color` ('terracotta', 'amber', 'gold', 'yellow', or 'red'), `viral_subline` (max 90 chars, NO em-dashes), `viral_background_archetype` (from the 12 canvases above, favoring warm inspiring contrasts).
 
 RETURN STRICT JSON matching this schema:
 {{
@@ -353,9 +354,9 @@ RETURN STRICT JSON matching this schema:
   "emphasized_words": ["word1", "word2"],
   "viral_headline_pre": "Hook phrase before accent word",
   "viral_accent_word": "Accent punchline word",
-  "viral_accent_color": "gold",
-  "viral_subline": "Short clear supporting line under 90 chars",
-  "viral_background_archetype": "deep_cobalt_wave"
+  "viral_accent_color": "terracotta",
+  "viral_subline": "Short inspiring supporting line under 90 chars",
+  "viral_background_archetype": "terracotta_amber_wave"
 }}
 """
         for attempt in range(2):
@@ -492,16 +493,17 @@ RETURN STRICT JSON matching this schema:
             credit = f"— {quote['speaker']}"
             tags = f"#{quote['speaker'].replace(' ', '')} #TheKingdomJournal #ChristianCreatives"
         else:
-            headline = "When human capacity runs dry, worship establishes peace."
+            headline = "God builds tomorrow's strength inside today's quiet obedience."
             credit = "The Kingdom Journal"
             tags = "#TheKingdomJournal #SecretPlace #MorningDevotional #FaithOverFear"
 
         canvases = [
+            "terracotta_amber_wave",
+            "golden_sunburst_clouds",
+            "crimson_cream_wave",
             "deep_cobalt_wave",
             "diagonal_royal_gold",
             "emerald_white_wave",
-            "crimson_cream_wave",
-            "golden_sunburst_clouds",
             "cross_sunrise",
             "open_bible",
             "mountain_summit",
@@ -543,7 +545,7 @@ RETURN STRICT JSON matching this schema:
                 scripture_ref=scripture.ref,
                 headline_pre=v_pre,
                 accent_word=v_acc,
-                accent_color="gold",
+                accent_color="terracotta",
                 background_archetype=chosen_bg
             ),
             FlyerSpec(
@@ -556,7 +558,7 @@ RETURN STRICT JSON matching this schema:
                 scripture_ref=scripture.ref,
                 headline_pre=v_pre,
                 accent_word=v_acc,
-                accent_color="gold",
+                accent_color="terracotta",
                 background_archetype=chosen_bg
             )
         ]
@@ -592,7 +594,7 @@ RETURN STRICT JSON matching this schema:
             flyers=flyers,
             viral_headline_pre=v_pre,
             viral_accent_word=v_acc,
-            viral_accent_color="gold",
+            viral_accent_color="terracotta",
             viral_subline="Steady your heart in prayer before the noise begins.",
             viral_background_archetype=chosen_bg
         )

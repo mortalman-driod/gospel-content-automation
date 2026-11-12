@@ -90,6 +90,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
 
         verified_quote = None
         source_video = None
+        best_quote_pair = None
 
         for idx, video in enumerate(top_videos[:3]):
             v_id = video.get("video_id") or video.get("id")
@@ -98,15 +99,26 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
 
             snippets, source_type = transcript_mgr.get_transcript(v_id)
             if snippets:
-                logger.info(f"Retrieved {len(snippets)} snippets via {source_type}. Extracting punchlines...")
+                logger.info(f"Retrieved {len(snippets)} snippets via {source_type}. Extracting inspiring punchlines...")
                 res = punchline_extractor.extract_punchlines(video, snippets)
-                if res.get("primary_quote"):
-                    verified_quote = res["primary_quote"]
-                    source_video = video
-                    logger.info(f"VERIFIED QUOTE: \"{verified_quote['text_verbatim']}\" ({verified_quote['speaker']})")
-                    break
+                cand_q = res.get("primary_quote")
+                if cand_q:
+                    cand_score = cand_q.get("poster_score", cand_q.get("match_score", 0.9))
+                    logger.info(
+                        f"CANDIDATE QUOTE [{idx+1}] (score={cand_score:.2f}, insp={cand_q.get('inspiration_score', 7)}): "
+                        f"\"{cand_q['text_verbatim']}\" ({cand_q['speaker']})"
+                    )
+                    if best_quote_pair is None or cand_score > best_quote_pair[0]:
+                        best_quote_pair = (cand_score, cand_q, video)
+                    if cand_q.get("inspiration_score", 0) >= 9 and cand_score >= 1.25:
+                        break
                 else:
-                    logger.info(f"Candidate quotes could not achieve fuzzy match ratio >= 0.92.")
+                    logger.info("Candidate quotes could not achieve fuzzy match ratio >= 0.92.")
+
+        if best_quote_pair:
+            verified_quote = best_quote_pair[1]
+            source_video = best_quote_pair[2]
+            logger.info(f"SELECTED HIGHEST-INSPIRATION QUOTE: \"{verified_quote['text_verbatim']}\" ({verified_quote['speaker']})")
 
         if not verified_quote:
             logger.info("No candidate quote met strict verification. Degraded fail-soft active (Editorial Reflection Only).")
@@ -117,7 +129,8 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         # -------------------------------------------------------------
         logger.info("\n--- [STAGE 3] SYNTHESIZING EDITORIAL ESSAY & MULTI-PLATFORM KITS ---")
         writer = WritingEngine()
-        palette_id = "navy_gold" # Can be rotated
+        palettes_cycle = ["terracotta_amber", "crimson_amber", "emerald_gold", "royal_blue_gold", "navy_gold"]
+        palette_id = palettes_cycle[issue_num % len(palettes_cycle)]
         theme_title = source_video.get("title", "The Secret Place") if source_video else "The Secret Place"
 
         issue_package = writer.write_issue(
@@ -170,7 +183,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         primary_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
-            "accent_color": issue_package.viral_accent_color or "yellow",
+            "accent_color": issue_package.viral_accent_color or "terracotta",
             "headline": verified_quote["text_verbatim"] if verified_quote else issue_package.flyers[0].headline,
             "subline": issue_package.viral_subline or "When human striving ends, divine illumination takes over.",
             "credit": clean_credit,
@@ -195,13 +208,13 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
 
         # Render Alternate Flyer in 4:5 using a complementary art direction
         alt_template = "heritage_serif" if chosen_template != "heritage_serif" else "heavy_impact"
-        alt_pool = ["deep_cobalt_wave", "diagonal_royal_gold", "emerald_white_wave", "crimson_cream_wave", "golden_sunburst_clouds", "open_bible"]
+        alt_pool = ["terracotta_amber_wave", "golden_sunburst_clouds", "crimson_cream_wave", "diagonal_royal_gold", "emerald_white_wave", "deep_cobalt_wave"]
         alt_candidates = [b for b in alt_pool if b != primary_content["background_archetype"]]
         alt_bg = alt_candidates[issue_num % len(alt_candidates)]
         alt_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
-            "accent_color": issue_package.viral_accent_color or "gold",
+            "accent_color": issue_package.viral_accent_color or "amber",
             "headline": verified_quote["text_verbatim"] if verified_quote else (issue_package.flyers[0].headline if issue_package.flyers else "When human capacity runs dry, worship establishes peace."),
             "subline": issue_package.viral_subline or "Rest in His peace today.",
             "credit": clean_credit,

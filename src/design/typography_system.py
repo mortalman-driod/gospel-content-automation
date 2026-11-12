@@ -209,6 +209,15 @@ BACKGROUND_PROFILES: Dict[str, Dict] = {
             "9:16": {"x1": 0.09, "y1": 0.20, "x2": 0.91, "y2": 0.72, "align": "center"},
         },
     },
+    "terracotta_amber_wave": {
+        # Warm linen ivory field framed top & bottom by deep terracotta + burnt amber waves
+        "polarity": "light_wall",
+        "zones": {
+            "4:5":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "1:1":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "9:16": {"x1": 0.09, "y1": 0.20, "x2": 0.91, "y2": 0.72, "align": "center"},
+        },
+    },
 }
 
 # Approved 2-3 Color Harmonies (never random gradients or rainbow noise)
@@ -336,6 +345,42 @@ COLOR_HARMONIES: Dict[str, Dict] = {
         "underline": (186, 68, 12, 255),   # Warm solar copper arc
         "is_dark_text": True,
     },
+    "viral_terracotta_amber": {
+        "primary": (28, 25, 23, 255),      # Deep espresso carbon ink
+        "accent": (154, 52, 18, 255),      # Rich burnt terracotta (#9A3412)
+        "support": (68, 60, 56, 248),      # Warm umber slate
+        "detail": (87, 83, 78, 240),       # Warm stone gray
+        "strip_bg": (154, 52, 18, 255),    # Terracotta highlight brush strip
+        "strip_fg": (255, 251, 235, 255),  # Crisp warm ivory inside strip
+        "badge_bg": (154, 52, 18, 255),    # Terracotta reference badge
+        "badge_fg": (255, 251, 235, 255),
+        "underline": (217, 119, 6, 255),   # Burnt amber brush arc (#D97706)
+        "is_dark_text": True,
+    },
+    "light_terracotta_amber": {
+        "primary": (36, 20, 14, 255),      # Warm dark walnut ink
+        "accent": (140, 42, 14, 255),      # High-contrast terracotta accent
+        "support": (62, 44, 34, 248),
+        "detail": (82, 62, 50, 240),
+        "strip_bg": (154, 52, 18, 255),    # Terracotta strip
+        "strip_fg": (255, 251, 235, 255),
+        "badge_bg": (154, 52, 18, 255),
+        "badge_fg": (255, 251, 235, 255),
+        "underline": (217, 119, 6, 255),   # Burnt amber underline
+        "is_dark_text": True,
+    },
+    "dark_terracotta_amber": {
+        "primary": (255, 251, 235, 255),   # Warm ivory cream
+        "accent": (245, 158, 11, 255),     # Luminous burnt amber
+        "support": (253, 230, 198, 244),   # Soft warm parchment tint
+        "detail": (231, 212, 190, 228),
+        "strip_bg": (154, 52, 18, 255),    # Terracotta strip
+        "strip_fg": (255, 251, 235, 255),  # Ivory inside strip
+        "badge_bg": (217, 119, 6, 255),    # Burnt amber badge
+        "badge_fg": (28, 25, 23, 255),     # Espresso ink on amber pill
+        "underline": (245, 158, 11, 255),
+        "is_dark_text": False,
+    },
 }
 
 
@@ -435,18 +480,23 @@ def select_art_direction(
         "emerald_white_wave": "viral_emerald_forest_gold",
         "crimson_cream_wave": "viral_crimson_parchment_bold",
         "golden_sunburst_clouds": "viral_sunburst_espresso_amber",
+        "terracotta_amber_wave": "viral_terracotta_amber",
     }
-    hint = (accent_color_hint or "yellow").lower()
+    hint = (accent_color_hint or "terracotta").lower()
     if background_archetype in ARCHETYPE_HARMONY_MAP:
         harmony = COLOR_HARMONIES[ARCHETYPE_HARMONY_MAP[background_archetype]]
         use_light_polarity = harmony["is_dark_text"]
     elif use_light_polarity:
-        if chosen_style["id"] == "authority_condensed":
+        if hint in ("terracotta", "amber"):
+            harmony = COLOR_HARMONIES["light_terracotta_amber"]
+        elif chosen_style["id"] == "authority_condensed":
             harmony = COLOR_HARMONIES["light_charcoal_red"]
         else:
             harmony = COLOR_HARMONIES["light_navy_crimson"]
     else:
-        if hint == "red":
+        if hint in ("terracotta", "amber"):
+            harmony = COLOR_HARMONIES["dark_terracotta_amber"]
+        elif hint == "red":
             harmony = COLOR_HARMONIES["dark_white_crimson"]
         elif chosen_style["id"] in ("grace_calligraphy", "reflection_editorial") and hint == "gold":
             harmony = COLOR_HARMONIES["dark_cream_gold"]

@@ -246,25 +246,32 @@ class PunchlineExtractor:
         # Chunk transcript
         chunks = chunk_transcript(raw_transcript, target_seconds=60)
         
-        # Build prompt containing timestamped chunks
-        chunks_formatted = []
-        for c in chunks[:35]: # Limit to first 35 minutes to stay within token context
-            chunks_formatted.append(f"[{c['start_sec']}s - {c['end_sec']}s]: {c['text']}")
+        # Sample evenly across the entire sermon (intro, core teaching, and closing altar charge)
+        if len(chunks) <= 45:
+            sampled_chunks = chunks
+        else:
+            step = len(chunks) / 45.0
+            sampled_chunks = [chunks[int(i * step)] for i in range(45)]
+
+        chunks_formatted = [
+            f"[{c['start_sec']}s - {c['end_sec']}s]: {c['text']}"
+            for c in sampled_chunks
+        ]
         transcript_sample = "\n".join(chunks_formatted)
 
-        prompt = f"""You are a strict Theological Copy Editor analyzing a gospel sermon transcript.
+        prompt = f"""You are an Editorial Art Director and Theological Curator looking for HIGHLY INSPIRING Christian quotes suitable for viral social-media flyers.
 Video Title: "{title}"
 Speaker: "{speaker}"
 
-Analyze the following transcript excerpt and extract up to 8 candidate PUNCHLINES.
+Analyze the transcript excerpts and extract up to 8 candidate INSPIRATIONAL PUNCHLINES.
 
-CRITICAL RULES:
+CRITICAL SELECTION RULES:
 1. text_verbatim MUST BE THE EXACT WORDS SPOKEN in the transcript. Do NOT edit, polish, embellish, or paraphrase.
-2. Word count MUST be between 6 and 25 words.
-3. Must stand completely alone as a powerful quote without needing context.
-4. Must possess contrast, reversal, a vivid concrete metaphor, or a direct spiritual command (e.g. "They want stages. God wants secrets.").
-5. REJECT private personal anecdotes, stories about specific individuals, or local church announcements.
-6. STRICTLY REJECT any line making prosperity promises, instant miracles, guaranteed visas/healing/money, or financial seed declarations.
+2. Word count MUST be between 7 and 20 words so it fits cleanly on a visual flyer with massive readability.
+3. HIGH INSPIRATION & STANDALONE CLARITY: Every quote MUST immediately uplift, strengthen faith, ignite hope, or deliver timeless spiritual wisdom (themes like faith, grace, purpose, stillness, resilience, love, God's faithfulness).
+4. STRICTLY REJECT unfinished conversational clauses or awkward setup fragments starting with "When there are...", "So when you...", "The prayer becomes...", "And that's why...", "Because if...", "Let me tell you...". Pick clean, complete, memorable sentences!
+5. Prioritize vivid contrast, reversal, imagery, or bold affirmation (e.g., "They want stages. God wants secrets.", "Your private altar determines your public strength.").
+6. REJECT private personal anecdotes, church housekeeping, crowd greetings, or prosperity/instant-miracle guarantees.
 
 TRANSCRIPT EXCERPT:
 {transcript_sample}
@@ -274,9 +281,10 @@ RETURN STRICT JSON ARRAY:
   {{
     "start_sec": 120,
     "text_verbatim": "exact words spoken",
-    "structure": "contrast | reversal | metaphor | command | question | declaration",
+    "structure": "contrast | reversal | metaphor | affirmation | declaration",
+    "inspiration_score": 9,
     "word_count": 12,
-    "why_it_works": "1-sentence explanation of the spiritual punch"
+    "why_it_works": "1-sentence explanation of why readers will save and share this quote"
   }}
 ]
 """
@@ -316,6 +324,12 @@ RETURN STRICT JSON ARRAY:
             )
 
             actual_start = match_meta["start_sec"] if match_meta else claimed_start
+            insp_raw = cand.get("inspiration_score", 7)
+            try:
+                insp_val = max(1, min(10, int(insp_raw)))
+            except Exception:
+                insp_val = 7
+
             quote_record = {
                 "video_id": video_id,
                 "speaker": speaker,
@@ -323,6 +337,7 @@ RETURN STRICT JSON ARRAY:
                 "start_sec": actual_start,
                 "text_verbatim": q_text,
                 "structure": cand.get("structure", "declaration"),
+                "inspiration_score": insp_val,
                 "word_count": word_len,
                 "why_it_works": cand.get("why_it_works", ""),
                 "url": format_timestamp_url(video_id, actual_start),
@@ -335,11 +350,30 @@ RETURN STRICT JSON ARRAY:
             if is_verified:
                 verified_quotes.append(quote_record)
 
-        # Sort verified quotes: priority to contrast/reversal, high match score, optimal length (8-18 words)
         def score_quote(q):
-            length_bonus = 1.0 if 8 <= q["word_count"] <= 18 else 0.8
-            structure_bonus = 1.2 if q["structure"] in ["contrast", "reversal", "metaphor"] else 1.0
-            return q["match_score"] * length_bonus * structure_bonus
+            low = q["text_verbatim"].lower().strip()
+            length_bonus = 1.15 if 7 <= q["word_count"] <= 16 else (1.0 if q["word_count"] <= 20 else 0.72)
+            structure_bonus = 1.18 if q["structure"] in ["contrast", "reversal", "metaphor", "affirmation"] else 1.0
+            insp_factor = 0.65 + 0.055 * q.get("inspiration_score", 7)
+
+            uplift_words = {
+                "faith", "grace", "hope", "peace", "strength", "purpose", "god", "light",
+                "mercy", "wisdom", "love", "patience", "courage", "trust", "anchor", "renew",
+                "victory", "promise", "still", "faithful", "eternal", "secret", "altar"
+            }
+            uplift_hits = sum(1 for w in uplift_words if re.search(r"\b" + re.escape(w) + r"\b", low))
+            uplift_bonus = min(1.20, 1.0 + uplift_hits * 0.05)
+
+            # Penalize unfinished conversational clauses that read flat on posters
+            fragment_starts = (
+                "when there are ", "so when ", "and when ", "because if ", "that is why ",
+                "that's why ", "the prayer becomes", "so if you ", "and then ", "now watch"
+            )
+            fragment_penalty = 0.55 if low.startswith(fragment_starts) else 1.0
+
+            final_score = q["match_score"] * length_bonus * structure_bonus * insp_factor * uplift_bonus * fragment_penalty
+            q["poster_score"] = round(final_score, 4)
+            return final_score
 
         verified_quotes.sort(key=score_quote, reverse=True)
 

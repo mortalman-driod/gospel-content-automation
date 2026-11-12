@@ -118,6 +118,8 @@ class TestTypographyArtDirection(unittest.TestCase):
             ("deep_cobalt_wave", "1:1", "grace", ["still"]),
             ("emerald_white_wave", "4:5", "encouragement", ["seeds"]),
             ("crimson_cream_wave", "4:5", "warning", ["life"]),
+            ("terracotta_amber_wave", "4:5", "hope", ["light", "peace"]),
+            ("terracotta_amber_wave", "1:1", "encouragement", ["seeds"]),
         ]
         for arch, aspect, tone, emph in viral_cases:
             content = {
@@ -128,11 +130,47 @@ class TestTypographyArtDirection(unittest.TestCase):
                 "scripture_badge": "Psalm 46:10",
                 "credit": "— Apostle Joshua Selman",
                 "background_archetype": arch,
+                "accent_color": "terracotta",
             }
             img, meta = self.engine.render_flyer("asymmetric_split", aspect, content)
             self.assertIsInstance(img, Image.Image)
             self.assertTrue(meta["wcag_aa_compliant"], f"{arch} ({aspect}) failed WCAG: {meta}")
             self.assertGreaterEqual(meta["contrast_ratio"], 4.5)
+
+    def test_punchline_ranker_prefers_inspiring_declarative_over_fragment(self):
+        from unittest.mock import patch
+        from src.punchlines import PunchlineExtractor
+
+        weak_fragment = "When there are contentions and threats the prayer becomes what we say."
+        strong_quote = "Your secret faithfulness determines your public authority in every season."
+        transcript = [
+            {"start": 10.0, "duration": 8.0, "text": weak_fragment},
+            {"start": 65.0, "duration": 8.0, "text": strong_quote},
+        ]
+        extractor = PunchlineExtractor(api_key="dummy-key")
+        mock_cands = [
+            {
+                "start_sec": 10,
+                "text_verbatim": weak_fragment,
+                "structure": "declaration",
+                "inspiration_score": 5,
+                "why_it_works": "Setup clause",
+            },
+            {
+                "start_sec": 65,
+                "text_verbatim": strong_quote,
+                "structure": "contrast",
+                "inspiration_score": 10,
+                "why_it_works": "Inspiring standalone truth",
+            },
+        ]
+        with patch.object(extractor, "_call_gemini_json", return_value=mock_cands):
+            res = extractor.extract_punchlines(
+                {"id": "vid123", "title": "Steadfast Faith", "channel": "Koinonia Global"},
+                transcript,
+            )
+        self.assertIsNotNone(res["primary_quote"])
+        self.assertEqual(res["primary_quote"]["text_verbatim"], strong_quote)
 
     def test_de_ai_gate_flags_cross_channel_duplication_and_antithesis(self):
         from src.verify import verify_de_ai_compliance

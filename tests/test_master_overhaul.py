@@ -131,12 +131,13 @@ class TestMasterOverhaul(unittest.TestCase):
         self.assertIn("<!--[if mso]>", html)
         self.assertIn("<table role=\"presentation\"", html)
 
-        # 2. Must adhere to Daylight Studio Dispatch WCAG AAA/AA light-paper ink palette
-        self.assertIn('#F3F4F6', html)  # Soft neutral studio backdrop
+        # 2. Must adhere to Warm Terracotta & Burnt Amber WCAG AAA/AA light-paper ink palette
+        self.assertIn('#F6F2ED', html)  # Soft warm linen backdrop
         self.assertIn('#FFFFFF', html)  # Crisp white dispatch sheet
-        self.assertIn('#111827', html)  # Deep carbon charcoal ink
-        self.assertIn('#4B5563', html)  # High-contrast slate secondary ink
-        self.assertIn('#1D4ED8', html)  # Cobalt studio accent
+        self.assertIn('#1C1917', html)  # Deep warm espresso ink
+        self.assertIn('#57534E', html)  # High-contrast warm stone secondary ink
+        self.assertIn('#9A3412', html)  # Rich terracotta studio accent
+        self.assertIn('#D97706', html)  # Burnt amber rule & quote bar
         # Must contain zero template jargon, Roman numerals, textareas, or platform emojis
         self.assertNotIn('I &middot;', html)
         self.assertNotIn('Plate ', html)

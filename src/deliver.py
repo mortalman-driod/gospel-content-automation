@@ -4,7 +4,7 @@ Constructs clean, zero-fluff Daylight Studio Dispatch email briefings with:
 1. Hidden preheader & plain text alternative.
 2. Progressive JPEG optimized inline 4:5 primary flyer (< 180 KB payload).
 3. Outlook MSO-compliant hybrid tables (zero unsupported Flexbox in email body).
-4. WCAG AAA/AA Daylight Studio palette (#F3F4F6 backdrop, #FFFFFF sheet, #111827 ink, #1D4ED8 accent).
+4. WCAG AAA/AA Warm Terracotta & Burnt Amber palette (#F6F2ED backdrop, #FFFFFF sheet, #1C1917 ink, #9A3412 terracotta, #D97706 amber).
 5. Non-breaking provenance links, concise non-duplicate copy ledger, and human micro-copy.
 """
 
@@ -113,7 +113,7 @@ class EmailDeliverer:
             for idx, p in enumerate(paragraphs):
                 mb = "16px" if idx < len(paragraphs) - 1 else "0"
                 out.append(
-                    f'<p style="margin: 0 0 {mb} 0; line-height: 1.75; color: #1F2937;">'
+                    f'<p style="margin: 0 0 {mb} 0; line-height: 1.75; color: #292524;">'
                     f'{p.replace(chr(10), "<br>")}</p>'
                 )
             return "".join(out)
@@ -121,12 +121,12 @@ class EmailDeliverer:
         def to_clean_paragraphs(text: str) -> str:
             paragraphs = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
             if not paragraphs:
-                return f'<p style="margin: 0; line-height: 1.62; color: #1F2937;">{text.replace(chr(10), "<br>")}</p>'
+                return f'<p style="margin: 0; line-height: 1.62; color: #292524;">{text.replace(chr(10), "<br>")}</p>'
             out = []
             for idx, p in enumerate(paragraphs):
                 mb = "11px" if idx < len(paragraphs) - 1 else "0"
                 out.append(
-                    f'<p style="margin: 0 0 {mb} 0; line-height: 1.62; color: #1F2937;">'
+                    f'<p style="margin: 0 0 {mb} 0; line-height: 1.62; color: #292524;">'
                     f'{p.replace(chr(10), "<br>")}</p>'
                 )
             return "".join(out)
@@ -148,14 +148,14 @@ class EmailDeliverer:
         # Source attribution (clean non-breaking link so arrow never orphans onto next line)
         if verified_meta and verified_meta.get("speaker"):
             provenance_html = f"""
-            <div style="margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #4B5563; line-height: 1.55;">
-              From <strong style="color: #111827;">{verified_meta.get('speaker')}</strong> &middot;
-              <a href="{verified_meta.get('url')}" target="_blank" style="color: #1D4ED8; text-decoration: none; font-weight: 600; white-space: nowrap;">Watch clip &rarr;</a>
+            <div style="margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #57534E; line-height: 1.55;">
+              From <strong style="color: #1C1917;">{verified_meta.get('speaker')}</strong> &middot;
+              <a href="{verified_meta.get('url')}" target="_blank" style="color: #9A3412; text-decoration: none; font-weight: 600; white-space: nowrap;">Watch clip &rarr;</a>
             </div>
             """
         else:
             provenance_html = """
-            <div style="margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #4B5563;">
+            <div style="margin-top: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #57534E;">
               Today's Kingdom Journal morning note
             </div>
             """
@@ -167,14 +167,14 @@ class EmailDeliverer:
             for idx, v in enumerate(radar_videos[:5], 1):
                 radar_items.append(f"""
                 <tr>
-                  <td valign="top" style="padding: 11px 0; border-bottom: 1px solid #E5E7EB; width: 26px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #4B5563; font-weight: 600;">
+                  <td valign="top" style="padding: 11px 0; border-bottom: 1px solid #E7E0D8; width: 26px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #57534E; font-weight: 600;">
                     {idx}.
                   </td>
-                  <td valign="top" style="padding: 11px 0; border-bottom: 1px solid #E5E7EB;">
-                    <a href="{v.get('url', '#')}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600; color: #111827; text-decoration: none; line-height: 1.4; display: inline-block; word-break: break-word;">
+                  <td valign="top" style="padding: 11px 0; border-bottom: 1px solid #E7E0D8;">
+                    <a href="{v.get('url', '#')}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 600; color: #1C1917; text-decoration: none; line-height: 1.4; display: inline-block; word-break: break-word;">
                       {v.get('title', '')}
                     </a>
-                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #4B5563; margin-top: 2px;">
+                    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; color: #57534E; margin-top: 2px;">
                       {v.get('channel', '')}
                     </div>
                   </td>
@@ -183,8 +183,8 @@ class EmailDeliverer:
             radar_section_html = f"""
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 32px;">
               <tr>
-                <td colspan="2" style="padding-bottom: 10px; border-bottom: 1px solid #D1D5DB;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; color: #111827; font-weight: 700;">
+                <td colspan="2" style="padding-bottom: 10px; border-bottom: 2px solid #D97706;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; color: #1C1917; font-weight: 700;">
                     Worth watching this week
                   </div>
                 </td>
@@ -209,10 +209,10 @@ class EmailDeliverer:
 </xml>
 <![endif]-->
 <style>
-  body {{ margin: 0; padding: 0; background-color: #F3F4F6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #111827; -webkit-font-smoothing: antialiased; width: 100% !important; }}
+  body {{ margin: 0; padding: 0; background-color: #F6F2ED; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1C1917; -webkit-font-smoothing: antialiased; width: 100% !important; }}
   table {{ border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }}
   img {{ -ms-interpolation-mode: bicubic; display: block; border: 0; outline: none; max-width: 100%; height: auto; }}
-  a {{ color: #1D4ED8; }}
+  a {{ color: #9A3412; }}
   @media only screen and (max-width: 620px) {{
     .outer-pad {{ padding: 12px 8px !important; }}
     .sheet-pad {{ padding: 24px 18px !important; }}
@@ -223,15 +223,15 @@ class EmailDeliverer:
   }}
 </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F3F4F6; color: #111827;">
+<body style="margin: 0; padding: 0; background-color: #F6F2ED; color: #1C1917;">
 
 <!-- Hidden Preheader -->
-<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #F3F4F6;">
+<div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #F6F2ED;">
   Issue {issue_number}: {hook} &mdash; morning reflection, today's graphics, and channel captions.
 </div>
 
 <!-- Outer Studio Canvas -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F3F4F6">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F6F2ED">
   <tr>
     <td class="outer-pad" align="center" style="padding: 28px 12px;">
       <!--[if mso]>
@@ -240,30 +240,30 @@ class EmailDeliverer:
       <td>
       <![endif]-->
       <!-- Clean White Studio Reading Sheet -->
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="sheet-table" style="max-width: 620px; width: 100%; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E5E7EB; border-top: 4px solid #111827">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" class="sheet-table" style="max-width: 620px; width: 100%; margin: 0 auto; background-color: #FFFFFF; border: 1px solid #E7E0D8; border-top: 4px solid #9A3412">
         <tr>
           <td class="sheet-pad" style="padding: 36px 38px; word-wrap: break-word; overflow-wrap: break-word;">
 
             <!-- Quiet Top Meta Row -->
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 22px;">
               <tr>
-                <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 700; color: #111827;">
-                  The Kingdom Journal <span style="color: #6B7280; font-weight: 400;">&middot; Issue {issue_number}</span>
+                <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 700; color: #1C1917;">
+                  The Kingdom Journal <span style="color: #78716C; font-weight: 400;">&middot; Issue {issue_number}</span>
                 </td>
-                <td align="right" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; color: #4B5563;">
+                <td align="right" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; color: #57534E;">
                   {today_str}
                 </td>
               </tr>
             </table>
 
             <!-- Editorial Title & Theme -->
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #E5E7EB;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border-bottom: 1px solid #E7E0D8;">
               <tr>
                 <td align="left" style="padding-bottom: 22px;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; color: #1D4ED8; margin-bottom: 6px;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; color: #9A3412; margin-bottom: 6px;">
                     {theme}
                   </div>
-                  <h1 class="hero-title" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 29px; line-height: 1.24; font-weight: 700; color: #111827;">
+                  <h1 class="hero-title" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 29px; line-height: 1.24; font-weight: 700; color: #1C1917;">
                     {hook}
                   </h1>
                 </td>
@@ -273,19 +273,19 @@ class EmailDeliverer:
             <!-- Morning Reflection -->
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
               <tr>
-                <td style="padding: 26px 0; border-bottom: 1px solid #E5E7EB;">
-                  <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 16.5px; color: #1F2937;">
+                <td style="padding: 26px 0; border-bottom: 1px solid #E7E0D8;">
+                  <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 16.5px; color: #292524;">
                     {essay_html}
                   </div>
 
                   <!-- Clean Scripture Pull Quote -->
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 22px;">
                     <tr>
-                      <td style="border-left: 3px solid #1D4ED8; padding: 4px 0 4px 16px; background-color: #F9FAFB;">
-                        <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 15.5px; line-height: 1.62; color: #111827; font-style: italic; padding-right: 12px;">
+                      <td style="border-left: 3px solid #D97706; padding: 8px 0 8px 16px; background-color: #FAF6F1;">
+                        <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 15.5px; line-height: 1.62; color: #1C1917; font-style: italic; padding-right: 12px;">
                           "{scripture.get('text', '')}"
                         </div>
-                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 600; color: #4B5563; margin-top: 6px;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 600; color: #57534E; margin-top: 6px;">
                           {scripture.get('ref', '')} ({scripture.get('translation', 'WEB')})
                         </div>
                       </td>
@@ -300,14 +300,14 @@ class EmailDeliverer:
             <!-- Today's Artwork Preview (Unboxed, Direct) -->
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
               <tr>
-                <td style="padding: 28px 0; border-bottom: 1px solid #E5E7EB;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 14px;">
+                <td style="padding: 28px 0; border-bottom: 1px solid #E7E0D8;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 700; color: #1C1917; margin-bottom: 14px;">
                     Today's flyer
                   </div>
                   <div align="center">
-                    <img src="cid:flyer_primary_4_5" alt="{theme} Graphic" style="width: 100%; max-width: 490px; height: auto; display: block; margin: 0 auto; border: 1px solid #E5E7EB;">
+                    <img src="cid:flyer_primary_4_5" alt="{theme} Graphic" style="width: 100%; max-width: 490px; height: auto; display: block; margin: 0 auto; border: 1px solid #E7E0D8;">
                   </div>
-                  <div align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12.5px; color: #4B5563; margin-top: 12px; line-height: 1.5;">
+                  <div align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12.5px; color: #57534E; margin-top: 12px; line-height: 1.5;">
                     4:5 feed edition previewed above &middot; 1:1 square, 9:16 story, and alternate design attached.
                   </div>
                 </td>
@@ -317,8 +317,8 @@ class EmailDeliverer:
             <!-- Ready-to-Post Captions (Unique Per Channel) -->
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 28px">
               <tr>
-                <td style="padding-bottom: 12px; border-bottom: 1px solid #D1D5DB;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; color: #111827; font-weight: 700;">
+                <td style="padding-bottom: 12px; border-bottom: 2px solid #D97706;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; color: #1C1917; font-weight: 700;">
                     Captions for publishing
                   </div>
                 </td>
@@ -326,20 +326,20 @@ class EmailDeliverer:
 
               <!-- Facebook -->
               <tr>
-                <td style="padding: 18px 0; border-bottom: 1px solid #E5E7EB;">
+                <td style="padding: 18px 0; border-bottom: 1px solid #E7E0D8;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
                     <tr>
-                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #111827; font-weight: 700;">
+                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1C1917; font-weight: 700;">
                         Facebook
                       </td>
                       <td align="right">
-                        <a href="{fb_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #1D4ED8; text-decoration: none; white-space: nowrap;">
+                        <a href="{fb_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #9A3412; text-decoration: none; white-space: nowrap;">
                           Share post &rarr;
                         </a>
                       </td>
                     </tr>
                   </table>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #1F2937; user-select: all; word-wrap: break-word;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #292524; user-select: all; word-wrap: break-word;">
                     {fb_html}
                   </div>
                 </td>
@@ -347,20 +347,20 @@ class EmailDeliverer:
 
               <!-- Instagram -->
               <tr>
-                <td style="padding: 18px 0; border-bottom: 1px solid #E5E7EB;">
+                <td style="padding: 18px 0; border-bottom: 1px solid #E7E0D8;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
                     <tr>
-                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #111827; font-weight: 700;">
+                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1C1917; font-weight: 700;">
                         Instagram
                       </td>
                       <td align="right">
-                        <a href="https://www.instagram.com/" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #1D4ED8; text-decoration: none; white-space: nowrap;">
+                        <a href="https://www.instagram.com/" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #9A3412; text-decoration: none; white-space: nowrap;">
                           Open Instagram &rarr;
                         </a>
                       </td>
                     </tr>
                   </table>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #1F2937; user-select: all; word-wrap: break-word;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #292524; user-select: all; word-wrap: break-word;">
                     {ig_html}
                   </div>
                 </td>
@@ -368,20 +368,20 @@ class EmailDeliverer:
 
               <!-- WhatsApp -->
               <tr>
-                <td style="padding: 18px 0; border-bottom: 1px solid #E5E7EB;">
+                <td style="padding: 18px 0; border-bottom: 1px solid #E7E0D8;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 8px;">
                     <tr>
-                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #111827; font-weight: 700;">
+                      <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1C1917; font-weight: 700;">
                         WhatsApp Status
                       </td>
                       <td align="right">
-                        <a href="{wa_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #1D4ED8; text-decoration: none; white-space: nowrap;">
+                        <a href="{wa_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; font-weight: 600; color: #9A3412; text-decoration: none; white-space: nowrap;">
                           Send on WhatsApp &rarr;
                         </a>
                       </td>
                     </tr>
                   </table>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #1F2937; user-select: all; word-wrap: break-word;">
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; color: #292524; user-select: all; word-wrap: break-word;">
                     {wa_html}
                   </div>
                 </td>
@@ -389,40 +389,40 @@ class EmailDeliverer:
 
               <!-- Two-Column Row: X & Threads -->
               <tr>
-                <td style="padding: 18px 0; border-bottom: 1px solid #E5E7EB;">
+                <td style="padding: 18px 0; border-bottom: 1px solid #E7E0D8;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="">
                     <tr>
-                      <td class="stack-col stack-col-divider" width="50%" valign="top" style="padding-right: 16px; border-right: 1px solid #E5E7EB;">
+                      <td class="stack-col stack-col-divider" width="50%" valign="top" style="padding-right: 16px; border-right: 1px solid #E7E0D8;">
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 6px;">
                           <tr>
-                            <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #111827; font-weight: 700;">
+                            <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1C1917; font-weight: 700;">
                               X
                             </td>
                             <td align="right">
-                              <a href="{x_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #1D4ED8; text-decoration: none; white-space: nowrap;">
+                              <a href="{x_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #9A3412; text-decoration: none; white-space: nowrap;">
                                 Post &rarr;
                               </a>
                             </td>
                           </tr>
                         </table>
-                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.58; color: #1F2937; user-select: all; word-wrap: break-word;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.58; color: #292524; user-select: all; word-wrap: break-word;">
                           {x_post}
                         </div>
                       </td>
                       <td class="stack-col" width="50%" valign="top" style="padding-left: 16px;">
                         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 6px;">
                           <tr>
-                            <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #111827; font-weight: 700;">
+                            <td align="left" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; color: #1C1917; font-weight: 700;">
                               Threads
                             </td>
                             <td align="right">
-                              <a href="{threads_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #1D4ED8; text-decoration: none; white-space: nowrap;">
+                              <a href="{threads_intent}" target="_blank" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 600; color: #9A3412; text-decoration: none; white-space: nowrap;">
                                 Post &rarr;
                               </a>
                             </td>
                           </tr>
                         </table>
-                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.58; color: #1F2937; user-select: all; word-wrap: break-word;">
+                        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13.5px; line-height: 1.58; color: #292524; user-select: all; word-wrap: break-word;">
                           {threads_post}
                         </div>
                       </td>
@@ -434,12 +434,12 @@ class EmailDeliverer:
               <!-- Story Text & Closing Prayer -->
               <tr>
                 <td style="padding: 18px 0 4px 0;">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13.5px; color: #1F2937; line-height: 1.58; margin-bottom: 8px;">
-                    <strong style="color: #111827;">Story line:</strong>
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13.5px; color: #292524; line-height: 1.58; margin-bottom: 8px;">
+                    <strong style="color: #1C1917;">Story line:</strong>
                     <span style="user-select: all;">{story_text}</span>
                   </div>
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13.5px; color: #1F2937; line-height: 1.58;">
-                    <strong style="color: #111827;">Short prayer:</strong>
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13.5px; color: #292524; line-height: 1.58;">
+                    <strong style="color: #1C1917;">Short prayer:</strong>
                     <span style="user-select: all;">{altar_invite}</span>
                   </div>
                 </td>
@@ -449,9 +449,9 @@ class EmailDeliverer:
             {radar_section_html}
 
             <!-- Simple Human Sign-off -->
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 34px; border-top: 1px solid #E5E7EB;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 34px; border-top: 1px solid #E7E0D8;">
               <tr>
-                <td align="left" style="padding-top: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; line-height: 1.6; color: #4B5563;">
+                <td align="left" style="padding-top: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; line-height: 1.6; color: #57534E;">
                   The Kingdom Journal &middot; Ready for today's scheduling. Attached files contain full-resolution PNGs.
                 </td>
               </tr>
