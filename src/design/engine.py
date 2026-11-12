@@ -58,7 +58,19 @@ ARCHETYPE_BG_MAP = {
     "mountain_summit": "viral_mountain_summit.jpg",
     "green_sprout": "viral_green_sprout.jpg",
     "royal_crown": "viral_royal_crown.jpg",
-    "study_desk": "viral_study_desk.jpg"
+    "study_desk": "viral_study_desk.jpg",
+    "diagonal_royal_gold": "viral_diagonal_royal_gold.jpg",
+    "golden_sunburst_clouds": "viral_golden_sunburst_clouds.jpg",
+    "deep_cobalt_wave": "viral_deep_cobalt_wave.jpg",
+    "emerald_white_wave": "viral_emerald_white_wave.jpg",
+    "crimson_cream_wave": "viral_crimson_cream_wave.jpg",
+}
+
+FRAMED_GEOMETRIC_CANVASES = {
+    "diagonal_royal_gold",
+    "deep_cobalt_wave",
+    "emerald_white_wave",
+    "crimson_cream_wave",
 }
 
 def hex_to_rgb(h: str) -> Tuple[int, int, int]:
@@ -132,7 +144,14 @@ class FlyerEngine:
                     try:
                         with Image.open(arch_path) as raw_bg:
                             focal_x = 0.27 if archetype == "mountain_summit" else 0.5
-                            bg = self._crop_to_aspect(raw_bg.convert("RGB"), width, height, focal_x=focal_x)
+                            preserve_frame = archetype in FRAMED_GEOMETRIC_CANVASES
+                            bg = self._crop_to_aspect(
+                                raw_bg.convert("RGB"),
+                                width,
+                                height,
+                                focal_x=focal_x,
+                                preserve_frame=preserve_frame,
+                            )
                             bg_loaded = True
                     except Exception as e:
                         logger.warning(f"Failed loading archetype bg {arch_path}: {e}")
@@ -216,8 +235,17 @@ class FlyerEngine:
 
         return rendered, metadata
 
-    def _crop_to_aspect(self, img: Image.Image, target_w: int, target_h: int, focal_x: float = 0.5) -> Image.Image:
-        """Subject-aware crop and resize to exactly fill target dimensions."""
+    def _crop_to_aspect(
+        self,
+        img: Image.Image,
+        target_w: int,
+        target_h: int,
+        focal_x: float = 0.5,
+        preserve_frame: bool = False
+    ) -> Image.Image:
+        """Subject-aware crop (or full border-preserving scale for geometric frames) to target dimensions."""
+        if preserve_frame:
+            return img.resize((target_w, target_h), Image.Resampling.LANCZOS)
         img_w, img_h = img.size
         target_ratio = target_w / target_h
         img_ratio = img_w / img_h

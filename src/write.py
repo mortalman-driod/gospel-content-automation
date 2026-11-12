@@ -306,56 +306,56 @@ TODAY'S MANDATED STORYTELLING ANGLE:
 {framework['guidance']}
 
 VOICE & ANTI-AI EDITORIAL MANDATES:
-1. VOICE: Warm, dignified, seasoned pastoral voice (reminiscent of A.W. Tozer, Tim Keller, or Dallas Willard, with the deep spiritual authority and warmth of a seasoned Nigerian minister).
-2. STRICTLY FORBIDDEN OPENERS (ANY USE WILL BE REJECTED):
-   - NEVER begin with "My friend, ..." or "My dear friend, ..."
-   - NEVER begin with "There are seasons when..."
-   - NEVER begin with "In a world where..." or "In today's fast-paced world..."
-   - NEVER begin with "Have you ever stopped to consider..."
-   - OPEN DIRECTLY with today's mandated storytelling angle (a dialogue, a sharp paradox, or a physical life situation).
-3. 50+ BANNED AI WORDS & CLICHÉS:
-   - Do NOT use: clarion call, spiritual lethargy, lingering in shadows, tapestry, beacon, delve, testament, unlock, embark, harness, intimate sanctuary, gentle sovereign, inner storm, cease striving, myriad, juxtaposition, pivotal, cornerstone, unleash, elevate, profound reminder, resonant, multifaceted, nuanced, profound truth, deep knowing, quietude, clamour, sacred space, deep wellspring.
-4. NATURAL CADENCE (NO FORCED IDIOMS):
-   - Write with natural, unforced, dignified English. Do NOT mechanically paste phrases like "per time" or "till date" into sentences.
-5. NO SOCIAL BOT EMOJIS:
-   - NEVER use rocket ships (🚀), globes (🌍), fire (🔥), or clusters of emojis!
-   - Maximum 0 to 2 quiet, natural emojis across an entire post (e.g. a simple 🙏 or 📖).
-6. FACEBOOK BROADCAST POST:
-   - Copy-paste ready. Compelling opening line, spacious natural paragraphs (2-3 sentences each), genuine human reflection, closing reflective question, 4-6 timeless spiritual hashtags at the bottom (#TheKingdomJournal #Prayer #Faith #SecretPlace).
-7. INSTAGRAM CAPTION:
-   - Formatted with clean line breaks, reflective, personal, engaging.
-8. X POST & THREADS POST:
-   - X: A memorable, piercing spiritual aphorism strictly <= 280 characters.
-   - Threads: An incisive thought for Christian thinkers and leaders.
-9. WHATSAPP STATUS:
-   - A warm, personal morning devotional note from one friend to another. Encouraging and genuine.
-10. FLYER ART DIRECTION & SPEC:
-    - flyer_template: Choose one best suited to the ministration mood: 'asymmetric_split' (bold, overcoming), 'heritage_serif' (scripture, contemplation), 'heavy_impact' (urgent statement), or 'quiet_light' (comfort, peace).
-    - viral_headline_pre: The hook phrase leading into the punchline
-    - viral_accent_word: The dominant contrast punchline word or phrase
-    - viral_accent_color: 'yellow' or 'red'
-    - viral_subline: 1-2 lines of rhythmic, comforting pastoral wisdom (MAX 100 characters. NEVER append speaker attribution or em-dashes here)
-    - viral_background_archetype: Choose matching canvas: 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk'.
+1. VOICE: Plainspoken, mature, pastoral warmth (like an experienced pastor writing a personal note—zero theatrical AI drama).
+2. STRICTLY FORBIDDEN OPENERS & CLICHÉS (ANY USE WILL BE REJECTED):
+   - NEVER begin with "My friend", "Good morning, dear one", "There are seasons/moments when...", "In a world...", "Have you ever...", or "A profound lesson...".
+   - NEVER invent melodramatic sob stories ("I sat with a crying stranger...") or atmospheric fluff ("breath misting in the dim evening air", "rawest petitions", "unlit corners", "silent expectations", "forged in the crucible").
+   - BANNED WORDS: clarion call, spiritual lethargy, lingering in shadows, tapestry, beacon, delve, testament, unlock, embark, harness, intimate sanctuary, gentle sovereign, inner storm, cease striving, myriad, juxtaposition, pivotal, cornerstone, unleash, elevate, profound reminder, resonant, multifaceted, nuanced, profound truth, deep knowing, quietude, clamour, sacred space, deep wellspring, speaks volumes, dear one, re-framing, unveiling.
+3. ZERO ANTITHESIS OVERUSE:
+   - Do NOT lean on repetitive "This isn't X; it's Y" or "not to X, but to Y" contrasts. State affirmative truth plainly.
+4. ZERO DUPLICATE COPY ACROSS CHANNELS (CRITICAL!):
+   - NEVER reuse or copy sentences from `reflection` into `facebook_post` or `instagram_caption`. Each field must have its OWN fresh opening line, structure, and voice!
+   - `reflection`: Personal morning devotional essay (95-130 words, 2 natural paragraphs, varied sentence lengths).
+   - `facebook_post`: Distinct conversational community reflection (different opening, practical application for today's workday, 1 honest question at the end, 2-3 quiet hashtags like #Prayer #Faith).
+   - `instagram_caption`: Short poetic mobile caption (40-70 words, 2 crisp micro-stanzas completely distinct from `reflection` and `facebook_post`, 2-3 simple hashtags).
+   - `whatsapp_status`: Casual, warm friend-to-friend morning check-in (25-45 words, zero `"dear one"`, 0-1 natural emojis).
+   - `x_post`: One crisp standalone sentence strictly <= 240 chars.
+   - `threads_post`: Sharp leadership/ministry insight (30-55 words).
+5. FLYER ART DIRECTION & VIRAL COLOR CATALOGUE (11 CANVASES):
+   Choose the canvas and emotion that create scroll-stopping contrast for today's quote:
+   - 'diagonal_royal_gold': Crisp white/silver with navy & gold ribbons -> best for leadership, kingdom victory, clarity, integrity (renders Deep Navy + Crimson/Gold).
+   - 'deep_cobalt_wave': Rich royal blue wave + gold curve -> best for authority, hope, triumph, overcoming (renders Crisp White + Electric Solar Yellow).
+   - 'emerald_white_wave': Clean ivory paper + forest/lime waves -> best for spiritual growth, fruitfulness, healing, peace (renders Deep Forest Emerald + Crimson/Gold).
+   - 'crimson_cream_wave': Warm parchment + bold scarlet waves -> best for urgency, prayer fire, the Cross, consecration (renders Obsidian Black + Vivid Scarlet).
+   - 'golden_sunburst_clouds': Warm sunlit sky + amber clouds -> best for worship, dawn mercy, revival, joy (renders Rich Espresso + Copper-Crimson).
+   - 'cross_sunrise', 'open_bible', 'mountain_summit', 'green_sprout', 'royal_crown', 'study_desk' also available for photographic themes.
+   Return:
+   - `flyer_template`: 'asymmetric_split', 'heritage_serif', 'heavy_impact', or 'quiet_light'
+   - `emotional_tone`: 'encouragement', 'authority', 'reflection', 'grace', or 'victory'
+   - `emphasized_words`: 1-3 exact words present verbatim inside the quote headline to spotlight in contrasting type/color
+   - `viral_headline_pre`, `viral_accent_word`, `viral_accent_color` ('yellow', 'red', or 'gold'), `viral_subline` (max 90 chars, NO em-dashes), `viral_background_archetype` (from the 11 canvases above).
 
 RETURN STRICT JSON matching this schema:
 {{
   "theme": "{clean_theme}",
-  "hook": "Sharp hook under 8 words",
+  "hook": "Sharp natural hook under 8 words",
   "quote": {{"text": "...", "speaker": "...", "video_title": "...", "url": "...", "start_sec": 0}} or null,
-  "reflection": "100-140 word human-crafted reflection opening directly with today's mandated angle",
-  "facebook_post": "Complete copy-paste ready Facebook post...",
-  "instagram_caption": "Complete Instagram caption with clean paragraph spacing...",
-  "x_post": "Aphorism strictly under 280 chars",
-  "threads_post": "Reflective thought for Christian leaders...",
-  "whatsapp_status": "Warm morning devotional for WhatsApp status...",
-  "story_text": "Under 18 words for vertical story",
-  "altar_invite": "Warm personal invitation to pray...",
+  "reflection": "95-130 word personal devotional essay...",
+  "facebook_post": "Distinct conversational Facebook post (NOT copied from reflection)...",
+  "instagram_caption": "Distinct concise 40-70 word Instagram caption...",
+  "x_post": "One crisp standalone sentence under 240 chars",
+  "threads_post": "Sharp leadership reflection...",
+  "whatsapp_status": "Natural morning friend-to-friend check-in...",
+  "story_text": "Under 16 words for vertical story",
+  "altar_invite": "Simple honest closing prayer...",
   "flyer_template": "asymmetric_split",
+  "emotional_tone": "encouragement",
+  "emphasized_words": ["word1", "word2"],
   "viral_headline_pre": "Hook phrase before accent word",
   "viral_accent_word": "Accent punchline word",
-  "viral_accent_color": "yellow",
-  "viral_subline": "1-2 short rhythmic pastoral lines",
-  "viral_background_archetype": "cross_sunrise"
+  "viral_accent_color": "gold",
+  "viral_subline": "Short clear supporting line under 90 chars",
+  "viral_background_archetype": "deep_cobalt_wave"
 }}
 """
         for attempt in range(2):
@@ -385,6 +385,16 @@ RETURN STRICT JSON matching this schema:
                     v_template = raw_json.get("flyer_template", "asymmetric_split")
                     if v_template not in ("asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light"):
                         v_template = "asymmetric_split"
+                    v_tone = raw_json.get("emotional_tone")
+                    v_emph = raw_json.get("emphasized_words")
+                    if isinstance(v_emph, str):
+                        v_emph = [v_emph]
+                    v_style = raw_json.get("typography_style")
+                    v_tone = raw_json.get("emotional_tone")
+                    v_emph = raw_json.get("emphasized_words")
+                    if isinstance(v_emph, str):
+                        v_emph = [v_emph]
+                    v_style = raw_json.get("typography_style")
 
                     if not v_pre or not v_acc:
                         words = headline_for_flyer.split()
@@ -444,7 +454,10 @@ RETURN STRICT JSON matching this schema:
                         viral_accent_color=v_col,
                         viral_subline=v_sub,
                         viral_background_archetype=v_arch,
-                        flyer_template=v_template
+                        flyer_template=v_template,
+                        emotional_tone=v_tone,
+                        emphasized_words=v_emph,
+                        typography_style=v_style,
                     )
                     return pkg
                 except Exception as e:
@@ -483,12 +496,31 @@ RETURN STRICT JSON matching this schema:
             credit = "The Kingdom Journal"
             tags = "#TheKingdomJournal #SecretPlace #MorningDevotional #FaithOverFear"
 
+        canvases = [
+            "deep_cobalt_wave",
+            "diagonal_royal_gold",
+            "emerald_white_wave",
+            "crimson_cream_wave",
+            "golden_sunburst_clouds",
+            "cross_sunrise",
+            "open_bible",
+            "mountain_summit",
+            "green_sprout",
+            "royal_crown",
+            "study_desk",
+        ]
+        idx_seed = abs(sum(ord(c) for c in f"{theme}{scripture.ref}")) % len(canvases)
+        chosen_bg = canvases[idx_seed]
+        if quote:
+            tags = f"#{quote['speaker'].replace(' ', '')} #Prayer #Faith"
+        else:
+            tags = "#Prayer #DailyWord #ChristianLiving"
+
         fb = (
-            f"There are moments when human vocabulary reaches its limit.\n\n"
-            f"You don't need louder arguments today. You need a deeper surrender.\n\n"
-            f"Scripture reminds us in {scripture.ref}: \"{scripture.text}\"\n\n"
-            f"Take two minutes before the rush of the day to breathe and rest under His sovereign hand.\n\n"
-            f"Where in your life are you still trying to force an outcome that only prayer can settle?\n\n"
+            f"Before checking notifications this morning, read {scripture.ref} slowly: \"{scripture.text}\"\n\n"
+            f"Most of us carry pressure into the workday as if outcomes depend solely on our speed. "
+            f"Pause before your first call today and ask God to govern what you cannot control.\n\n"
+            f"What weight are you choosing to lay down as this week unfolds?\n\n"
             f"{tags}"
         )
 
@@ -497,26 +529,26 @@ RETURN STRICT JSON matching this schema:
             v_pre = " ".join(words[:-2])
             v_acc = " ".join(words[-2:])
         else:
-            v_pre = "There is divine glory in"
-            v_acc = "quiet surrender."
+            v_pre = "Stand steady in"
+            v_acc = "God's peace."
 
         flyers = [
             FlyerSpec(
                 template="viral_quote_poster",
                 headline=headline,
-                subline="When human striving ends, divine illumination takes over.",
+                subline="Steady your heart in prayer before the noise begins.",
                 credit=credit,
                 image_prompt=generate_text_free_image_prompt(theme, palette_id),
                 scripture_badge=scripture.ref,
                 scripture_ref=scripture.ref,
                 headline_pre=v_pre,
                 accent_word=v_acc,
-                accent_color="yellow",
-                background_archetype="cross_sunrise"
+                accent_color="gold",
+                background_archetype=chosen_bg
             ),
             FlyerSpec(
                 template="modern_quote_card",
-                headline="They want public stages. / God crowns secret surrender.",
+                headline=headline,
                 subline="Rest in His peace today.",
                 credit=credit,
                 image_prompt=generate_text_free_image_prompt(theme, palette_id),
@@ -524,48 +556,43 @@ RETURN STRICT JSON matching this schema:
                 scripture_ref=scripture.ref,
                 headline_pre=v_pre,
                 accent_word=v_acc,
-                accent_color="yellow",
-                background_archetype="cross_sunrise"
+                accent_color="gold",
+                background_archetype=chosen_bg
             )
         ]
 
         return IssuePackage(
             theme=theme,
-            hook="When Human Words Run Dry",
+            hook="Steady Faith Before The Day Begins",
             quote=q_payload,
             scripture=scripture,
             reflection=(
-                f"I used to believe that faith meant having an answer for every crisis. But the older I get in God, "
-                f"the more I realize that peace is found when our questions run out of breath.\n\n"
-                f"In {scripture.ref}, God promises that His word remains our lamp and guide. Not a spotlight ten miles ahead, "
-                f"but a gentle lamp for the very next step. Stop demanding to see the whole horizon. "
-                f"Trust the Shepherd for today."
+                f"Quiet mornings carry more spiritual weight than crowded calendars ever will. "
+                f"Years of ministry teach you that outward activity runs dry whenever private communion grows thin.\n\n"
+                f"Notice how {scripture.ref} anchors today's theme around {theme.lower()}: God guides one clear step at a time. "
+                f"Leave yesterday's anxiety on the floor and take today's assignment with a calm, unhurried spirit."
             ),
             facebook_post=fb,
             instagram_caption=(
-                f"You don't need louder striving today. You need quiet surrender.\n\n"
                 f"\"{headline}\" {credit}\n\n"
-                f"Scripture: {scripture.ref} — \"{scripture.text}\"\n\n"
-                f"Drop an Amen if you are resting in His timing today.\n\n"
+                f"Carry that sentence with {scripture.ref} into today's commute. One grounded prayer changes the pace of an entire morning.\n\n"
                 f"{tags}"
             ),
-            x_post=f"{headline} {credit} #TheKingdomJournal"[:280],
+            x_post=f"{headline} {credit}"[:280],
             threads_post=(
-                f"A profound lesson from today's secret place: {headline}\n\n"
-                f"True spiritual strength is rarely loud. It is the steady conviction that God is at work even when we cannot see the outcome."
+                f"{headline}\n\n"
+                f"Public endurance grows straight out of unhurried mornings in the Word ({scripture.ref})."
             ),
             whatsapp_status=(
-                f"🕊️ *Morning Devotional • The Kingdom Journal*\n\n"
-                f"\"{headline}\"\n\n"
-                f"📖 *{scripture.ref}:* \"{scripture.text}\"\n\n"
-                f"Whatever feels heavy this morning, hand it over to Him. Share this with someone who needs peace today."
+                f"Good morning. Take sixty quiet seconds with {scripture.ref} before stepping out today: "
+                f"\"{scripture.text}\" Wishing you peace and clear direction."
             ),
-            story_text="God is working behind the scenes for you.",
-            altar_invite="If you need peace today, pause where you are: 'Lord Jesus, I surrender my striving into Your hands.'",
+            story_text="One grounded prayer changes the pace of your morning.",
+            altar_invite="Lord Jesus, steady my thoughts this morning and lead every decision ahead of me.",
             flyers=flyers,
             viral_headline_pre=v_pre,
             viral_accent_word=v_acc,
-            viral_accent_color="yellow",
-            viral_subline="When human striving ends, divine illumination takes over.",
-            viral_background_archetype="cross_sunrise"
+            viral_accent_color="gold",
+            viral_subline="Steady your heart in prayer before the noise begins.",
+            viral_background_archetype=chosen_bg
         )

@@ -59,8 +59,23 @@ class TestWritingEngine(unittest.TestCase):
         # Viral fields populated
         self.assertIsNotNone(pkg.viral_headline_pre)
         self.assertIsNotNone(pkg.viral_accent_word)
-        self.assertIn(pkg.viral_accent_color, ["yellow", "red"])
-        self.assertIn(pkg.viral_background_archetype, ["cross_sunrise", "open_bible", "mountain_summit", "green_sprout", "royal_crown", "study_desk"])
+        self.assertIn(pkg.viral_accent_color, ["yellow", "gold", "red", "cobalt", "emerald", "amber"])
+        self.assertIn(
+            pkg.viral_background_archetype,
+            [
+                "cross_sunrise",
+                "open_bible",
+                "mountain_summit",
+                "green_sprout",
+                "royal_crown",
+                "study_desk",
+                "diagonal_royal_gold",
+                "golden_sunburst_clouds",
+                "deep_cobalt_wave",
+                "emerald_white_wave",
+                "crimson_cream_wave",
+            ],
+        )
 
 if __name__ == "__main__":
     unittest.main()

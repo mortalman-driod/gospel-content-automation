@@ -358,17 +358,32 @@ BANNED_AI_WORDS = [
     "juxtaposition", "pivotal", "cornerstone", "unleash", "elevate", "profound reminder",
     "resonant", "multifaceted", "nuanced", "profound truth", "deep knowing", "quietude",
     "clamour", "sacred space", "deep wellspring", "striving vs surrender",
-    "foster", "testament to", "delve into"
+    "foster", "testament to", "delve into", "rawest", "breath misting", "dim evening air",
+    "unlit corners", "silent expectations", "clarity seems elusive", "resilience is truly",
+    "crucible", "forged in rooms", "forged in the waiting", "re-framing", "dear one",
+    "speaks volumes", "unveiling", "stripping away"
 ]
 
 BANNED_OPENERS = [
-    "my friend", "my dear friend", "there are seasons", "in a world",
-    "in today's", "have you ever", "as believers", "sitting at 4 a.m."
+    "my friend", "my dear friend", "good morning, dear one", "there are seasons",
+    "there are moments when", "in a world", "in today's", "have you ever",
+    "as believers", "sitting at 4 a.m.", "a profound lesson"
 ]
 
-def verify_de_ai_compliance(reflection: str, facebook_post: str = "") -> Tuple[bool, List[str], float]:
+ANTITHESIS_PATTERNS = [
+    re.compile(r"\b(?:is not|isn't|are not|aren't|doesn't come from|does not come from)\b[^.!?]{3,55}[;,—–-]+\s*(?:but|rather|instead|it is|it's)\b", re.IGNORECASE),
+    re.compile(r"\bnot\s+(?:to\s+[\w]+|about\s+[\w]+|a\s+[\w]+|passive\s+[\w]+)\s*[;,]\s*but\s+(?:to|a|about|active)\b", re.IGNORECASE),
+]
+
+def verify_de_ai_compliance(
+    reflection: str,
+    facebook_post: str = "",
+    instagram_caption: str = "",
+    whatsapp_status: str = ""
+) -> Tuple[bool, List[str], float]:
     """
-    Evaluates text for AI fingerprints, clichés, and robotic monotony.
+    Evaluates generated editorial text across channels for AI fingerprints,
+    cliches, repetitive antithesis structures, bot formatting, and cross-channel pasting.
     Returns (is_compliant, violations, ai_score).
     ai_score ranges from 0.0 (completely human) to 1.0 (obviously AI).
     """
@@ -376,20 +391,63 @@ def verify_de_ai_compliance(reflection: str, facebook_post: str = "") -> Tuple[b
     violations = []
     penalties = 0.0
 
-    # 1. Banned Cliché Scanner
-    ref_lower = reflection.lower()
+    combined_lower = " ".join(
+        t for t in [reflection, facebook_post, instagram_caption, whatsapp_status] if t
+    ).lower()
+
+    # 1. Banned Cliché Scanner across all channels
     for word in BANNED_AI_WORDS:
-        if re.search(r'\b' + re.escape(word) + r'\b', ref_lower):
-            violations.append(f"AI Cliché Detected: '{word}'")
+        if re.search(r'\b' + re.escape(word) + r'\b', combined_lower):
+            violations.append(f"AI Cliche Detected: '{word}'")
             penalties += 0.25
 
-    # 2. Formulaic Opener Check
-    for opener in BANNED_OPENERS:
-        if ref_lower.strip().startswith(opener):
-            violations.append(f"Formulaic AI Opener Detected: Starts with '{opener}'")
-            penalties += 0.40
+    # 2. Formulaic Opener Check across channels
+    for label, block in [
+        ("Reflection", reflection),
+        ("Facebook", facebook_post),
+        ("Instagram", instagram_caption),
+        ("WhatsApp", whatsapp_status),
+    ]:
+        if not block:
+            continue
+        low_b = block.lower().strip()
+        for opener in BANNED_OPENERS:
+            if low_b.startswith(opener):
+                violations.append(f"Formulaic AI Opener ({label}): Starts with '{opener}'")
+                penalties += 0.40
 
-    # 3. Sentence Length Uniformity (Burstiness Check)
+    # 3. Synthetic Contrast / Antithesis Overuse ("not X, but Y" / "isn't X, it's Y")
+    antithesis_hits = 0
+    for pat in ANTITHESIS_PATTERNS:
+        antithesis_hits += len(pat.findall(f"{reflection} {facebook_post}"))
+    if antithesis_hits >= 2:
+        violations.append(f"Overused AI Antithesis Formula ({antithesis_hits} 'not X, but Y' pairs)")
+        penalties += 0.25
+
+    # 4. Cross-Channel Duplicate Pasting Check (Email Reflection == Facebook == Instagram)
+    def first_sentence(txt: str) -> str:
+        parts = [s.strip().lower() for s in re.split(r'[.!?]+', txt or "") if len(s.strip()) > 12]
+        return parts[0] if parts else ""
+
+    refl_clean = normalize_text_for_match(reflection)
+    fb_clean = normalize_text_for_match(facebook_post)
+    ig_clean = normalize_text_for_match(instagram_caption)
+
+    if refl_clean and fb_clean:
+        if (first_sentence(reflection) and first_sentence(reflection) == first_sentence(facebook_post)) or (
+            difflib.SequenceMatcher(None, refl_clean[:320], fb_clean[:320]).ratio() >= 0.60
+        ):
+            violations.append("Cross-Channel Duplication: Facebook post copies Email Reflection")
+            penalties += 0.30
+
+    if refl_clean and ig_clean:
+        if (first_sentence(reflection) and first_sentence(reflection) == first_sentence(instagram_caption)) or (
+            difflib.SequenceMatcher(None, refl_clean[:280], ig_clean[:280]).ratio() >= 0.60
+        ):
+            violations.append("Cross-Channel Duplication: Instagram caption copies Email Reflection")
+            penalties += 0.30
+
+    # 5. Sentence Length Uniformity (Burstiness Check)
     sentences = [s.strip() for s in re.split(r'[.!?]+', reflection) if s.strip()]
     if len(sentences) >= 4:
         lengths = [len(s.split()) for s in sentences]
@@ -401,11 +459,10 @@ def verify_de_ai_compliance(reflection: str, facebook_post: str = "") -> Tuple[b
         except Exception:
             pass
 
-    # 4. Social Bot Emoji Clusters
-    if facebook_post:
-        if re.search(r'[🚀🔥🌍]{1,}', facebook_post):
-            violations.append("Bot Emoji Detected (rocket/fire/globe)")
-            penalties += 0.20
+    # 6. Social Bot Emoji Clusters
+    if re.search(r'[🚀🔥🌍]{1,}', f"{facebook_post} {instagram_caption} {whatsapp_status}"):
+        violations.append("Bot Emoji Detected (rocket/fire/globe)")
+        penalties += 0.20
 
     ai_score = min(1.0, penalties)
     is_compliant = len(violations) == 0 and ai_score < 0.15

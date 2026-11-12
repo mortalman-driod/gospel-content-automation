@@ -131,12 +131,17 @@ class TestMasterOverhaul(unittest.TestCase):
         self.assertIn("<!--[if mso]>", html)
         self.assertIn("<table role=\"presentation\"", html)
 
-        # 2. Must adhere to Editorial Print Magazine WCAG AAA/AA light-paper ink palette
-        self.assertIn('#F4F1EA', html)  # Warm archival desk background
-        self.assertIn('#1C1917', html)  # Deep editorial charcoal ink
-        self.assertIn('#57534E', html)  # High-contrast warm taupe subtext
-        self.assertIn('#855A18', html)  # Burnished ochre editorial accent
-        # Must contain zero SaaS card boxes, zero textareas, and zero platform emojis
+        # 2. Must adhere to Daylight Studio Dispatch WCAG AAA/AA light-paper ink palette
+        self.assertIn('#F3F4F6', html)  # Soft neutral studio backdrop
+        self.assertIn('#FFFFFF', html)  # Crisp white dispatch sheet
+        self.assertIn('#111827', html)  # Deep carbon charcoal ink
+        self.assertIn('#4B5563', html)  # High-contrast slate secondary ink
+        self.assertIn('#1D4ED8', html)  # Cobalt studio accent
+        # Must contain zero template jargon, Roman numerals, textareas, or platform emojis
+        self.assertNotIn('I &middot;', html)
+        self.assertNotIn('Plate ', html)
+        self.assertNotIn('MORNING EDITION', html)
+        self.assertNotIn('Published in Lagos &amp; London', html)
         self.assertNotIn('<textarea', html)
         self.assertNotIn('📘', html)
         self.assertNotIn('📸', html)

@@ -164,6 +164,51 @@ BACKGROUND_PROFILES: Dict[str, Dict] = {
             "9:16": {"x1": 0.09, "y1": 0.13, "x2": 0.91, "y2": 0.50, "align": "center"},
         },
     },
+    "diagonal_royal_gold": {
+        # Crisp white/silver diagonal paper framed top-left & bottom-right with navy+gold bands
+        "polarity": "light_wall",
+        "zones": {
+            "4:5":  {"x1": 0.12, "y1": 0.21, "x2": 0.88, "y2": 0.76, "align": "center"},
+            "1:1":  {"x1": 0.12, "y1": 0.20, "x2": 0.88, "y2": 0.76, "align": "center"},
+            "9:16": {"x1": 0.10, "y1": 0.22, "x2": 0.90, "y2": 0.75, "align": "center"},
+        },
+    },
+    "golden_sunburst_clouds": {
+        # Radiant warm sky top-left/center, amber clouds below (y > 67%)
+        "polarity": "light_sky",
+        "zones": {
+            "4:5":  {"x1": 0.09, "y1": 0.11, "x2": 0.89, "y2": 0.63, "align": "center"},
+            "1:1":  {"x1": 0.09, "y1": 0.10, "x2": 0.89, "y2": 0.63, "align": "center"},
+            "9:16": {"x1": 0.09, "y1": 0.14, "x2": 0.91, "y2": 0.60, "align": "center"},
+        },
+    },
+    "deep_cobalt_wave": {
+        # Rich royal cobalt field between upper azure curve (y < 14%) and gold S-wave (y > 75%)
+        "polarity": "dark",
+        "zones": {
+            "4:5":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "1:1":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "9:16": {"x1": 0.09, "y1": 0.20, "x2": 0.91, "y2": 0.72, "align": "center"},
+        },
+    },
+    "emerald_white_wave": {
+        # Clean ivory center framed by top-left & bottom-right forest/lime waves
+        "polarity": "light_wall",
+        "zones": {
+            "4:5":  {"x1": 0.11, "y1": 0.21, "x2": 0.89, "y2": 0.73, "align": "center"},
+            "1:1":  {"x1": 0.11, "y1": 0.20, "x2": 0.89, "y2": 0.74, "align": "center"},
+            "9:16": {"x1": 0.10, "y1": 0.22, "x2": 0.90, "y2": 0.72, "align": "center"},
+        },
+    },
+    "crimson_cream_wave": {
+        # Warm parchment cream center framed by scarlet waves top (y < 14%) & bottom (y > 76%)
+        "polarity": "light_wall",
+        "zones": {
+            "4:5":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "1:1":  {"x1": 0.09, "y1": 0.18, "x2": 0.91, "y2": 0.73, "align": "center"},
+            "9:16": {"x1": 0.09, "y1": 0.20, "x2": 0.91, "y2": 0.72, "align": "center"},
+        },
+    },
 }
 
 # Approved 2-3 Color Harmonies (never random gradients or rainbow noise)
@@ -229,6 +274,67 @@ COLOR_HARMONIES: Dict[str, Dict] = {
         "badge_fg": (18, 18, 24, 255),
         "underline": (228, 184, 72, 255),
         "is_dark_text": False,
+    },
+    # Viral Custom Canvas Harmonies (High-contrast scroll-stopping 2-3 color systems)
+    "viral_royal_navy_gold": {
+        "primary": (9, 26, 78, 255),       # Royal midnight navy (echoes diagonal corner)
+        "accent": (176, 16, 28, 255),      # Punchy royal crimson OR amber-gold contrast
+        "support": (34, 48, 86, 248),
+        "detail": (62, 74, 108, 240),
+        "strip_bg": (9, 26, 78, 255),      # Royal navy highlight strip
+        "strip_fg": (253, 224, 71, 255),   # Luminous gold bold text inside navy strip
+        "badge_bg": (9, 26, 78, 255),
+        "badge_fg": (253, 224, 71, 255),   # Gold reference inside navy ribbon
+        "underline": (196, 140, 12, 255),  # Brushed gold swoosh matching ribbon
+        "is_dark_text": True,
+    },
+    "viral_cobalt_white_gold": {
+        "primary": (255, 255, 255, 255),   # Crisp high-contrast pure white
+        "accent": (250, 204, 21, 255),     # Electric solar gold matching wave
+        "support": (226, 236, 252, 245),
+        "detail": (198, 216, 246, 230),
+        "strip_bg": (250, 204, 21, 255),   # High-voltage solar yellow strip
+        "strip_fg": (6, 24, 78, 255),      # Deep royal cobalt ink inside yellow strip
+        "badge_bg": (250, 204, 21, 255),
+        "badge_fg": (6, 24, 78, 255),
+        "underline": (250, 204, 21, 255),
+        "is_dark_text": False,
+    },
+    "viral_emerald_forest_gold": {
+        "primary": (6, 56, 24, 255),       # Deep forest evergreen ink
+        "accent": (168, 24, 28, 255),      # Bold botanical red/terracotta contrast
+        "support": (28, 72, 42, 248),
+        "detail": (58, 92, 68, 240),
+        "strip_bg": (6, 56, 24, 255),      # Deep emerald paint strip
+        "strip_fg": (253, 224, 71, 255),   # Radiant gold text inside emerald strip
+        "badge_bg": (6, 56, 24, 255),
+        "badge_fg": (255, 255, 255, 255),
+        "underline": (106, 168, 22, 255),  # Vibrant lime-leaf swoosh matching wave
+        "is_dark_text": True,
+    },
+    "viral_crimson_parchment_bold": {
+        "primary": (20, 20, 24, 255),      # Stark obsidian black ink
+        "accent": (184, 12, 20, 255),      # High-voltage scarlet red matching wave
+        "support": (52, 48, 46, 248),
+        "detail": (78, 70, 66, 240),
+        "strip_bg": (184, 12, 20, 255),    # Vivid crimson highlight strip
+        "strip_fg": (255, 255, 255, 255),  # Crisp white bold text inside strip
+        "badge_bg": (184, 12, 20, 255),
+        "badge_fg": (255, 255, 255, 255),
+        "underline": (184, 12, 20, 255),
+        "is_dark_text": True,
+    },
+    "viral_sunburst_espresso_amber": {
+        "primary": (34, 20, 12, 255),      # Rich warm espresso ink
+        "accent": (164, 26, 18, 255),      # Deep sunlit crimson-copper
+        "support": (62, 42, 28, 248),
+        "detail": (86, 62, 44, 240),
+        "strip_bg": (34, 20, 12, 255),     # Espresso brush strip
+        "strip_fg": (253, 224, 71, 255),   # Bright sunlit gold inside strip
+        "badge_bg": (34, 20, 12, 255),
+        "badge_fg": (253, 224, 71, 255),
+        "underline": (186, 68, 12, 255),   # Warm solar copper arc
+        "is_dark_text": True,
     },
 }
 
@@ -322,9 +428,19 @@ def select_art_direction(
     else:
         use_light_polarity = bg_profile["polarity"] in ("light_sky", "light_wall")
 
-    # Match Approved Color Harmony
+    # Match Approved High-Contrast Viral Color Harmony (Canvas-Aware First!)
+    ARCHETYPE_HARMONY_MAP = {
+        "diagonal_royal_gold": "viral_royal_navy_gold",
+        "deep_cobalt_wave": "viral_cobalt_white_gold",
+        "emerald_white_wave": "viral_emerald_forest_gold",
+        "crimson_cream_wave": "viral_crimson_parchment_bold",
+        "golden_sunburst_clouds": "viral_sunburst_espresso_amber",
+    }
     hint = (accent_color_hint or "yellow").lower()
-    if use_light_polarity:
+    if background_archetype in ARCHETYPE_HARMONY_MAP:
+        harmony = COLOR_HARMONIES[ARCHETYPE_HARMONY_MAP[background_archetype]]
+        use_light_polarity = harmony["is_dark_text"]
+    elif use_light_polarity:
         if chosen_style["id"] == "authority_condensed":
             harmony = COLOR_HARMONIES["light_charcoal_red"]
         else:

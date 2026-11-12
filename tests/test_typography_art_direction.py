@@ -110,6 +110,58 @@ class TestTypographyArtDirection(unittest.TestCase):
             self.assertTrue(meta["wcag_aa_compliant"], f"{tpl} on {arch} ({aspect}) failed WCAG: {meta}")
             self.assertGreaterEqual(meta["contrast_ratio"], 4.5)
 
+    def test_viral_catalog_canvases_render_and_meet_wcag_aa(self):
+        viral_cases = [
+            ("diagonal_royal_gold", "4:5", "victory", ["faith"]),
+            ("golden_sunburst_clouds", "4:5", "hope", ["light"]),
+            ("deep_cobalt_wave", "4:5", "grace", ["know"]),
+            ("deep_cobalt_wave", "1:1", "grace", ["still"]),
+            ("emerald_white_wave", "4:5", "encouragement", ["seeds"]),
+            ("crimson_cream_wave", "4:5", "warning", ["life"]),
+        ]
+        for arch, aspect, tone, emph in viral_cases:
+            content = {
+                "headline": "Faith gives you light and life so know and plant seeds in peace.",
+                "emphasized_words": emph,
+                "emotional_tone": tone,
+                "subline": "Wait on God before you answer the pressure of the day.",
+                "scripture_badge": "Psalm 46:10",
+                "credit": "— Apostle Joshua Selman",
+                "background_archetype": arch,
+            }
+            img, meta = self.engine.render_flyer("asymmetric_split", aspect, content)
+            self.assertIsInstance(img, Image.Image)
+            self.assertTrue(meta["wcag_aa_compliant"], f"{arch} ({aspect}) failed WCAG: {meta}")
+            self.assertGreaterEqual(meta["contrast_ratio"], 4.5)
+
+    def test_de_ai_gate_flags_cross_channel_duplication_and_antithesis(self):
+        from src.verify import verify_de_ai_compliance
+
+        dup_text = (
+            "Grace does not excuse compromise; it trains your heart for steady obedience. "
+            "When everyone else panics in traffic, pray first and speak peace into the room. "
+            "Your quiet faithfulness today builds tomorrow's witness."
+        )
+        ok_dup, viol_dup, _ = verify_de_ai_compliance(
+            reflection=dup_text,
+            facebook_post=dup_text,
+            instagram_caption="Completely distinct Instagram devotion that stands on its own.",
+        )
+        self.assertFalse(ok_dup)
+        self.assertTrue(any("cross-channel duplication" in v.lower() for v in viol_dup), viol_dup)
+
+        antithesis_text = (
+            "Prayer isn't a ritual; it's a lifeline. "
+            "Your discipline is not passive waiting, but active trust. "
+            "Faith is not avoiding reality; it is anchoring inside truth."
+        )
+        ok_anti, viol_anti, _ = verify_de_ai_compliance(
+            reflection=antithesis_text,
+            facebook_post="Walk through Monday morning with quiet courage and a steady prayer.",
+        )
+        self.assertFalse(ok_anti)
+        self.assertTrue(any("antithesis" in v.lower() for v in viol_anti), viol_anti)
+
 
 if __name__ == "__main__":
     unittest.main()

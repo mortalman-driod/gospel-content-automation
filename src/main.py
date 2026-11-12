@@ -130,7 +130,12 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         logger.info(f"Generated Issue Package: Hook = \"{issue_package.hook}\"")
 
         # De-AI Humanization Verification Gate
-        is_compliant, violations, ai_score = verify_de_ai_compliance(issue_package.reflection, issue_package.facebook_post)
+        is_compliant, violations, ai_score = verify_de_ai_compliance(
+            issue_package.reflection,
+            issue_package.facebook_post,
+            issue_package.instagram_caption,
+            issue_package.whatsapp_status,
+        )
         if not is_compliant:
             logger.warning(f"[DE-AI GATE ALERT] AI Score: {ai_score}. Violations detected: {violations}")
             logger.info("Re-rolling issue with alternate storytelling framework to eliminate AI markers...")
@@ -142,7 +147,12 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                     palette_id=palette_id,
                     issue_number=issue_num
                 )
-                is_compliant, violations, ai_score = verify_de_ai_compliance(issue_package.reflection, issue_package.facebook_post)
+                is_compliant, violations, ai_score = verify_de_ai_compliance(
+                    issue_package.reflection,
+                    issue_package.facebook_post,
+                    issue_package.instagram_caption,
+                    issue_package.whatsapp_status,
+                )
                 logger.info(f"[DE-AI GATE RE-ROLL] Post-reroll AI Score: {ai_score}. Compliant: {is_compliant}")
             except Exception as e:
                 logger.warning(f"Re-roll error, keeping sanitized package: {e}")
@@ -185,7 +195,9 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
 
         # Render Alternate Flyer in 4:5 using a complementary art direction
         alt_template = "heritage_serif" if chosen_template != "heritage_serif" else "heavy_impact"
-        alt_bg = "open_bible" if primary_content["background_archetype"] != "open_bible" else "royal_crown"
+        alt_pool = ["deep_cobalt_wave", "diagonal_royal_gold", "emerald_white_wave", "crimson_cream_wave", "golden_sunburst_clouds", "open_bible"]
+        alt_candidates = [b for b in alt_pool if b != primary_content["background_archetype"]]
+        alt_bg = alt_candidates[issue_num % len(alt_candidates)]
         alt_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
