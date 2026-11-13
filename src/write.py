@@ -35,14 +35,23 @@ def load_env():
                     os.environ[k] = v
 
 def clean_theme_title(raw_title: str) -> str:
-    """Strips broadcast dates, day numbers, session markers, and returns clean spiritual theme."""
+    """Strips broadcast dates, day numbers, session markers, music tags, artist names, and returns clean spiritual theme."""
     if not raw_title:
         return "The Secret Place"
     t = re.sub(r'\|\|.*?\|\|', '', raw_title)
     t = re.sub(r'\(.*?\)', '', t)
     t = re.sub(r'\[.*?\]', '', t)
     t = re.sub(r'\b(DAY\s+\d+|PART\s+\d+|SESSION\s+\d+|EPISODE\s+\d+|202[0-9])\b', '', t, flags=re.IGNORECASE)
-    t = re.sub(r'\b(LIVE|BROADCAST|MINISTRATION|STREAM|FASTING|ONLINE)\b', '', t, flags=re.IGNORECASE)
+    t = re.sub(r'\b(OFFICIAL|MUSIC|VIDEO|AUDIO|VISUALIZER|LYRICS?|LIVE|BROADCAST|MINISTRATION|STREAM|FASTING|ONLINE|FEATURING|FEAT\.?|FT\.?)\b', '', t, flags=re.IGNORECASE)
+    # Strip preacher/artist names from theme candidate so author name is never used as theme
+    banned_theme_words = [
+        "ty bello", "tomi favored", "dunsin oyekan", "nathaniel bassey",
+        "joshua selman", "emmanuel iren", "jerry eze", "victoria orenze",
+        "theophilus sunday", "sunmisola agbebi", "moses bliss", "sam adeyemi"
+    ]
+    for bw in banned_theme_words:
+        t = re.sub(r'\b' + re.escape(bw) + r'\b', '', t, flags=re.IGNORECASE)
+    t = re.sub(r'\s*&\s*', ' ', t)
     parts = [p.strip() for p in re.split(r'[-|:]', t) if p.strip()]
     for p in parts:
         words = p.split()
@@ -338,7 +347,7 @@ VOICE & ANTI-AI EDITORIAL MANDATES:
 
 RETURN STRICT JSON matching this schema:
 {{
-  "theme": "{clean_theme}",
+  "theme": "Uplifting 2-4 word spiritual theme (e.g. \"Divine Redemption\", \"The Secret Place\", \"Unshakable Peace\")",
   "hook": "Sharp natural hook under 8 words",
   "quote": {{"text": "...", "speaker": "...", "video_title": "...", "url": "...", "start_sec": 0}} or null,
   "reflection": "95-130 word personal devotional essay...",
