@@ -84,6 +84,11 @@ class TestMasterOverhaul(unittest.TestCase):
         unique_refs = set(assigned_refs)
         self.assertGreaterEqual(len(unique_refs), 4, "Scripture assignments across themes must be diverse.")
 
+        # Anti-Repetition Guard Test: Matthew 6:6 must not repeat when in recently_used
+        r_blocked = get_scripture_for_theme(theme="The Power of Prayer in the Secret Room", recently_used=["Matthew 6:6"])
+        self.assertNotEqual(r_blocked["reference"].upper(), "MATTHEW 6:6", "Recently used Matthew 6:6 must be skipped.")
+        self.assertIn("reference", r_blocked)
+
     def test_04_preacher_attribution_purity(self):
         """Verifies that channel and ministry names are never used as author attributions."""
         test_cases = [
@@ -146,6 +151,10 @@ class TestMasterOverhaul(unittest.TestCase):
         self.assertNotIn('<textarea', html)
         self.assertNotIn('📘', html)
         self.assertNotIn('📸', html)
+        # UI De-clutter: Internal theme color names and redundant prefixes must never appear
+        self.assertNotIn('Warm Terracotta &amp; Amber Edition', html)
+        self.assertNotIn('Terracotta &amp; Amber Edition', html)
+        self.assertNotIn('✦ Theme:', html)
 
     def test_06_image_compression_budget(self):
         """Verifies progressive JPEG optimization keeps image size under 180 KB."""

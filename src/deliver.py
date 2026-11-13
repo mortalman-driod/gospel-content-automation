@@ -237,11 +237,14 @@ class EmailDeliverer:
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
               <tr>
                 <td align="left" valign="middle">
-                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FDE68A;">
-                    ✦ THE KINGDOM JOURNAL &middot; DAILY DISPATCH ✦
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #FDE68A; line-height: 1.3;">
+                    THE KINGDOM JOURNAL &middot; DAILY DEVOTIONAL
                   </div>
-                  <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 23px; font-weight: 700; color: #FFFFFF; margin-top: 4px; letter-spacing: -0.01em;">
-                    Warm Terracotta &amp; Amber Edition
+                  <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 700; color: #FFFFFF; margin-top: 4px; letter-spacing: -0.01em;">
+                    The Kingdom Journal
+                  </div>
+                  <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11.5px; color: #FED7AA; margin-top: 3px;">
+                    Daily Devotional &amp; Verified Ministry Insights
                   </div>
                 </td>
                 <td align="right" valign="middle" style="white-space: nowrap;">
@@ -265,8 +268,8 @@ class EmailDeliverer:
               <tr>
                 <td align="left" style="padding-bottom: 22px;">
                   <div style="margin-bottom: 10px;">
-                    <span style="display: inline-block; background-color: #FAF6F1; color: #9A3412; border: 1.5px solid #D97706; padding: 4px 13px; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">
-                      ✦ Theme: {theme}
+                    <span style="display: inline-block; background-color: #FAF6F1; color: #9A3412; border: 1.5px solid #D97706; padding: 4px 13px; border-radius: 999px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+                      {theme}
                     </span>
                   </div>
                   <h1 class="hero-title" style="margin: 0; font-family: Georgia, 'Times New Roman', serif; font-size: 28px; line-height: 1.25; font-weight: 700; color: #1C1917;">
@@ -292,7 +295,7 @@ class EmailDeliverer:
                           "{scripture.get('text', '')}"
                         </div>
                         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 700; color: #9A3412; margin-top: 8px;">
-                          {scripture.get('ref', '')} ({scripture.get('translation', 'WEB')})
+                          {scripture.get('ref', '')} ({scripture.get('translation', 'KJV')})
                         </div>
                       </td>
                     </tr>
@@ -314,9 +317,9 @@ class EmailDeliverer:
                           Today's flyer
                         </span>
                       </td>
-                      <td align="right">
-                        <span style="display: inline-block; background-color: #FAF6F1; color: #9A3412; border: 1px solid #D97706; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 4px; text-transform: uppercase;">
-                          Terracotta &amp; Amber Edition
+                      <td align="right" style="white-space: nowrap;">
+                        <span style="display: inline-block; background-color: #FAF6F1; color: #9A3412; border: 1px solid #D97706; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.03em;">
+                          High-Res Social Kit
                         </span>
                       </td>
                     </tr>
@@ -469,7 +472,7 @@ class EmailDeliverer:
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-top: 34px; border-top: 2px solid #D97706;">
               <tr>
                 <td align="left" style="padding-top: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 12.5px; line-height: 1.6; color: #57534E;">
-                  <strong style="color: #9A3412;">The Kingdom Journal</strong> &middot; Warm Terracotta &amp; Burnt Amber Edition &middot; Ready for today's scheduling. Attached files contain full-resolution PNGs.
+                  <strong style="color: #9A3412;">The Kingdom Journal</strong> &middot; Daily devotional and verified ministry insights. High-resolution graphics attached for social media publishing.
                 </td>
               </tr>
             </table>
@@ -512,7 +515,7 @@ class EmailDeliverer:
         )
 
         plain_text = (
-            f"The Kingdom Journal - Issue {issue_number} [Warm Terracotta & Burnt Amber Edition]\n"
+            f"The Kingdom Journal - Issue {issue_number}\n"
             f"{package.get('theme')}: {package.get('hook')}\n\n"
             f"MORNING REFLECTION:\n{package.get('reflection')}\n\n"
             f"FACEBOOK:\n{package.get('facebook_post')}\n\n"
@@ -540,7 +543,7 @@ class EmailDeliverer:
             raise ValueError("SMTP_USER and SMTP_PASSWORD must be configured in environment or .env")
 
         msg_root = email.mime.multipart.MIMEMultipart("mixed")
-        msg_root["Subject"] = f"The Kingdom Journal · Issue {issue_number} [Warm Terracotta & Amber]: {package.get('hook', 'Daily Dispatch')}"
+        msg_root["Subject"] = f"The Kingdom Journal · Issue {issue_number}: {package.get('hook', 'Daily Dispatch')}"
         msg_root["From"] = f"The Kingdom Journal <{self.smtp_user}>"
         msg_root["To"] = self.recipient
 

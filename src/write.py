@@ -238,11 +238,12 @@ class WritingEngine:
         self,
         theme: str = "",
         quote_text: str = "",
-        preferred_ref: Optional[str] = None
+        preferred_ref: Optional[str] = None,
+        recently_used: Optional[List[str]] = None
     ) -> ScripturePayload:
-        """Retrieves verified scripture dynamically matched to sermon theme with zero monoculture defaults."""
+        """Retrieves verified scripture dynamically matched to sermon theme with zero monoculture defaults and anti-repetition memory."""
         try:
-            res = get_scripture_for_theme(theme=theme, quote_text=quote_text, preferred_ref=preferred_ref)
+            res = get_scripture_for_theme(theme=theme, quote_text=quote_text, preferred_ref=preferred_ref, recently_used=recently_used)
             is_valid, canon_ref, _ = validate_scripture_reference(res["reference"])
             return ScripturePayload(
                 ref=canon_ref if is_valid else res["reference"],
@@ -263,7 +264,8 @@ class WritingEngine:
         verified_quote: Optional[Dict] = None,
         radar_videos: Optional[List[Dict]] = None,
         palette_id: str = "navy_gold",
-        issue_number: int = 1
+        issue_number: int = 1,
+        recently_used_scriptures: Optional[List[str]] = None
     ) -> IssuePackage:
         """
         Synthesizes the complete editorial and platform writing package.
@@ -301,7 +303,7 @@ NO VERIFIED QUOTE AVAILABLE:
             headline_for_flyer = "When human striving ends, sovereign peace takes over."
 
         # Dynamically fetch scripture contextually matched to today's sermon theme
-        scripture = self._fetch_scripture(theme=clean_theme, quote_text=headline_for_flyer)
+        scripture = self._fetch_scripture(theme=clean_theme, quote_text=headline_for_flyer, recently_used=recently_used_scriptures)
 
         prompt = f"""You are the Executive Editor of 'The Kingdom Journal'—a distinguished, contemplative daily Christian publication.
 Your writing must feel 100% human-crafted: authentic, conversational, deeply spiritual, and completely free of AI clichés.

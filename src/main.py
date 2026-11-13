@@ -132,13 +132,15 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
         palettes_cycle = ["terracotta_amber", "crimson_amber", "emerald_gold", "royal_blue_gold", "navy_gold"]
         palette_id = palettes_cycle[issue_num % len(palettes_cycle)]
         theme_title = source_video.get("title", "The Secret Place") if source_video else "The Secret Place"
+        recently_used_scriptures = state_mgr.get_recently_used_scriptures()
 
         issue_package = writer.write_issue(
             theme_hint=theme_title,
             verified_quote=verified_quote,
             radar_videos=top_videos,
             palette_id=palette_id,
-            issue_number=issue_num
+            issue_number=issue_num,
+            recently_used_scriptures=recently_used_scriptures
         )
         logger.info(f"Generated Issue Package: Hook = \"{issue_package.hook}\"")
 
@@ -158,7 +160,8 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                     verified_quote=verified_quote,
                     radar_videos=top_videos,
                     palette_id=palette_id,
-                    issue_number=issue_num
+                    issue_number=issue_num,
+                    recently_used_scriptures=recently_used_scriptures
                 )
                 is_compliant, violations, ai_score = verify_de_ai_compliance(
                     issue_package.reflection,
@@ -260,7 +263,8 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                 issue_number=issue_num,
                 video_id=verified_quote.get("video_id") if verified_quote else None,
                 quote_text=verified_quote.get("text_verbatim") if verified_quote else None,
-                theme=issue_package.theme
+                theme=issue_package.theme,
+                scripture_ref=issue_package.scripture.ref
             )
 
         # -------------------------------------------------------------

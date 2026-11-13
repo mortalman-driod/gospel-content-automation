@@ -47,6 +47,7 @@ class StateManager:
             "used_video_ids": [],
             "used_quotes": [],
             "used_themes": [],
+            "used_scriptures": [],
             "history": []
         }
 
@@ -86,6 +87,11 @@ class StateManager:
             pass
         return None
 
+    def get_recently_used_scriptures(self, limit: int = 14) -> List[str]:
+        """Returns the list of recently used scripture references up to limit."""
+        used = self.used_data.get("used_scriptures", [])
+        return used[-limit:] if used else []
+
     def prune_used_history(self, days_retention: int = 30):
         """
         Prunes historical entries older than days_retention from used.json.
@@ -100,17 +106,21 @@ class StateManager:
         self.used_data["used_video_ids"] = [
             vid for vid in self.used_data.get("used_video_ids", []) if vid in active_vids
         ]
+        # Keep recent scriptures bounded to latest 40 entries
+        if "used_scriptures" in self.used_data and len(self.used_data["used_scriptures"]) > 40:
+            self.used_data["used_scriptures"] = self.used_data["used_scriptures"][-40:]
 
     def record_success(
         self,
         issue_number: int,
         video_id: Optional[str] = None,
         quote_text: Optional[str] = None,
-        theme: Optional[str] = None
+        theme: Optional[str] = None,
+        scripture_ref: Optional[str] = None
     ):
         """
         Atomically updates state.json and used.json after a successful send.
-        Increments current_issue_number exactly once.
+        Increments current_issue_number exactly once and registers used scripture to prevent repetition.
         """
         now_utc = datetime.now(timezone.utc)
         today_str = now_utc.strftime("%Y-%m-%d")
@@ -130,6 +140,7 @@ class StateManager:
         self.used_data.setdefault("used_video_ids", [])
         self.used_data.setdefault("used_quotes", [])
         self.used_data.setdefault("used_themes", [])
+        self.used_data.setdefault("used_scriptures", [])
         self.used_data.setdefault("history", [])
 
         if video_id and video_id not in self.used_data["used_video_ids"]:
@@ -138,12 +149,16 @@ class StateManager:
             self.used_data["used_quotes"].append(quote_text)
         if theme and theme not in self.used_data["used_themes"]:
             self.used_data["used_themes"].append(theme)
+        if scripture_ref:
+            norm_ref = scripture_ref.strip()
+            self.used_data["used_scriptures"].append(norm_ref)
 
         self.used_data["history"].append({
             "issue": issue_number,
             "date": today_str,
             "video_id": video_id,
-            "theme": theme
+            "theme": theme,
+            "scripture": scripture_ref
         })
 
         # Prune entries older than 30 days
