@@ -48,6 +48,8 @@ class StateManager:
             "used_quotes": [],
             "used_themes": [],
             "used_scriptures": [],
+            "used_templates": [],
+            "used_backgrounds": [],
             "history": []
         }
 
@@ -92,6 +94,16 @@ class StateManager:
         used = self.used_data.get("used_scriptures", [])
         return used[-limit:] if used else []
 
+    def get_recently_used_templates(self, limit: int = 5) -> List[str]:
+        """Returns the list of recently used flyer template IDs up to limit."""
+        used = self.used_data.get("used_templates", [])
+        return used[-limit:] if used else []
+
+    def get_recently_used_backgrounds(self, limit: int = 5) -> List[str]:
+        """Returns the list of recently used background archetype IDs up to limit."""
+        used = self.used_data.get("used_backgrounds", [])
+        return used[-limit:] if used else []
+
     def prune_used_history(self, days_retention: int = 30):
         """
         Prunes historical entries older than days_retention from used.json.
@@ -116,7 +128,9 @@ class StateManager:
         video_id: Optional[str] = None,
         quote_text: Optional[str] = None,
         theme: Optional[str] = None,
-        scripture_ref: Optional[str] = None
+        scripture_ref: Optional[str] = None,
+        template: Optional[str] = None,
+        background: Optional[str] = None
     ):
         """
         Atomically updates state.json and used.json after a successful send.
@@ -149,16 +163,25 @@ class StateManager:
             self.used_data["used_quotes"].append(quote_text)
         if theme and theme not in self.used_data["used_themes"]:
             self.used_data["used_themes"].append(theme)
+        self.used_data.setdefault("used_templates", [])
+        self.used_data.setdefault("used_backgrounds", [])
+
         if scripture_ref:
             norm_ref = scripture_ref.strip()
             self.used_data["used_scriptures"].append(norm_ref)
+        if template:
+            self.used_data["used_templates"].append(template.strip())
+        if background:
+            self.used_data["used_backgrounds"].append(background.strip())
 
         self.used_data["history"].append({
             "issue": issue_number,
             "date": today_str,
             "video_id": video_id,
             "theme": theme,
-            "scripture": scripture_ref
+            "scripture": scripture_ref,
+            "template": template,
+            "background": background
         })
 
         # Prune entries older than 30 days

@@ -12,7 +12,8 @@
     "AAxNH0Mhifo",
     "-_eM3ZAz-YY",
     "TuikgucRc-U",
-    "OZDMGStmp1s"
+    "OZDMGStmp1s",
+    "CCfav6SC5g0"
   ],
   "used_quotes": [
     "The night is far spent. Wake up out of sleep.",
@@ -27,7 +28,8 @@
     "When there are contentions and threats, the prayer becomes God, let it be too notable to deny.",
     "Where there is a Pharaoh, God's own redemption takes precedence.",
     "Your body may be tired, but your spirit can receive strength as you pray.",
-    "Everything responds to the word of God."
+    "Everything responds to the word of God.",
+    "Like an eagle he soars on the strength of the spirit."
   ],
   "used_themes": [
     "The 4 a.m. nudge is a call.",
@@ -159,10 +161,36 @@
       "video_id": "OZDMGStmp1s",
       "theme": "Divine Decree Response",
       "scripture": "Romans 8:26"
+    },
+    {
+      "issue": 69,
+      "date": "2026-11-14",
+      "video_id": "CCfav6SC5g0",
+      "theme": "Reboot And Prayer",
+      "scripture": "Isaiah 40:31",
+      "template": "asymmetric_split",
+      "background": "study_desk"
     }
   ],
   "used_scriptures": [
     "Matthew 6:6",
-    "Romans 8:26"
+    "Romans 8:26",
+    "Isaiah 40:31"
+  ],
+  "used_templates": [
+    "asymmetric_split",
+    "heavy_impact",
+    "quiet_light",
+    "quiet_light",
+    "heavy_impact",
+    "asymmetric_split"
+  ],
+  "used_backgrounds": [
+    "deep_cobalt_wave",
+    "terracotta_amber_wave",
+    "terracotta_amber_wave",
+    "terracotta_amber_wave",
+    "deep_cobalt_wave",
+    "study_desk"
   ]
 }

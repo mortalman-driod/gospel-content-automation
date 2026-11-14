@@ -183,37 +183,85 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
 
         clean_credit = f"— {verified_quote['speaker']}" if verified_quote else "The Kingdom Journal"
 
+        # Core rotation pools for guaranteed daily visual variety
+        CORE_TEMPLATES_CYCLE = [
+            "heavy_impact",
+            "asymmetric_split",
+            "heritage_serif",
+            "quiet_light",
+            "bold_statement",
+            "contrast_split"
+        ]
+
+        CORE_BACKGROUNDS_CYCLE = [
+            "golden_sunburst_clouds",
+            "deep_cobalt_wave",
+            "emerald_white_wave",
+            "crimson_cream_wave",
+            "diagonal_royal_gold",
+            "terracotta_amber_wave",
+            "cross_sunrise",
+            "open_bible",
+            "mountain_summit",
+            "green_sprout",
+            "royal_crown",
+            "study_desk"
+        ]
+
+        # Retrieve recent design history to guarantee freshness
+        recent_templates = state_mgr.get_recently_used_templates(limit=3)
+        recent_backgrounds = state_mgr.get_recently_used_backgrounds(limit=4)
+
+        # 1. Enforce Daily Template Rotation
+        candidate_template = getattr(issue_package, "flyer_template", None)
+        if candidate_template in CORE_TEMPLATES_CYCLE and candidate_template not in recent_templates:
+            chosen_template = candidate_template
+        else:
+            avail_templates = [t for t in CORE_TEMPLATES_CYCLE if t not in recent_templates]
+            if not avail_templates:
+                avail_templates = CORE_TEMPLATES_CYCLE
+            chosen_template = avail_templates[issue_num % len(avail_templates)]
+
+        # 2. Enforce Daily Background Canvas Rotation
+        candidate_bg = getattr(issue_package, "viral_background_archetype", None)
+        if candidate_bg in CORE_BACKGROUNDS_CYCLE and candidate_bg not in recent_backgrounds:
+            chosen_bg = candidate_bg
+        else:
+            avail_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b not in recent_backgrounds]
+            if not avail_bgs:
+                avail_bgs = CORE_BACKGROUNDS_CYCLE
+            chosen_bg = avail_bgs[issue_num % len(avail_bgs)]
+
+        logger.info(f"Selected Guaranteed Fresh Design: Template = '{chosen_template}' | Canvas = '{chosen_bg}'")
+
         primary_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
-            "accent_color": issue_package.viral_accent_color or "terracotta",
+            "accent_color": issue_package.viral_accent_color or "yellow",
             "headline": verified_quote["text_verbatim"] if verified_quote else issue_package.flyers[0].headline,
             "subline": issue_package.viral_subline or "When human striving ends, divine illumination takes over.",
             "credit": clean_credit,
             "scripture_badge": f"{issue_package.scripture.ref}",
-            "background_archetype": issue_package.viral_background_archetype or "cross_sunrise",
+            "background_archetype": chosen_bg,
             "emotional_tone": getattr(issue_package, "emotional_tone", None),
             "emphasized_words": getattr(issue_package, "emphasized_words", None),
             "typography_style": getattr(issue_package, "typography_style", None),
         }
-
-        # Dynamic human archetype selection
-        chosen_template = getattr(issue_package, "flyer_template", "asymmetric_split") or "asymmetric_split"
-        valid_templates = {"asymmetric_split", "heritage_serif", "heavy_impact", "quiet_light", "viral_quote_poster"}
-        if chosen_template not in valid_templates:
-            chosen_template = "asymmetric_split"
-        logger.info(f"Selected Human Design Archetype for primary flyers: '{chosen_template}'")
 
         # Render 3 formats for Primary Flyer using chosen archetype
         img_4_5, meta_4_5 = flyer_engine.render_flyer(chosen_template, "4:5", primary_content, palette_id=palette_id)
         img_1_1, meta_1_1 = flyer_engine.render_flyer(chosen_template, "1:1", primary_content, palette_id=palette_id)
         img_9_16, meta_9_16 = flyer_engine.render_flyer(chosen_template, "9:16", primary_content, palette_id=palette_id)
 
-        # Render Alternate Flyer in 4:5 using a complementary art direction
-        alt_template = "heritage_serif" if chosen_template != "heritage_serif" else "heavy_impact"
-        alt_pool = ["terracotta_amber_wave", "golden_sunburst_clouds", "crimson_cream_wave", "diagonal_royal_gold", "emerald_white_wave", "deep_cobalt_wave"]
-        alt_candidates = [b for b in alt_pool if b != primary_content["background_archetype"]]
-        alt_bg = alt_candidates[issue_num % len(alt_candidates)]
+        # Render Alternate Flyer in 4:5 using a completely different art direction and canvas
+        alt_templates = [t for t in CORE_TEMPLATES_CYCLE if t != chosen_template]
+        alt_template = alt_templates[issue_num % len(alt_templates)]
+
+        alt_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b != chosen_bg and b not in recent_backgrounds]
+        if not alt_bgs:
+            alt_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b != chosen_bg]
+        alt_bg = alt_bgs[(issue_num + 1) % len(alt_bgs)]
+
         alt_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
@@ -264,7 +312,9 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                 video_id=verified_quote.get("video_id") if verified_quote else None,
                 quote_text=verified_quote.get("text_verbatim") if verified_quote else None,
                 theme=issue_package.theme,
-                scripture_ref=issue_package.scripture.ref
+                scripture_ref=issue_package.scripture.ref,
+                template=chosen_template,
+                background=chosen_bg
             )
 
         # -------------------------------------------------------------

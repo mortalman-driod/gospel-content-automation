@@ -1,7 +1,7 @@
 """
 Institutional Scripture Engine (src/scripture.py)
 Provides verified Scripture text across canonical public-domain and classic translations (KJV, WEB, ASV, BBE)
-with 66-book Protestant canon validation, dynamic theological theme rotation,
+with 66-book Protestant canon validation, quote-first weighted semantic matching,
 and strict anti-repetition memory guarding against monocultural verse repetition.
 """
 
@@ -44,6 +44,58 @@ CANONICAL_ALIASES = {
 
 # Rich Verified Multi-Translation Canonical Scripture Repository
 VERIFIED_SCRIPTURES = {
+    # --- POWER, AUTHORITY & CREATIVE EFFICACY OF GOD'S WORD ---
+    "ISAIAH 55:11": {
+        "text": "So shall my word be that goeth forth out of my mouth: it shall not return unto me void, but it shall accomplish that which I please, and it shall prosper in the thing whereto I sent it.",
+        "reference": "Isaiah 55:11",
+        "translation": "KJV"
+    },
+    "HEBREWS 4:12": {
+        "text": "For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart.",
+        "reference": "Hebrews 4:12",
+        "translation": "KJV"
+    },
+    "JEREMIAH 23:29": {
+        "text": "Is not my word like as a fire? saith the Lord; and like a hammer that breaketh the rock in pieces?",
+        "reference": "Jeremiah 23:29",
+        "translation": "KJV"
+    },
+    "PSALM 33:9": {
+        "text": "For he spake, and it was done; he commanded, and it stood fast.",
+        "reference": "Psalm 33:9",
+        "translation": "KJV"
+    },
+    "HEBREWS 11:3": {
+        "text": "Through faith we understand that the worlds were framed by the word of God, so that things which are seen were not made of things which do appear.",
+        "reference": "Hebrews 11:3",
+        "translation": "KJV"
+    },
+    "PSALM 107:20": {
+        "text": "He sent his word, and healed them, and delivered them from their destructions.",
+        "reference": "Psalm 107:20",
+        "translation": "KJV"
+    },
+    "MATTHEW 8:8": {
+        "text": "The centurion answered and said, Lord, I am not worthy that thou shouldest come under my roof: but speak the word only, and my servant shall be healed.",
+        "reference": "Matthew 8:8",
+        "translation": "KJV"
+    },
+    "LUKE 1:37": {
+        "text": "For with God nothing shall be impossible.",
+        "reference": "Luke 1:37",
+        "translation": "KJV"
+    },
+    "HEBREWS 1:3": {
+        "text": "Who being the brightness of his glory, and the express image of his person, and upholding all things by the word of his power.",
+        "reference": "Hebrews 1:3",
+        "translation": "KJV"
+    },
+    "MARK 4:39": {
+        "text": "And he arose, and rebuked the wind, and said unto the sea, Peace, be still. And the wind ceased, and there was a great calm.",
+        "reference": "Mark 4:39",
+        "translation": "KJV"
+    },
+
     # --- PRAYER, THE SECRET PLACE & INTERCESSION ---
     "PHILIPPIANS 4:6-7": {
         "text": "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving let your requests be made known unto God. And the peace of God, which passeth all understanding, shall keep your hearts and minds through Christ Jesus.",
@@ -309,11 +361,6 @@ VERIFIED_SCRIPTURES = {
         "reference": "Psalm 119:105",
         "translation": "KJV"
     },
-    "HEBREWS 4:12": {
-        "text": "For the word of God is quick, and powerful, and sharper than any twoedged sword, piercing even to the dividing asunder of soul and spirit, and of the joints and marrow, and is a discerner of the thoughts and intents of the heart.",
-        "reference": "Hebrews 4:12",
-        "translation": "KJV"
-    },
     "JAMES 1:5": {
         "text": "If any of you lack wisdom, let him ask of God, that giveth to all men liberally, and upbraideth not; and it shall be given him.",
         "reference": "James 1:5",
@@ -375,8 +422,29 @@ VERIFIED_SCRIPTURES = {
 
 # Thematic mapping: Each keyword cluster maps to a POOL of diverse canonical scriptures
 THEME_KEYWORD_MAP = [
+    # 1. Authority, Creative Power & Efficacy of God's Word (Highest specific relevance)
     (
-        ["prayer", "secret", "altar", "pray", "closet", "inner room", "intercession", "supplication", "petition"],
+        [
+            "word of god", "responds", "respond", "response", "word only",
+            "accomplish", "void", "spake", "spoke", "hammer", "fire",
+            "framed", "commanded", "power of god's word", "decree"
+        ],
+        [
+            "ISAIAH 55:11",
+            "HEBREWS 4:12",
+            "JEREMIAH 23:29",
+            "PSALM 33:9",
+            "HEBREWS 11:3",
+            "PSALM 107:20",
+            "MATTHEW 8:8",
+            "LUKE 1:37",
+            "HEBREWS 1:3",
+            "MARK 4:39"
+        ]
+    ),
+    # 2. Prayer & The Secret Place
+    (
+        ["prayer", "secret place", "altar", "pray", "closet", "inner room", "supplication", "petition"],
         [
             "PHILIPPIANS 4:6-7",
             "JEREMIAH 33:3",
@@ -388,10 +456,10 @@ THEME_KEYWORD_MAP = [
             "MARK 1:35",
             "EPHESIANS 6:18",
             "LUKE 18:1",
-            "MATTHEW 6:6",
-            "ROMANS 8:26"
+            "MATTHEW 6:6"
         ]
     ),
+    # 3. Faith & Trust
     (
         ["faith", "trust", "doubt", "believe", "mountain", "impossible", "confidence"],
         [
@@ -404,6 +472,7 @@ THEME_KEYWORD_MAP = [
             "HABAKKUK 2:4"
         ]
     ),
+    # 4. Guidance & Wisdom
     (
         ["lean", "heart", "straight", "paths", "understanding", "direction", "guidance"],
         [
@@ -413,6 +482,7 @@ THEME_KEYWORD_MAP = [
             "JEREMIAH 29:11"
         ]
     ),
+    # 5. Waiting & Patience
     (
         ["wait", "waiting", "weary", "strength", "eagles", "patience", "due season", "endure", "tired"],
         [
@@ -424,6 +494,7 @@ THEME_KEYWORD_MAP = [
             "ROMANS 8:25"
         ]
     ),
+    # 6. Spiritual Warfare & Victory
     (
         ["warfare", "stronghold", "weapons", "battle", "fight", "stand", "enemy", "conqueror", "defeat", "victory", "overcome", "triumph"],
         [
@@ -436,8 +507,9 @@ THEME_KEYWORD_MAP = [
             "ISAIAH 54:17"
         ]
     ),
+    # 7. Grace & Mercy
     (
-        ["grace", "mercy", "throne", "weakness", "sufficient", "forgiveness", "salvation"],
+        ["grace", "mercy", "throne of grace", "weakness", "sufficient", "forgiveness", "salvation"],
         [
             "HEBREWS 4:16",
             "2 CORINTHIANS 12:9",
@@ -447,6 +519,7 @@ THEME_KEYWORD_MAP = [
             "ROMANS 5:8"
         ]
     ),
+    # 8. Purpose & Calling
     (
         ["purpose", "calling", "future", "plans", "destiny", "assignment", "workmanship", "supply"],
         [
@@ -458,6 +531,7 @@ THEME_KEYWORD_MAP = [
             "PHILIPPIANS 4:19"
         ]
     ),
+    # 9. Stillness & Peace
     (
         ["still", "stillness", "peace", "quiet", "rest", "storm", "anxious", "anxiety", "troubled"],
         [
@@ -469,8 +543,9 @@ THEME_KEYWORD_MAP = [
             "PHILIPPIANS 4:6-7"
         ]
     ),
+    # 10. Word, Scripture & Truth (Instructional & Light)
     (
-        ["word", "scripture", "lamp", "light", "bible", "truth", "meditate", "sword", "wisdom"],
+        ["scripture", "lamp", "light", "bible", "truth", "meditate", "sword", "wisdom"],
         [
             "PSALM 119:105",
             "HEBREWS 4:12",
@@ -479,6 +554,7 @@ THEME_KEYWORD_MAP = [
             "2 TIMOTHY 3:16-17"
         ]
     ),
+    # 11. Praise & Worship
     (
         ["worship", "praise", "thanksgiving", "glory", "bless", "sacrifice"],
         [
@@ -489,6 +565,7 @@ THEME_KEYWORD_MAP = [
             "ROMANS 12:1"
         ]
     ),
+    # 12. The Cross & Surrender
     (
         ["cross", "crucified", "die", "surrender", "life", "redeemed", "blood", "salvation"],
         [
@@ -498,8 +575,9 @@ THEME_KEYWORD_MAP = [
             "ROMANS 5:8"
         ]
     ),
+    # 13. Holy Spirit & Intercession (Infirmities)
     (
-        ["spirit", "intercession", "groaning", "helper", "advocate", "power"],
+        ["holy spirit", "spirit intercession", "groanings", "infirmities", "unuttered", "advocate"],
         [
             "ROMANS 8:26",
             "EPHESIANS 6:18",
@@ -568,8 +646,10 @@ def get_scripture_for_theme(
     """
     Selects verified Scripture dynamically:
     1. If preferred_ref is valid, not recently used, and canonical, uses it.
-    2. Else matches sermon theme and quote tokens against theological map.
-    3. Excludes recently used verses to guarantee zero monoculture repetition.
+    2. Else performs Quote-First ranked semantic matching:
+       - Quote keywords are given 10x higher weight than video title tokens.
+       - Ensures verses match what the preacher actually spoke, not generic broadcast titles.
+    3. Excludes recently used verses to guarantee zero repetition.
     4. Rotates dynamically through candidate pools.
     """
     recent_set = {clean_ref_key(r) for r in (recently_used or []) if r}
@@ -587,26 +667,49 @@ def get_scripture_for_theme(
                 if online:
                     return online
 
-    # 2. Semantic matching against theme & quote with anti-repetition filter
-    corpus = f"{theme} {quote_text}".lower()
-    matched_pool: List[str] = []
+    # 2. Quote-First Ranked Semantic Matching
+    q_low = quote_text.lower() if quote_text else ""
+    t_low = theme.lower() if theme else ""
 
+    cluster_scores = []
     for keywords, target_keys in THEME_KEYWORD_MAP:
-        if any(kw in corpus for kw in keywords):
-            for k in target_keys:
-                if k not in matched_pool:
-                    matched_pool.append(k)
+        # Quote matches are given 10x higher priority than video title metadata
+        q_hits = sum(1 for kw in keywords if kw in q_low)
+        t_hits = sum(1 for kw in keywords if kw in t_low)
+        total_score = (q_hits * 10) + t_hits
+        if total_score > 0:
+            cluster_scores.append((total_score, q_hits, target_keys))
+
+    # Sort clusters by score descending, prioritizing quote matches
+    cluster_scores.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+    matched_pool: List[str] = []
+    if cluster_scores:
+        top_score = cluster_scores[0][0]
+        has_quote_hits = cluster_scores[0][1] > 0
+        for score, q_hits, target_keys in cluster_scores:
+            # If the top cluster had direct quote matches, ONLY include clusters with quote matches
+            if has_quote_hits:
+                if q_hits > 0:
+                    for k in target_keys:
+                        if k not in matched_pool:
+                            matched_pool.append(k)
+            else:
+                # If no quote hits, use title matches
+                if score >= top_score:
+                    for k in target_keys:
+                        if k not in matched_pool:
+                            matched_pool.append(k)
 
     # Filter out recently used verses from the matched pool
     fresh_candidates = [k for k in matched_pool if k not in recent_set and k in VERIFIED_SCRIPTURES]
 
     if fresh_candidates:
-        # Deterministically rotate based on quote content hash to ensure variation
         idx = abs(hash(f"{theme}_{quote_text}")) % len(fresh_candidates)
         selected_key = fresh_candidates[idx]
         return VERIFIED_SCRIPTURES[selected_key]
 
-    # If all matched candidates have been used recently, pick from any verified scripture not recently used
+    # If all candidates in the matched pool were used, fallback to any verified scripture not recently used
     all_keys = list(VERIFIED_SCRIPTURES.keys())
     unused_overall = [k for k in all_keys if k not in recent_set]
 
