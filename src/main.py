@@ -222,19 +222,37 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                 avail_templates = CORE_TEMPLATES_CYCLE
             chosen_template = avail_templates[issue_num % len(avail_templates)]
 
-        # 2. Enforce Daily Background Canvas Rotation
+        # 2. Select 4 Completely Distinct Background Canvases for the 4 Social Media Platforms
         candidate_bg = getattr(issue_package, "viral_background_archetype", None)
-        if candidate_bg in CORE_BACKGROUNDS_CYCLE and candidate_bg not in recent_backgrounds:
-            chosen_bg = candidate_bg
+        avail_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b not in recent_backgrounds]
+        if len(avail_bgs) < 4:
+            avail_bgs = CORE_BACKGROUNDS_CYCLE.copy()
+
+        # Canvas 1: Feed 4:5 (Instagram / Facebook)
+        if candidate_bg in avail_bgs:
+            bg_feed_4_5 = candidate_bg
+            avail_bgs.remove(bg_feed_4_5)
         else:
-            avail_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b not in recent_backgrounds]
-            if not avail_bgs:
-                avail_bgs = CORE_BACKGROUNDS_CYCLE
-            chosen_bg = avail_bgs[issue_num % len(avail_bgs)]
+            bg_feed_4_5 = avail_bgs.pop(issue_num % len(avail_bgs))
 
-        logger.info(f"Selected Guaranteed Fresh Design: Template = '{chosen_template}' | Canvas = '{chosen_bg}'")
+        # Canvas 2: Square 1:1 (X / Threads)
+        bg_square_1_1 = avail_bgs.pop((issue_num + 1) % len(avail_bgs))
 
-        primary_content = {
+        # Canvas 3: Story 9:16 (WhatsApp Status & Stories)
+        bg_story_9_16 = avail_bgs.pop((issue_num + 2) % len(avail_bgs))
+
+        # Canvas 4: Community Alternate 4:5
+        bg_alt_4_5 = avail_bgs.pop((issue_num + 3) % len(avail_bgs))
+
+        logger.info(
+            f"Selected 4 Platform-Distinct Canvases:\n"
+            f"  - 4:5 Feed (IG/FB): '{bg_feed_4_5}'\n"
+            f"  - 1:1 Square (X/Threads): '{bg_square_1_1}'\n"
+            f"  - 9:16 Story (WhatsApp): '{bg_story_9_16}'\n"
+            f"  - 4:5 Alternate: '{bg_alt_4_5}'"
+        )
+
+        base_content = {
             "headline_pre": issue_package.viral_headline_pre,
             "accent_word": issue_package.viral_accent_word,
             "accent_color": issue_package.viral_accent_color or "yellow",
@@ -242,25 +260,23 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             "subline": issue_package.viral_subline or "When human striving ends, divine illumination takes over.",
             "credit": clean_credit,
             "scripture_badge": f"{issue_package.scripture.ref}",
-            "background_archetype": chosen_bg,
             "emotional_tone": getattr(issue_package, "emotional_tone", None),
             "emphasized_words": getattr(issue_package, "emphasized_words", None),
             "typography_style": getattr(issue_package, "typography_style", None),
         }
 
-        # Render 3 formats for Primary Flyer using chosen archetype
-        img_4_5, meta_4_5 = flyer_engine.render_flyer(chosen_template, "4:5", primary_content, palette_id=palette_id)
-        img_1_1, meta_1_1 = flyer_engine.render_flyer(chosen_template, "1:1", primary_content, palette_id=palette_id)
-        img_9_16, meta_9_16 = flyer_engine.render_flyer(chosen_template, "9:16", primary_content, palette_id=palette_id)
+        # Render 3 primary platform formats with distinct canvases
+        content_4_5 = {**base_content, "background_archetype": bg_feed_4_5}
+        content_1_1 = {**base_content, "background_archetype": bg_square_1_1}
+        content_9_16 = {**base_content, "background_archetype": bg_story_9_16}
 
-        # Render Alternate Flyer in 4:5 using a completely different art direction and canvas
+        img_4_5, meta_4_5 = flyer_engine.render_flyer(chosen_template, "4:5", content_4_5, palette_id=palette_id)
+        img_1_1, meta_1_1 = flyer_engine.render_flyer(chosen_template, "1:1", content_1_1, palette_id=palette_id)
+        img_9_16, meta_9_16 = flyer_engine.render_flyer(chosen_template, "9:16", content_9_16, palette_id=palette_id)
+
+        # Render Alternate Flyer in 4:5 using distinct template and distinct 4th canvas
         alt_templates = [t for t in CORE_TEMPLATES_CYCLE if t != chosen_template]
         alt_template = alt_templates[issue_num % len(alt_templates)]
-
-        alt_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b != chosen_bg and b not in recent_backgrounds]
-        if not alt_bgs:
-            alt_bgs = [b for b in CORE_BACKGROUNDS_CYCLE if b != chosen_bg]
-        alt_bg = alt_bgs[(issue_num + 1) % len(alt_bgs)]
 
         alt_content = {
             "headline_pre": issue_package.viral_headline_pre,
@@ -270,7 +286,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
             "subline": issue_package.viral_subline or "Rest in His peace today.",
             "credit": clean_credit,
             "scripture_badge": f"{issue_package.scripture.ref}",
-            "background_archetype": alt_bg,
+            "background_archetype": bg_alt_4_5,
             "emotional_tone": getattr(issue_package, "emotional_tone", None),
             "emphasized_words": getattr(issue_package, "emphasized_words", None),
         }
@@ -314,7 +330,7 @@ def run_pipeline(dry_run: bool = False, force: bool = False, override_issue: int
                 theme=issue_package.theme,
                 scripture_ref=issue_package.scripture.ref,
                 template=chosen_template,
-                background=chosen_bg
+                background=[bg_feed_4_5, bg_square_1_1, bg_story_9_16, bg_alt_4_5]
             )
 
         # -------------------------------------------------------------

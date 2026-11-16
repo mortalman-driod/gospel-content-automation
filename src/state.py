@@ -172,7 +172,13 @@ class StateManager:
         if template:
             self.used_data["used_templates"].append(template.strip())
         if background:
-            self.used_data["used_backgrounds"].append(background.strip())
+            if isinstance(background, (list, tuple, set)):
+                for b in background:
+                    if b and str(b).strip() not in self.used_data["used_backgrounds"]:
+                        self.used_data["used_backgrounds"].append(str(b).strip())
+            else:
+                if background.strip() not in self.used_data["used_backgrounds"]:
+                    self.used_data["used_backgrounds"].append(background.strip())
 
         self.used_data["history"].append({
             "issue": issue_number,

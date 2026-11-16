@@ -2,8 +2,8 @@ name: The Kingdom Journal Daily Editorial Pipeline
 
 on:
   schedule:
-    # 04:17 UTC = 05:17 Lagos / West Africa Time (off-peak schedule to avoid top-of-hour GitHub queue delays)
-    - cron: '17 4 * * *'
+    # 05:45 UTC = 06:45 Lagos / West Africa Time (ensures daily delivery drops by 07:00 AM WAT)
+    - cron: '45 5 * * *'
   workflow_dispatch:
     inputs:
       force:

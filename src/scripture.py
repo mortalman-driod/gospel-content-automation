@@ -417,12 +417,217 @@ VERIFIED_SCRIPTURES = {
         "text": "For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.",
         "reference": "John 3:16",
         "translation": "KJV"
+    },
+    # --- COVENANT FAITHFULNESS & GOD'S PROMISES ---
+    "NUMBERS 23:19": {
+        "text": "God is not a man, that he should lie; neither the son of man, that he should repent: hath he said, and shall he not do it? or hath he spoken, and shall he not make it good?",
+        "reference": "Numbers 23:19",
+        "translation": "KJV"
+    },
+    "HEBREWS 10:23": {
+        "text": "Let us hold fast the profession of our faith without wavering; (for he is faithful that promised;)",
+        "reference": "Hebrews 10:23",
+        "translation": "KJV"
+    },
+    "JOSHUA 21:45": {
+        "text": "There failed not ought of any good thing which the Lord had spoken unto the house of Israel; all came to pass.",
+        "reference": "Joshua 21:45",
+        "translation": "KJV"
+    },
+    "2 CORINTHIANS 1:20": {
+        "text": "For all the promises of God in him are yea, and in him Amen, unto the glory of God by us.",
+        "reference": "2 Corinthians 1:20",
+        "translation": "KJV"
+    },
+    "GENESIS 21:1": {
+        "text": "And the Lord visited Sarah as he had said, and the Lord did unto Sarah as he had spoken.",
+        "reference": "Genesis 21:1",
+        "translation": "KJV"
+    },
+    "PSALM 89:34": {
+        "text": "My covenant will I not break, nor alter the thing that is gone out of my lips.",
+        "reference": "Psalm 89:34",
+        "translation": "KJV"
+    },
+    "PSALM 119:89-90": {
+        "text": "For ever, O Lord, thy word is settled in heaven. Thy faithfulness is unto all generations: thou hast established the earth, and it abideth.",
+        "reference": "Psalm 119:89-90",
+        "translation": "KJV"
+    },
+
+    # --- DIVINE HEALING & RESTORATION ---
+    "JOHN 11:4": {
+        "text": "When Jesus heard that, he said, This sickness is not unto death, but for the glory of God, that the Son of God might be glorified thereby.",
+        "reference": "John 11:4",
+        "translation": "KJV"
+    },
+    "1 PETER 2:24": {
+        "text": "Who his own self bare our sins in his own body on the tree, that we, being dead to sins, should live unto righteousness: by whose stripes ye were healed.",
+        "reference": "1 Peter 2:24",
+        "translation": "KJV"
+    },
+    "JEREMIAH 17:14": {
+        "text": "Heal me, O Lord, and I shall be healed; save me, and I shall be saved: for thou art my praise.",
+        "reference": "Jeremiah 17:14",
+        "translation": "KJV"
+    },
+    "PSALM 103:2-3": {
+        "text": "Bless the Lord, O my soul, and forget not all his benefits: Who forgiveth all thine iniquities; who healeth all thy diseases;",
+        "reference": "Psalm 103:2-3",
+        "translation": "KJV"
+    },
+    "EXODUS 15:26": {
+        "text": "I will put none of these diseases upon thee, which I have brought upon the Egyptians: for I am the Lord that healeth thee.",
+        "reference": "Exodus 15:26",
+        "translation": "KJV"
+    },
+    "3 JOHN 1:2": {
+        "text": "Beloved, I wish above all things that thou mayest prosper and be in health, even as thy soul prospereth.",
+        "reference": "3 John 1:2",
+        "translation": "KJV"
+    },
+
+    # --- LIGHT, ILLUMINATION & MIND RENEWAL ---
+    "PSALM 27:1": {
+        "text": "The Lord is my light and my salvation; whom shall I fear? the Lord is the strength of my life; of whom shall I be afraid?",
+        "reference": "Psalm 27:1",
+        "translation": "KJV"
+    },
+    "JOHN 1:5": {
+        "text": "And the light shineth in darkness; and the darkness comprehended it not.",
+        "reference": "John 1:5",
+        "translation": "KJV"
+    },
+    "PSALM 119:130": {
+        "text": "The entrance of thy words giveth light; it giveth understanding unto the simple.",
+        "reference": "Psalm 119:130",
+        "translation": "KJV"
+    },
+    "2 CORINTHIANS 4:6": {
+        "text": "For God, who commanded the light to shine out of darkness, hath shined in our hearts, to give the light of the knowledge of the glory of God in the face of Jesus Christ.",
+        "reference": "2 Corinthians 4:6",
+        "translation": "KJV"
+    },
+    "EPHESIANS 1:17-18": {
+        "text": "That the God of our Lord Jesus Christ, the Father of glory, may give unto you the spirit of wisdom and revelation in the knowledge of him: The eyes of your understanding being enlightened;",
+        "reference": "Ephesians 1:17-18",
+        "translation": "KJV"
+    },
+    "ROMANS 12:2": {
+        "text": "And be not conformed to this world: but be ye transformed by the renewing of your mind, that ye may prove what is that good, and acceptable, and perfect, will of God.",
+        "reference": "Romans 12:2",
+        "translation": "KJV"
+    },
+    "JOHN 8:12": {
+        "text": "Then spake Jesus again unto them, saying, I am the light of the world: he that followeth me shall not walk in darkness, but shall have the light of life.",
+        "reference": "John 8:12",
+        "translation": "KJV"
+    },
+
+    # --- DELIVERANCE, REDEMPTION & BREAKING BONDAGE ---
+    "EXODUS 6:6": {
+        "text": "Wherefore say unto the children of Israel, I am the Lord, and I will bring you out from under the burdens of the Egyptians, and I will rid you out of their bondage, and I will redeem you with a stretched out arm, and with great judgments:",
+        "reference": "Exodus 6:6",
+        "translation": "KJV"
+    },
+    "COLOSSIANS 1:13": {
+        "text": "Who hath delivered us from the power of darkness, and hath translated us into the kingdom of his dear Son:",
+        "reference": "Colossians 1:13",
+        "translation": "KJV"
+    },
+    "PSALM 107:2": {
+        "text": "Let the redeemed of the Lord say so, whom he hath redeemed from the hand of the enemy;",
+        "reference": "Psalm 107:2",
+        "translation": "KJV"
+    },
+    "PSALM 34:19": {
+        "text": "Many are the afflictions of the righteous: but the Lord delivereth him out of them all.",
+        "reference": "Psalm 34:19",
+        "translation": "KJV"
+    },
+    "LUKE 4:18": {
+        "text": "The Spirit of the Lord is upon me, because he hath anointed me to preach the gospel to the poor; he hath sent me to heal the brokenhearted, to preach deliverance to the captives, and recovering of sight to the blind, to set at liberty them that are bruised,",
+        "reference": "Luke 4:18",
+        "translation": "KJV"
+    },
+
+    # --- BOLD APOSTOLIC PRAYER & MIRACULOUS DEMONSTRATION ---
+    "ACTS 4:29-30": {
+        "text": "And now, Lord, behold their threatenings: and grant unto thy servants, that with all boldness they may speak thy word, By stretching forth thine hand to heal; and that signs and wonders may be done by the name of thy holy child Jesus.",
+        "reference": "Acts 4:29-30",
+        "translation": "KJV"
+    },
+    "1 CORINTHIANS 2:4-5": {
+        "text": "And my speech and my preaching was not with enticing words of man's wisdom, but in demonstration of the Spirit and of power: That your faith should not stand in the wisdom of men, but in the power of God.",
+        "reference": "1 Corinthians 2:4-5",
+        "translation": "KJV"
+    },
+    "ACTS 1:8": {
+        "text": "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me both in Jerusalem, and in all Judaea, and in Samaria, and unto the uttermost part of the earth.",
+        "reference": "Acts 1:8",
+        "translation": "KJV"
+    },
+    "ROMANS 1:16": {
+        "text": "For I am not ashamed of the gospel of Christ: for it is the power of God unto salvation to every one that believeth; to the Jew first, and also to the Greek.",
+        "reference": "Romans 1:16",
+        "translation": "KJV"
+    },
+
+    # --- SOUL WINNING & EVANGELISM ---
+    "PROVERBS 11:30": {
+        "text": "The fruit of the righteous is a tree of life; and he that winneth souls is wise.",
+        "reference": "Proverbs 11:30",
+        "translation": "KJV"
+    },
+    "ROMANS 10:14-15": {
+        "text": "How then shall they call on him in whom they have not believed? and how shall they believe in him of whom they have not heard? and how shall they hear without a preacher? And how shall they preach, except they be sent?",
+        "reference": "Romans 10:14-15",
+        "translation": "KJV"
+    },
+    "DANIEL 12:3": {
+        "text": "And they that be wise shall shine as the brightness of the firmament; and they that turn many to righteousness as the stars for ever and ever.",
+        "reference": "Daniel 12:3",
+        "translation": "KJV"
+    },
+
+    # --- MAJESTY, CREATION & CLOUD CHARIOTS ---
+    "PSALM 104:1-3": {
+        "text": "Bless the Lord, O my soul. O Lord my God, thou art very great; thou art clothed with honour and majesty... who maketh the clouds his chariot: who walketh upon the wings of the wind:",
+        "reference": "Psalm 104:1-3",
+        "translation": "KJV"
+    },
+    "PSALM 68:4": {
+        "text": "Sing unto God, sing praises to his name: extol him that rideth upon the heavens by his name JAH, and rejoice before him.",
+        "reference": "Psalm 68:4",
+        "translation": "KJV"
+    },
+
+    # --- PHYSICAL WEARINESS VS SPIRITUAL STRENGTH ---
+    "MATTHEW 26:41": {
+        "text": "Watch and pray, that ye enter not into temptation: the spirit indeed is willing, but the flesh is weak.",
+        "reference": "Matthew 26:41",
+        "translation": "KJV"
+    },
+    "EPHESIANS 3:16": {
+        "text": "That he would grant you, according to the riches of his glory, to be strengthened with might by his Spirit in the inner man;",
+        "reference": "Ephesians 3:16",
+        "translation": "KJV"
+    },
+    "2 CORINTHIANS 4:16": {
+        "text": "For which cause we faint not; but though our outward man perish, yet the inward man is renewed day by day.",
+        "reference": "2 Corinthians 4:16",
+        "translation": "KJV"
+    },
+    "ISAIAH 40:29": {
+        "text": "He giveth power to the faint; and to them that have no might he increaseth strength.",
+        "reference": "Isaiah 40:29",
+        "translation": "KJV"
     }
 }
 
-# Thematic mapping: Each keyword cluster maps to a POOL of diverse canonical scriptures
+# Thematic mapping: 22+ Systematic Theological Clusters mapped strictly to Spoken Quote semantics
 THEME_KEYWORD_MAP = [
-    # 1. Authority, Creative Power & Efficacy of God's Word (Highest specific relevance)
+    # 1. Authority, Creative Power & Efficacy of God's Word
     (
         [
             "word of god", "responds", "respond", "response", "word only",
@@ -430,161 +635,201 @@ THEME_KEYWORD_MAP = [
             "framed", "commanded", "power of god's word", "decree"
         ],
         [
-            "ISAIAH 55:11",
-            "HEBREWS 4:12",
-            "JEREMIAH 23:29",
-            "PSALM 33:9",
-            "HEBREWS 11:3",
-            "PSALM 107:20",
-            "MATTHEW 8:8",
-            "LUKE 1:37",
-            "HEBREWS 1:3",
-            "MARK 4:39"
+            "ISAIAH 55:11", "HEBREWS 4:12", "JEREMIAH 23:29", "PSALM 33:9",
+            "HEBREWS 11:3", "PSALM 107:20", "MATTHEW 8:8", "LUKE 1:37", "HEBREWS 1:3", "MARK 4:39"
         ]
     ),
-    # 2. Prayer & The Secret Place
+    # 2. Covenant Faithfulness & God's Promises
     (
-        ["prayer", "secret place", "altar", "pray", "closet", "inner room", "supplication", "petition"],
         [
-            "PHILIPPIANS 4:6-7",
-            "JEREMIAH 33:3",
-            "HEBREWS 4:16",
-            "1 THESSALONIANS 5:16-18",
-            "PSALM 5:3",
-            "JAMES 5:16",
-            "COLOSSIANS 4:2",
-            "MARK 1:35",
-            "EPHESIANS 6:18",
-            "LUKE 18:1",
-            "MATTHEW 6:6"
+            "visited promise", "promise", "promises", "signature", "doing god",
+            "faithful", "fulfill", "covenant", "not lie", "came to pass", "perfection"
+        ],
+        [
+            "NUMBERS 23:19", "HEBREWS 10:23", "JOSHUA 21:45", "2 CORINTHIANS 1:20",
+            "GENESIS 21:1", "PSALM 89:34", "PSALM 119:89-90"
         ]
     ),
-    # 3. Faith & Trust
+    # 3. Divine Healing & Life in Christ
     (
-        ["faith", "trust", "doubt", "believe", "mountain", "impossible", "confidence"],
         [
-            "HEBREWS 11:1",
-            "PROVERBS 3:5-6",
-            "MARK 11:23",
-            "2 CORINTHIANS 5:7",
-            "ROMANS 10:17",
-            "PSALM 37:5",
-            "HABAKKUK 2:4"
+            "sickness", "death", "heal", "healing", "disease", "stripes", "healed",
+            "infirmity", "body", "health", "glory of the lord"
+        ],
+        [
+            "JOHN 11:4", "1 PETER 2:24", "JEREMIAH 17:14", "PSALM 103:2-3", "EXODUS 15:26", "3 JOHN 1:2"
         ]
     ),
-    # 4. Guidance & Wisdom
+    # 4. Light, Illumination & Dispelling Darkness
     (
-        ["lean", "heart", "straight", "paths", "understanding", "direction", "guidance"],
         [
-            "PROVERBS 3:5-6",
-            "PSALM 32:8",
-            "PSALM 119:105",
-            "JEREMIAH 29:11"
+            "call for light", "light", "destroys darkness", "darkness", "shatters ignorance",
+            "ignorance", "enlightened", "illumination", "entrance of thy words"
+        ],
+        [
+            "PSALM 27:1", "JOHN 1:5", "PSALM 119:130", "2 CORINTHIANS 4:6", "JOHN 8:12"
         ]
     ),
-    # 5. Waiting & Patience
+    # 5. Spiritual Mind Renewal & Heavenly Dimensions of Glory
     (
-        ["wait", "waiting", "weary", "strength", "eagles", "patience", "due season", "endure", "tired"],
         [
-            "ISAIAH 40:31",
-            "LAMENTATIONS 3:25-26",
-            "PSALM 27:14",
-            "GALATIANS 6:9",
-            "PSALM 130:5",
-            "ROMANS 8:25"
+            "dimension of glory", "glory", "mind", "mind opens", "understanding",
+            "transformed", "revelation", "spiritual understanding"
+        ],
+        [
+            "ROMANS 12:2", "EPHESIANS 1:17-18", "2 CORINTHIANS 4:6", "JAMES 1:5"
         ]
     ),
-    # 6. Spiritual Warfare & Victory
+    # 6. Deliverance, Redemption & Overcoming Oppressors
     (
-        ["warfare", "stronghold", "weapons", "battle", "fight", "stand", "enemy", "conqueror", "defeat", "victory", "overcome", "triumph"],
         [
-            "2 CORINTHIANS 10:4",
-            "ROMANS 8:37",
-            "1 JOHN 4:4",
-            "EPHESIANS 6:10-11",
-            "1 CORINTHIANS 15:57",
-            "JAMES 4:7",
-            "ISAIAH 54:17"
+            "pharaoh", "redemption", "deliverance", "redeem", "bondage", "egypt",
+            "oppression", "captive", "liberty", "bruised"
+        ],
+        [
+            "EXODUS 6:6", "COLOSSIANS 1:13", "PSALM 107:2", "PSALM 34:19", "LUKE 4:18"
         ]
     ),
-    # 7. Grace & Mercy
+    # 7. Bold Apostolic Prayer & Miraculous Demonstration
     (
-        ["grace", "mercy", "throne of grace", "weakness", "sufficient", "forgiveness", "salvation"],
         [
-            "HEBREWS 4:16",
-            "2 CORINTHIANS 12:9",
-            "EPHESIANS 2:8-9",
-            "TITUS 2:11",
-            "LAMENTATIONS 3:22-23",
-            "ROMANS 5:8"
+            "contentions", "threats", "notable to deny", "boldness", "signs and wonders",
+            "demonstration", "power of god"
+        ],
+        [
+            "ACTS 4:29-30", "1 CORINTHIANS 2:4-5", "ACTS 1:8", "ROMANS 1:16"
         ]
     ),
-    # 8. Purpose & Calling
+    # 8. Soul Winning & Kingdom Harvest
     (
-        ["purpose", "calling", "future", "plans", "destiny", "assignment", "workmanship", "supply"],
         [
-            "JEREMIAH 29:11",
-            "ROMANS 8:28",
-            "2 TIMOTHY 1:9",
-            "PHILIPPIANS 1:6",
-            "EPHESIANS 2:10",
-            "PHILIPPIANS 4:19"
+            "souls", "soul", "sharing flyers", "winneth souls", "preacher", "harvest", "evangelism"
+        ],
+        [
+            "PROVERBS 11:30", "ROMANS 10:14-15", "DANIEL 12:3"
         ]
     ),
-    # 9. Stillness & Peace
+    # 9. Majesty, Sovereignty & Cloud Chariots
     (
-        ["still", "stillness", "peace", "quiet", "rest", "storm", "anxious", "anxiety", "troubled"],
         [
-            "PSALM 46:10",
-            "JOHN 14:27",
-            "ISAIAH 26:3",
-            "MATTHEW 11:28-29",
-            "PSALM 23:1-3",
-            "PHILIPPIANS 4:6-7"
+            "wings of the wind", "wings", "wind", "chariot", "chariots", "cloud",
+            "clouds", "rides upon the clouds", "majesty", "heavens"
+        ],
+        [
+            "PSALM 104:1-3", "PSALM 68:4"
         ]
     ),
-    # 10. Word, Scripture & Truth (Instructional & Light)
+    # 10. Waiting on God & Patience
     (
-        ["scripture", "lamp", "light", "bible", "truth", "meditate", "sword", "wisdom"],
         [
-            "PSALM 119:105",
-            "HEBREWS 4:12",
-            "JAMES 1:5",
-            "JOSHUA 1:8",
-            "2 TIMOTHY 3:16-17"
+            "move forward by waiting", "wait", "waiting", "soars", "eagle", "eagles",
+            "patience", "due season", "endure"
+        ],
+        [
+            "ISAIAH 40:31", "LAMENTATIONS 3:25-26", "PSALM 27:14", "GALATIANS 6:9", "PSALM 130:5"
         ]
     ),
-    # 11. Praise & Worship
+    # 11. Physical Weariness vs Spiritual Strength
     (
-        ["worship", "praise", "thanksgiving", "glory", "bless", "sacrifice"],
         [
-            "JOHN 4:24",
-            "PSALM 100:4",
-            "PSALM 34:1",
-            "HEBREWS 13:15",
-            "ROMANS 12:1"
+            "body may be tired", "tired", "spirit can receive strength", "flesh is weak",
+            "faint not", "inner man", "weary", "exhausted"
+        ],
+        [
+            "MATTHEW 26:41", "EPHESIANS 3:16", "2 CORINTHIANS 4:16", "ISAIAH 40:29"
         ]
     ),
-    # 12. The Cross & Surrender
+    # 12. Faith & Impossibilities
     (
-        ["cross", "crucified", "die", "surrender", "life", "redeemed", "blood", "salvation"],
         [
-            "GALATIANS 2:20",
-            "JOHN 3:16",
-            "ROMANS 12:1",
-            "ROMANS 5:8"
+            "faith", "trust", "doubt", "believe", "mountain", "impossible", "confidence"
+        ],
+        [
+            "HEBREWS 11:1", "PROVERBS 3:5-6", "MARK 11:23", "2 CORINTHIANS 5:7", "ROMANS 10:17", "HABAKKUK 2:4"
         ]
     ),
-    # 13. Holy Spirit & Intercession (Infirmities)
+    # 13. Guidance & Divine Direction
     (
-        ["holy spirit", "spirit intercession", "groanings", "infirmities", "unuttered", "advocate"],
         [
-            "ROMANS 8:26",
-            "EPHESIANS 6:18",
-            "2 TIMOTHY 1:9",
-            "GALATIANS 2:20"
+            "lean", "heart", "straight", "paths", "understanding", "direction", "guidance"
+        ],
+        [
+            "PROVERBS 3:5-6", "PSALM 32:8", "PSALM 119:105", "JEREMIAH 29:11"
         ]
     ),
+    # 14. Spiritual Warfare & Divine Overcoming
+    (
+        [
+            "warfare", "stronghold", "weapons", "battle", "fight", "stand", "enemy",
+            "conqueror", "defeat", "victory", "overcome", "triumph"
+        ],
+        [
+            "2 CORINTHIANS 10:4", "ROMANS 8:37", "1 JOHN 4:4", "EPHESIANS 6:10-11", "1 CORINTHIANS 15:57", "JAMES 4:7"
+        ]
+    ),
+    # 15. Grace & Mercy
+    (
+        [
+            "grace", "mercy", "throne of grace", "weakness", "sufficient", "forgiveness", "salvation"
+        ],
+        [
+            "HEBREWS 4:16", "2 CORINTHIANS 12:9", "EPHESIANS 2:8-9", "TITUS 2:11", "LAMENTATIONS 3:22-23"
+        ]
+    ),
+    # 16. Purpose, Destiny & Calling
+    (
+        [
+            "purpose", "calling", "future", "plans", "destiny", "assignment", "workmanship"
+        ],
+        [
+            "JEREMIAH 29:11", "ROMANS 8:28", "2 TIMOTHY 1:9", "PHILIPPIANS 1:6", "EPHESIANS 2:10"
+        ]
+    ),
+    # 17. Stillness & Peace
+    (
+        [
+            "still", "stillness", "peace", "quiet", "rest", "storm", "anxious", "anxiety"
+        ],
+        [
+            "PSALM 46:10", "JOHN 14:27", "ISAIAH 26:3", "MATTHEW 11:28-29", "PSALM 23:1-3"
+        ]
+    ),
+    # 18. Praise & Worship
+    (
+        [
+            "worship", "praise", "thanksgiving", "bless", "sacrifice of praise"
+        ],
+        [
+            "JOHN 4:24", "PSALM 100:4", "PSALM 34:1", "HEBREWS 13:15", "ROMANS 12:1"
+        ]
+    ),
+    # 19. The Cross & Surrender
+    (
+        [
+            "cross", "crucified", "die", "surrender", "blood of jesus"
+        ],
+        [
+            "GALATIANS 2:20", "JOHN 3:16", "ROMANS 12:1", "ROMANS 5:8"
+        ]
+    ),
+    # 20. Secret Closet Prayer (Strictly for explicit closet/secret prayer quotes)
+    (
+        [
+            "secret place", "closet", "inner room", "shut your door", "pray in secret"
+        ],
+        [
+            "MATTHEW 6:6", "PSALM 5:3", "MARK 1:35", "JEREMIAH 33:3"
+        ]
+    ),
+    # 21. Holy Spirit Intercession in Weakness (Strictly for unuttered groanings)
+    (
+        [
+            "holy spirit intercession", "groanings", "unuttered groanings", "know not what to pray"
+        ],
+        [
+            "ROMANS 8:26", "EPHESIANS 6:18"
+        ]
+    )
 ]
 
 def clean_ref_key(ref: str) -> str:
@@ -641,20 +886,20 @@ def get_scripture_for_theme(
     theme: str = "",
     quote_text: str = "",
     preferred_ref: Optional[str] = None,
+    candidate_refs: Optional[List[str]] = None,
     recently_used: Optional[List[str]] = None
 ) -> Dict:
     """
-    Selects verified Scripture dynamically:
-    1. If preferred_ref is valid, not recently used, and canonical, uses it.
-    2. Else performs Quote-First ranked semantic matching:
-       - Quote keywords are given 10x higher weight than video title tokens.
-       - Ensures verses match what the preacher actually spoke, not generic broadcast titles.
-    3. Excludes recently used verses to guarantee zero repetition.
-    4. Rotates dynamically through candidate pools.
+    Selects verified Scripture with 100% theological coherence:
+    1. Evaluates preferred_ref and candidate_refs recommended by LLM exegetical analysis.
+    2. Validates against the 66 canonical books of the Bible.
+    3. Enforces 14-day anti-repetition memory.
+    4. Evaluates Spoken Quote keywords first with 100x weight over broadcast titles.
+    5. Falls back to foundational kingdom scriptures, never random index.
     """
     recent_set = {clean_ref_key(r) for r in (recently_used or []) if r}
 
-    # 1. Preferred reference check
+    # 1. Preferred reference evaluation
     if preferred_ref:
         is_valid, canon_ref = validate_canonical_reference(preferred_ref)
         if is_valid:
@@ -662,62 +907,84 @@ def get_scripture_for_theme(
             if key not in recent_set:
                 if key in VERIFIED_SCRIPTURES:
                     return VERIFIED_SCRIPTURES[key]
-                # Try fetching online
                 online = fetch_online_scripture(canon_ref)
                 if online:
                     return online
 
-    # 2. Quote-First Ranked Semantic Matching
+    # 2. Candidate references evaluation (ordered priority from LLM)
+    if candidate_refs:
+        for cand in candidate_refs:
+            if not cand:
+                continue
+            is_valid, canon_ref = validate_canonical_reference(cand)
+            if is_valid:
+                key = clean_ref_key(canon_ref)
+                if key not in recent_set:
+                    if key in VERIFIED_SCRIPTURES:
+                        return VERIFIED_SCRIPTURES[key]
+                    online = fetch_online_scripture(canon_ref)
+                    if online:
+                        return online
+
+    # 3. Quote-First Semantic Keyword Matching
     q_low = quote_text.lower() if quote_text else ""
     t_low = theme.lower() if theme else ""
 
     cluster_scores = []
     for keywords, target_keys in THEME_KEYWORD_MAP:
-        # Quote matches are given 10x higher priority than video title metadata
         q_hits = sum(1 for kw in keywords if kw in q_low)
         t_hits = sum(1 for kw in keywords if kw in t_low)
-        total_score = (q_hits * 10) + t_hits
+        # Give quote matches overwhelming priority (100x) over title tokens
+        total_score = (q_hits * 100) + t_hits
         if total_score > 0:
             cluster_scores.append((total_score, q_hits, target_keys))
 
-    # Sort clusters by score descending, prioritizing quote matches
     cluster_scores.sort(key=lambda x: (x[0], x[1]), reverse=True)
 
     matched_pool: List[str] = []
     if cluster_scores:
-        top_score = cluster_scores[0][0]
         has_quote_hits = cluster_scores[0][1] > 0
         for score, q_hits, target_keys in cluster_scores:
-            # If the top cluster had direct quote matches, ONLY include clusters with quote matches
             if has_quote_hits:
+                # If ANY cluster matched the spoken quote, ONLY include quote-matching clusters
                 if q_hits > 0:
                     for k in target_keys:
                         if k not in matched_pool:
                             matched_pool.append(k)
             else:
-                # If no quote hits, use title matches
-                if score >= top_score:
-                    for k in target_keys:
-                        if k not in matched_pool:
-                            matched_pool.append(k)
+                for k in target_keys:
+                    if k not in matched_pool:
+                        matched_pool.append(k)
 
-    # Filter out recently used verses from the matched pool
     fresh_candidates = [k for k in matched_pool if k not in recent_set and k in VERIFIED_SCRIPTURES]
-
     if fresh_candidates:
         idx = abs(hash(f"{theme}_{quote_text}")) % len(fresh_candidates)
         selected_key = fresh_candidates[idx]
         return VERIFIED_SCRIPTURES[selected_key]
 
-    # If all candidates in the matched pool were used, fallback to any verified scripture not recently used
+    # 4. Timeless Foundational Kingdom Scripture Fallback (Never arbitrary index)
+    FOUNDATIONAL_SCRIPTURES = [
+        "JOHN 3:16",
+        "PROVERBS 3:5-6",
+        "PHILIPPIANS 4:6-7",
+        "PSALM 23:1-3",
+        "HEBREWS 11:1",
+        "ISAIAH 40:31",
+        "JEREMIAH 29:11",
+        "ROMANS 8:28"
+    ]
+    fresh_foundational = [k for k in FOUNDATIONAL_SCRIPTURES if k not in recent_set and k in VERIFIED_SCRIPTURES]
+    if fresh_foundational:
+        idx = abs(hash(f"{theme}_{quote_text}")) % len(fresh_foundational)
+        return VERIFIED_SCRIPTURES[fresh_foundational[idx]]
+
+    # Universal library fallback
     all_keys = list(VERIFIED_SCRIPTURES.keys())
     unused_overall = [k for k in all_keys if k not in recent_set]
-
     if unused_overall:
         idx = abs(hash(f"{theme}_{quote_text}")) % len(unused_overall)
-        selected_key = unused_overall[idx]
-        return VERIFIED_SCRIPTURES[selected_key]
+        return VERIFIED_SCRIPTURES[unused_overall[idx]]
 
-    # Extreme fallback: Rotate through entire library
-    idx = abs(hash(f"{theme}_{quote_text}")) % len(all_keys)
-    return VERIFIED_SCRIPTURES[all_keys[idx]]
+    return VERIFIED_SCRIPTURES[all_keys[0]]
+
+

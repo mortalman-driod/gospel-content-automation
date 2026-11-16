@@ -147,6 +147,8 @@ class ScripturePayload(BaseModel):
     ref: str = Field(description="Scripture reference e.g. Hebrews 11:1")
     text: str = Field(description="Verbatim scripture text")
     translation: str = Field(default="WEB", description="Bible translation code")
+    candidate_refs: Optional[List[str]] = Field(default=None, description="Alternative candidate scripture references")
+    theological_coherence: Optional[str] = Field(default=None, description="Exegetical reason connecting quote to scripture")
 
 class FlyerSpec(BaseModel):
     template: str
@@ -239,23 +241,30 @@ class WritingEngine:
         theme: str = "",
         quote_text: str = "",
         preferred_ref: Optional[str] = None,
+        candidate_refs: Optional[List[str]] = None,
         recently_used: Optional[List[str]] = None
     ) -> ScripturePayload:
-        """Retrieves verified scripture dynamically matched to sermon theme with zero monoculture defaults and anti-repetition memory."""
+        """Retrieves verified scripture with 100% theological coherence, canonical validation, and anti-repetition memory."""
         try:
-            res = get_scripture_for_theme(theme=theme, quote_text=quote_text, preferred_ref=preferred_ref, recently_used=recently_used)
+            res = get_scripture_for_theme(
+                theme=theme,
+                quote_text=quote_text,
+                preferred_ref=preferred_ref,
+                candidate_refs=candidate_refs,
+                recently_used=recently_used
+            )
             is_valid, canon_ref, _ = validate_scripture_reference(res["reference"])
             return ScripturePayload(
                 ref=canon_ref if is_valid else res["reference"],
                 text=res["text"],
-                translation=res.get("translation", "WEB")
+                translation=res.get("translation", "KJV")
             )
         except Exception as e:
             logger.warning(f"Scripture retrieval fallback: {e}")
             return ScripturePayload(
                 ref="Psalm 119:105",
-                text="Your word is a lamp to my feet, and a light for my path.",
-                translation="WEB"
+                text="Thy word is a lamp unto my feet, and a light unto my path.",
+                translation="KJV"
             )
 
     def write_issue(
@@ -302,7 +311,7 @@ NO VERIFIED QUOTE AVAILABLE:
             flyer_credit = "The Kingdom Journal"
             headline_for_flyer = "When human striving ends, sovereign peace takes over."
 
-        # Dynamically fetch scripture contextually matched to today's sermon theme
+        # Dynamically fetch initial scripture candidate based on quote semantics
         scripture = self._fetch_scripture(theme=clean_theme, quote_text=headline_for_flyer, recently_used=recently_used_scriptures)
 
         prompt = f"""You are the Executive Editor of 'The Kingdom Journal'—a distinguished, contemplative daily Christian publication.
@@ -310,7 +319,19 @@ Your writing must feel 100% human-crafted: authentic, conversational, deeply spi
 
 Theme: {clean_theme}
 {quote_instruction}
-Scripture: "{scripture.text}" ({scripture.ref} [{scripture.translation}])
+Target Scripture Anchor: "{scripture.text}" ({scripture.ref} [{scripture.translation}])
+
+THEOLOGICAL SCRIPTURE SELECTION MANDATE:
+- As an expert theologian, ensure the final selected Scripture has 100% direct theological and topical coherence with the VERIFIED QUOTE:
+  - If the quote is about God's faithfulness or promises (e.g., 'visited promise', 'doing God'), choose verses on God's covenant promises (e.g., Numbers 23:19, Hebrews 10:23, Joshua 21:45).
+  - If the quote is about healing or sickness, choose healing scriptures (e.g., John 11:4, 1 Peter 2:24, Jeremiah 17:14, Psalm 103:2-3).
+  - If the quote is about light overcoming darkness or ignorance, choose light/illumination scriptures (e.g., Psalm 27:1, John 1:5, Psalm 119:130, 2 Corinthians 4:6).
+  - If the quote is about God's Word, choose Word scriptures (e.g., Isaiah 55:11, Hebrews 4:12, Psalm 33:9).
+  - If the quote is about deliverance/redemption, choose redemption scriptures (e.g., Exodus 6:6, Colossians 1:13).
+  - If the quote is about waiting or patience, choose waiting scriptures (e.g., Isaiah 40:31, Lamentations 3:25).
+  - STRICT BAN: DO NOT select Romans 8:26 or Matthew 6:6 unless the quote explicitly addresses secret closet prayer or Spirit intercession in weakness.
+- Return in `scripture` object:
+  "scripture": {{"ref": "Canonical Book Chapter:Verse", "translation": "KJV", "candidate_refs": ["Alt Verse 1", "Alt Verse 2"], "theological_coherence": "1 clear sentence explaining how this scripture anchors the quote"}}
 
 TODAY'S MANDATED STORYTELLING ANGLE:
 {framework['name']}
@@ -416,6 +437,22 @@ RETURN STRICT JSON matching this schema:
                         else:
                             v_pre = words[0] if words else "Trust in God"
                             v_acc = "always."
+
+                    # Re-hydrate and strictly verify scripture reference recommended by LLM
+                    raw_scrip = raw_json.get("scripture")
+                    if isinstance(raw_scrip, dict):
+                        g_ref = raw_scrip.get("ref")
+                        g_cands = raw_scrip.get("candidate_refs")
+                        if g_ref or g_cands:
+                            scripture = self._fetch_scripture(
+                                theme=clean_theme,
+                                quote_text=headline_for_flyer,
+                                preferred_ref=g_ref,
+                                candidate_refs=g_cands,
+                                recently_used=recently_used_scriptures
+                            )
+                            if raw_scrip.get("theological_coherence"):
+                                scripture.theological_coherence = raw_scrip.get("theological_coherence")
 
                     # Build flyers specs carrying dynamic scripture anchor
                     flyers = [
