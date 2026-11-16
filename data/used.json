@@ -14,7 +14,8 @@
     "TuikgucRc-U",
     "OZDMGStmp1s",
     "CCfav6SC5g0",
-    "Tb_bT3qWsYk"
+    "Tb_bT3qWsYk",
+    "diUkTvCPNSI"
   ],
   "used_quotes": [
     "The night is far spent. Wake up out of sleep.",
@@ -31,7 +32,8 @@
     "Your body may be tired, but your spirit can receive strength as you pray.",
     "Everything responds to the word of God.",
     "Like an eagle he soars on the strength of the spirit.",
-    "God visited promise and left his signature. He's a doing God."
+    "God visited promise and left his signature. He's a doing God.",
+    "Though I do not know the way, I trust the one who created the way."
   ],
   "used_themes": [
     "The 4 a.m. nudge is a call.",
@@ -46,7 +48,8 @@
     "Tafi Ty Bello & Tomi Favored",
     "The Spiritual Reboot",
     "Divine Decree Response",
-    "Divine Action"
+    "Divine Action",
+    "The Secret Place"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -182,13 +185,28 @@
       "scripture": "Luke 18:1",
       "template": "bold_statement",
       "background": "green_sprout"
+    },
+    {
+      "issue": 71,
+      "date": "2026-11-16",
+      "video_id": "diUkTvCPNSI",
+      "theme": "The Secret Place",
+      "scripture": "2 Corinthians 5:7",
+      "template": "contrast_split",
+      "background": [
+        "royal_crown",
+        "crimson_cream_wave",
+        "emerald_white_wave",
+        "mountain_summit"
+      ]
     }
   ],
   "used_scriptures": [
     "Matthew 6:6",
     "Romans 8:26",
     "Isaiah 40:31",
-    "Luke 18:1"
+    "Luke 18:1",
+    "2 Corinthians 5:7"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -197,7 +215,8 @@
     "quiet_light",
     "heavy_impact",
     "asymmetric_split",
-    "bold_statement"
+    "bold_statement",
+    "contrast_split"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
@@ -206,6 +225,10 @@
     "terracotta_amber_wave",
     "deep_cobalt_wave",
     "study_desk",
-    "green_sprout"
+    "green_sprout",
+    "royal_crown",
+    "crimson_cream_wave",
+    "emerald_white_wave",
+    "mountain_summit"
   ]
 }
