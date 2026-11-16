@@ -1,7 +1,12 @@
 .env
 .venv/
 out/
+output/
 scratch/
+scratch_*.py
+scratch_*.mp4
+scratch_*.webm
+scratch_*.png
 __pycache__/
 *.pyc
 *.log
