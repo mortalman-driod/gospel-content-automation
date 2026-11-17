@@ -54,7 +54,7 @@ class EmailDeliverer:
         self.smtp_port = int(os.environ.get("SMTP_PORT", "587"))
         self.smtp_user = os.environ.get("SMTP_USER")
         self.smtp_password = os.environ.get("SMTP_PASSWORD")
-        self.recipient = os.environ.get("NOTIFICATION_EMAIL", "aondoaseerezekiel@gmail.com")
+        self.recipient = os.environ.get("RECIPIENT_EMAIL") or os.environ.get("NOTIFICATION_EMAIL") or self.smtp_user or "aondoaseerezekiel@gmail.com"
 
     def build_email_html(
         self,
@@ -129,7 +129,7 @@ class EmailDeliverer:
         x_text = x_post[:280] if len(x_post) > 280 else x_post
         threads_text = threads_post[:490] if len(threads_post) > 490 else threads_post
         x_intent = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(x_text)}"
-        threads_intent = f"https://threads.com/intent/post?text={urllib.parse.quote(threads_text)}"
+        threads_intent = f"https://threads.net/intent/post?text={urllib.parse.quote(threads_text)}"
         wa_intent = f"https://api.whatsapp.com/send?text={urllib.parse.quote(whatsapp_status)}"
         fb_text = fb_post[:400] if len(fb_post) > 400 else fb_post
         fb_intent = f"https://www.facebook.com/sharer/sharer.php?quote={urllib.parse.quote(fb_text)}"

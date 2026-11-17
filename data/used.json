@@ -15,7 +15,8 @@
     "OZDMGStmp1s",
     "CCfav6SC5g0",
     "Tb_bT3qWsYk",
-    "diUkTvCPNSI"
+    "diUkTvCPNSI",
+    "Qa17awFKvig"
   ],
   "used_quotes": [
     "The night is far spent. Wake up out of sleep.",
@@ -33,7 +34,8 @@
     "Everything responds to the word of God.",
     "Like an eagle he soars on the strength of the spirit.",
     "God visited promise and left his signature. He's a doing God.",
-    "Though I do not know the way, I trust the one who created the way."
+    "Though I do not know the way, I trust the one who created the way.",
+    "Christianity is not powerlessness. If there is no power is not Christianity."
   ],
   "used_themes": [
     "The 4 a.m. nudge is a call.",
@@ -49,7 +51,8 @@
     "The Spiritual Reboot",
     "Divine Decree Response",
     "Divine Action",
-    "The Secret Place"
+    "The Secret Place",
+    "The Power Of Presence"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -199,6 +202,20 @@
         "emerald_white_wave",
         "mountain_summit"
       ]
+    },
+    {
+      "issue": 72,
+      "date": "2026-11-17",
+      "video_id": "Qa17awFKvig",
+      "theme": "The Power Of Presence",
+      "scripture": "Jeremiah 33:3",
+      "template": "heavy_impact",
+      "background": [
+        "deep_cobalt_wave",
+        "cross_sunrise",
+        "terracotta_amber_wave",
+        "golden_sunburst_clouds"
+      ]
     }
   ],
   "used_scriptures": [
@@ -206,7 +223,8 @@
     "Romans 8:26",
     "Isaiah 40:31",
     "Luke 18:1",
-    "2 Corinthians 5:7"
+    "2 Corinthians 5:7",
+    "Jeremiah 33:3"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -216,7 +234,8 @@
     "heavy_impact",
     "asymmetric_split",
     "bold_statement",
-    "contrast_split"
+    "contrast_split",
+    "heavy_impact"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
@@ -229,6 +248,8 @@
     "royal_crown",
     "crimson_cream_wave",
     "emerald_white_wave",
-    "mountain_summit"
+    "mountain_summit",
+    "cross_sunrise",
+    "golden_sunburst_clouds"
   ]
 }
