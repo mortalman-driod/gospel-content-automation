@@ -1,7 +1,11 @@
 """
 Master Script: scripts/render_and_send_5_clips.py
 Composites and renders all 5 viral 90-second vertical shorts (9:16),
-compresses them for Gmail attachment limits (under 3.3 MB each, ~16 MB total),
+calibrated to the user's curated preacher & gospel music lineup:
+- 3 Preaching: Bro. Gbile Akanni, Apostle Arome Osayi, Apostle Michael Orokpo
+- 1 Nigerian Gospel Music: Minister Theophilus Sunday
+- 1 Foreign Gospel Music: Josiah Queen ("Queen Josiah")
+Compresses them for Gmail attachment limits (under 3.3 MB each, ~16 MB total),
 extracts snapshot previews, and dispatches a dedicated showcase email
 to aondoaseerezekiel@gmail.com with all 5 videos attached.
 """
@@ -46,6 +50,7 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 RECIPIENT = os.environ.get("RECIPIENT_EMAIL") or os.environ.get("NOTIFICATION_EMAIL") or SMTP_USER or "aondoaseerezekiel@gmail.com"
 
 clips_dir = BASE_DIR / "output" / "clips"
+clips_dir.mkdir(parents=True, exist_ok=True)
 artifact_dir = Path("C:/Users/ezeki/.gemini/antigravity/brain/f8f5e9a2-d815-425e-baca-43eda4414c39")
 fonts_dir = BASE_DIR / "assets" / "fonts"
 
@@ -55,69 +60,69 @@ font_serif = str((fonts_dir / "PlayfairDisplay-Bold.ttf").resolve()).replace("\\
 
 TARGETS = [
     {
-        "id": "clip_1_selman",
-        "category": "Preaching 1 (Apostolic)",
+        "id": "clip_1_gbile",
+        "category": "Preaching 1 (Discipleship & Consecration)",
         "badge_color": "#9A3412",
-        "speaker": "Apostle Joshua Selman",
-        "title": "The Covenant of Dominion",
-        "window": "02:34:36 - 02:36:06",
-        "raw_file": "raw_selman_90s.webm",
-        "raw_alt": "raw_selman_90s.mp4",
-        "quote": "Though I do not know the way, I trust the one who created the way. A praise will come out from your spirit!",
+        "speaker": "Bro. Gbile Akanni",
+        "title": "Why Regular Intimacy is Not Optional",
+        "window": "00:02:15 - 00:03:45",
+        "raw_file": "raw_gbile_90s.mp4",
+        "raw_alt": "raw_gbile_90s.webm",
+        "quote": "If you lose your secret place, you have lost your spiritual bearing. Power is not demonstrated in the crowd; it is conceived in quietness.",
+        "scripture_ref": "Psalm 91:1",
+        "scripture_text": "He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty."
+    },
+    {
+        "id": "clip_2_arome",
+        "category": "Preaching 2 (Apostolic Priesthood)",
+        "badge_color": "#9A3412",
+        "speaker": "Apostle Arome Osayi",
+        "title": "How God Raises Men of Spiritual Authority",
+        "window": "00:25:20 - 00:26:50",
+        "raw_file": "raw_arome_90s.mp4",
+        "raw_alt": "raw_arome_90s.webm",
+        "quote": "God does not use men because they are gifted; He uses men who have yielded their will at the altar of consecrated prayer.",
+        "scripture_ref": "Romans 12:1",
+        "scripture_text": "Present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service."
+    },
+    {
+        "id": "clip_3_orokpo",
+        "category": "Preaching 3 (Spiritual Mysteries)",
+        "badge_color": "#9A3412",
+        "speaker": "Apostle Michael Orokpo",
+        "title": "The Making of Men: The Divine Presence",
+        "window": "00:12:30 - 00:14:00",
+        "raw_file": "raw_orokpo_90s.mp4",
+        "raw_alt": "raw_orokpo_90s.webm",
+        "quote": "You cannot carry the presence of God and remain ordinary. When the Holy Ghost rests upon a man, he becomes an eternal wonder.",
+        "scripture_ref": "Acts 1:8",
+        "scripture_text": "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me."
+    },
+    {
+        "id": "clip_4_theophilus",
+        "category": "Gospel Music (Nigerian)",
+        "badge_color": "#0284C7",
+        "speaker": "Minister Theophilus Sunday",
+        "title": "I Believe Live (Prophetic Chants)",
+        "window": "00:08:45 - 00:10:15",
+        "raw_file": "raw_theophilus_90s.mp4",
+        "raw_alt": "raw_theophilus_90s.webm",
+        "quote": "I live by faith and not by sight. My spirit pants after You, Jesus, my firm foundation!",
         "scripture_ref": "2 Corinthians 5:7",
         "scripture_text": "For we walk by faith, not by sight."
     },
     {
-        "id": "clip_2_iren",
-        "category": "Preaching 2 (Teaching & Revival)",
-        "badge_color": "#9A3412",
-        "speaker": "Pastor Emmanuel Iren",
-        "title": "Reboot: Speed Through Waiting",
-        "window": "00:18:24 - 00:19:54",
-        "raw_file": "raw_iren_90s.mp4",
-        "raw_alt": "raw_iren_90s.webm",
-        "quote": "In our kingdom, we move forward by waiting! Those who wait on the Lord shall renew their strength.",
-        "scripture_ref": "Isaiah 40:31",
-        "scripture_text": "They that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles."
-    },
-    {
-        "id": "clip_3_eze",
-        "category": "Preaching 3 (Prophetic Warfare)",
-        "badge_color": "#9A3412",
-        "speaker": "Pastor Jerry Eze",
-        "title": "NSPPD: Altar of Fire",
-        "window": "00:13:10 - 00:14:40",
-        "raw_file": "raw_eze_90s.mp4",
-        "raw_alt": "raw_eze_90s.webm",
-        "quote": "Whatever is not in line with the will of God for your life must be altered by fire right now! What God cannot do does not exist!",
-        "scripture_ref": "Jeremiah 32:27",
-        "scripture_text": "Behold, I am the LORD, the God of all flesh: is there any thing too hard for me?"
-    },
-    {
-        "id": "clip_4_bassey",
-        "category": "Gospel Music (Nigerian)",
-        "badge_color": "#0284C7",
-        "speaker": "Nathaniel Bassey",
-        "title": "Hallelujah Challenge Live",
-        "window": "00:01:50 - 00:03:20",
-        "raw_file": "raw_bassey_90s.webm",
-        "raw_alt": "raw_bassey_90s.mp4",
-        "quote": "You are the Alpha and Omega. Oh Lord, Your kingdom reigns forever!",
-        "scripture_ref": "Revelation 1:8",
-        "scripture_text": "I am Alpha and Omega, the beginning and the ending, saith the Lord."
-    },
-    {
-        "id": "clip_5_elevation",
+        "id": "clip_5_josiah_queen",
         "category": "Gospel Music (Foreign)",
         "badge_color": "#0284C7",
-        "speaker": "Elevation Worship & Maverick City",
-        "title": "Jireh (Live Worship)",
-        "window": "00:02:15 - 00:03:45",
-        "raw_file": "raw_elevation_90s.mp4",
-        "raw_alt": "raw_elevation_90s.webm",
-        "quote": "You are Jireh, You are enough! And I will be content in every circumstance!",
-        "scripture_ref": "Philippians 4:19",
-        "scripture_text": "My God shall supply all your need according to his riches in glory by Christ Jesus."
+        "speaker": "Josiah Queen (Queen Josiah)",
+        "title": "The Prodigal (Acoustic Folk Worship)",
+        "window": "00:01:05 - 00:02:35",
+        "raw_file": "raw_josiah_queen_90s.webm",
+        "raw_alt": "raw_josiah_queen_90s.mp4",
+        "quote": "I took what was mine and threw it away, but when I came running home, You ran right out to meet me with boundless grace!",
+        "scripture_ref": "Luke 15:20",
+        "scripture_text": "And he arose, and came to his father. But when he was yet a great way off, his father saw him, and had compassion, and ran."
     }
 ]
 
@@ -152,7 +157,11 @@ def render_target(target: dict):
     if not (raw_path.is_file() and raw_path.stat().st_size > 1000):
         raw_path = clips_dir / target["raw_alt"]
 
-    # 1. Check if master video already exists
+    if not (raw_path.is_file() and raw_path.stat().st_size > 1000):
+        logger.error(f"Raw source file not found for {target['id']}: looked for {target['raw_file']} and {target['raw_alt']}")
+        return None, None
+
+    # 1. Render master video if missing
     if not (master_video.is_file() and master_video.stat().st_size > 1000000):
         logger.info(f"[RENDERING MASTER] {target['id']} ({target['speaker']})...")
         quote_lines = wrap_text(target["quote"], max_chars=34)[:3]
@@ -168,7 +177,7 @@ def render_target(target: dict):
             "[vbase]drawbox=x=0:y=356:w=1080:h=4:color=0xd4af37@1.0:t=fill[vb1]",
             "[vb1]drawbox=x=0:y=968:w=1080:h=4:color=0xd4af37@1.0:t=fill[vb2]",
             f"[vb2]drawtext=fontfile='{font_bold}':text='THE KINGDOM JOURNAL':fontcolor=0xd4af37:fontsize=22:x=(w-text_w)/2:y=120[vh1]",
-            f"[vh1]drawtext=fontfile='{font_serif}':text='{esc_speaker}':fontcolor=0xffffff:fontsize=42:x=(w-text_w)/2:y=170[vh2]",
+            f"[vh1]drawtext=fontfile='{font_serif}':text='{esc_speaker}':fontcolor=0xffffff:fontsize=40:x=(w-text_w)/2:y=170[vh2]",
             f"[vh2]drawtext=fontfile='{font_regular}':text='{esc_title}':fontcolor=0x94a3b8:fontsize=26:x=(w-text_w)/2:y=240[vh3]",
         ]
 
@@ -278,7 +287,7 @@ def build_showcase_email(rendered_clips: list):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Kingdom Journal · 5-Video Viral Clipping Suite</title>
+<title>The Kingdom Journal · Curated 5-Video Viral Clipping Suite</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #020617; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #020617;">
@@ -290,13 +299,13 @@ def build_showcase_email(rendered_clips: list):
         <tr>
           <td style="background-color: #9A3412; padding: 32px 24px; text-align: center; border-bottom: 4px solid #D97706;">
             <div style="font-size: 11px; letter-spacing: 2px; color: #FEE2E2; text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
-              The Kingdom Journal &middot; Full Suite Test
+              The Kingdom Journal &middot; Curated Roster Showcase
             </div>
             <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 27px; color: #FFFFFF; font-weight: 700; line-height: 1.2;">
               5-Video Viral Clipping Suite
             </div>
             <div style="font-size: 13.5px; color: #FED7AA; margin-top: 8px;">
-              3 Preaching Ministrations + 2 Gospel Music (1 Nigerian &middot; 1 Foreign)
+              Bro. Gbile Akanni &middot; Apostle Arome Osayi &middot; Apostle Michael Orokpo &middot; Min. Theophilus Sunday &middot; Josiah Queen
             </div>
           </td>
         </tr>
@@ -305,7 +314,7 @@ def build_showcase_email(rendered_clips: list):
         <tr>
           <td style="padding: 24px 24px 16px 24px; background-color: #F8FAFC;">
             <p style="font-size: 15px; line-height: 1.6; color: #1E293B; margin: 0 0 12px 0;">
-              Good day, Ezekiel! Here is the <strong>complete 5-video test</strong> of our viral clipping engine with <strong>all 5 videos attached directly to this email</strong>.
+              Good day, Ezekiel! Here is the <strong>fully calibrated 5-video suite</strong> featuring your handpicked theological roster and foreign worship lineup, with <strong>all 5 MP4 videos attached directly to this email</strong>.
             </p>
             <p style="font-size: 14px; line-height: 1.6; color: #475569; margin: 0 0 8px 0;">
               Every video below was sliced at its <strong>exact 90-second peak viral climax</strong>, composited into the <strong>9:16 Triple-Deck vertical short format (1080&times;1920)</strong> with editorial gold borders, dynamic typography, and verified scripture anchors.
@@ -325,10 +334,11 @@ def build_showcase_email(rendered_clips: list):
           <td style="padding: 20px 24px; background-color: #F8FAFC; border-top: 1px solid #E2E8F0;">
             <div style="background-color: #FFFBEB; border: 1px solid #FDE68A; border-radius: 6px; padding: 14px 16px;">
               <h4 style="margin: 0 0 6px 0; font-size: 13.5px; color: #92400E;">
-                Engine Architecture Specs
+                Calibrated Roster & Pipeline Specs
               </h4>
               <ul style="margin: 0; padding-left: 18px; font-size: 12.5px; color: #78350F; line-height: 1.6;">
-                <li><strong>All 5 Slices Rendered:</strong> Precision 90-second slices without multi-hour video downloads.</li>
+                <li><strong>Curated Preachers:</strong> Bro. Gbile Akanni, Apostle Arome Osayi, Apostle Michael Orokpo (plus Kumuyi, Papa Omolehin, Kesena Esiri, Wesley).</li>
+                <li><strong>Gospel Music:</strong> Minister Theophilus Sunday (Nigerian) and Josiah Queen ("Queen Josiah" - Foreign Folk Revival).</li>
                 <li><strong>Optimized Email Payload:</strong> Precision rate-control keeping all 5 videos attached under Gmail's 25 MB ceiling.</li>
                 <li><strong>Strict Sandbox Isolation:</strong> The clipping pipeline remains fully decoupled from the daily 07:00 AM journal dispatches.</li>
               </ul>
@@ -381,13 +391,13 @@ def main():
 
     html_content = build_showcase_email(rendered_clips)
     plain_text = (
-        "The Kingdom Journal · 5-Video Viral Clipping Suite\n\n"
+        "The Kingdom Journal · Curated 5-Video Viral Clipping Suite\n\n"
         "Here are all 5 rendered 90-second vertical shorts (9:16) for your inspection.\n"
         "All 5 MP4 videos are attached directly to this email.\n"
     )
 
     msg_root = email.mime.multipart.MIMEMultipart("mixed")
-    msg_root["Subject"] = "The Kingdom Journal · 5-Video Viral Clipping Suite (All 5 Videos Attached)"
+    msg_root["Subject"] = "The Kingdom Journal · Curated 5-Video Viral Clipping Suite (All 5 Videos Attached)"
     msg_root["From"] = f"The Kingdom Journal <{SMTP_USER}>"
     msg_root["To"] = RECIPIENT
 

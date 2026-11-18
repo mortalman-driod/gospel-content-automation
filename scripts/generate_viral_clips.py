@@ -1,7 +1,10 @@
 """
 Script: scripts/generate_viral_clips.py
 Discovers, extracts 90-second viral climaxes, and renders vertical shorts
-for 3 preaching and 2 gospel music videos (1 Nigerian, 1 Foreign).
+for the user's curated roster:
+- 3 Preaching: Bro. Gbile Akanni, Apostle Arome Osayi, Apostle Michael Orokpo
+- 1 Nigerian Gospel Music: Minister Theophilus Sunday
+- 1 Foreign Gospel Music: Josiah Queen ("Queen Josiah")
 """
 
 import json
@@ -22,63 +25,68 @@ logger = logging.getLogger("kingdom_journal.generate_clips")
 VIRAL_TARGETS = [
     {
         "category": "preaching_1",
-        "category_name": "Apostolic Preaching (Nigeria)",
-        "video_id": "diUkTvCPNSI",
-        "speaker": "Apostle Joshua Selman",
-        "title": "The Covenant of Dominion",
-        "start_sec": 9276, # 02:34:36
+        "category_name": "Discipleship & Consecration (Nigeria)",
+        "video_id": "mO0HTfBrdl4",
+        "speaker": "Bro. Gbile Akanni",
+        "title": "Why Regular Intimacy is Not Optional",
+        "start_sec": 135, # 00:02:15
         "duration_sec": 90,
-        "quote": "Though I do not know the way, I trust the one who created the way. A praise will come out from your spirit!",
+        "raw_file": "raw_gbile_90s.mp4",
+        "quote": "If you lose your secret place, you have lost your spiritual bearing. Power is not demonstrated in the crowd; it is conceived in quietness.",
+        "scripture_ref": "Psalm 91:1",
+        "scripture_text": "He that dwelleth in the secret place of the most High shall abide under the shadow of the Almighty."
+    },
+    {
+        "category": "preaching_2",
+        "category_name": "Apostolic Priesthood & Prayer (Nigeria)",
+        "video_id": "GrDCZBrxlAw",
+        "speaker": "Apostle Arome Osayi",
+        "title": "How God Raises Men of Spiritual Authority",
+        "start_sec": 1520, # 00:25:20
+        "duration_sec": 90,
+        "raw_file": "raw_arome_90s.mp4",
+        "quote": "God does not use men because they are gifted; He uses men who have yielded their will at the altar of consecrated prayer.",
+        "scripture_ref": "Romans 12:1",
+        "scripture_text": "Present your bodies a living sacrifice, holy, acceptable unto God, which is your reasonable service."
+    },
+    {
+        "category": "preaching_3",
+        "category_name": "Spiritual Mysteries & Priesthood (Nigeria)",
+        "video_id": "OR3Jgw-OofA",
+        "speaker": "Apostle Michael Orokpo",
+        "title": "The Making of Men: The Divine Presence",
+        "start_sec": 750, # 00:12:30
+        "duration_sec": 90,
+        "raw_file": "raw_orokpo_90s.mp4",
+        "quote": "You cannot carry the presence of God and remain ordinary. When the Holy Ghost rests upon a man, he becomes an eternal wonder.",
+        "scripture_ref": "Acts 1:8",
+        "scripture_text": "But ye shall receive power, after that the Holy Ghost is come upon you: and ye shall be witnesses unto me."
+    },
+    {
+        "category": "music_nigerian",
+        "category_name": "Prophetic Chants & Deep Worship (Nigeria)",
+        "video_id": "kA6V3TIRDQE",
+        "speaker": "Minister Theophilus Sunday",
+        "title": "I Believe Live (Chants & Intimacy)",
+        "start_sec": 525, # 00:08:45
+        "duration_sec": 90,
+        "raw_file": "raw_theophilus_90s.mp4",
+        "quote": "I live by faith and not by sight. My spirit pants after You, Jesus, my firm foundation!",
         "scripture_ref": "2 Corinthians 5:7",
         "scripture_text": "For we walk by faith, not by sight."
     },
     {
-        "category": "preaching_2",
-        "category_name": "Teaching & Fire Revival (Nigeria)",
-        "video_id": "pooWW6cTL5s",
-        "speaker": "Pastor Emmanuel Iren",
-        "title": "Reboot: Speed Through Waiting",
-        "start_sec": 1104, # 00:18:24
-        "duration_sec": 90,
-        "quote": "In our kingdom, we move forward by waiting! Those who wait on the Lord shall renew their strength.",
-        "scripture_ref": "Isaiah 40:31",
-        "scripture_text": "They that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles."
-    },
-    {
-        "category": "preaching_3",
-        "category_name": "Prophetic Prayer & Warfare (Nigeria)",
-        "video_id": "P3pHh5n5MBA",
-        "speaker": "Pastor Jerry Eze",
-        "title": "NSPPD: Prophetic Altar of Fire",
-        "start_sec": 790, # 00:13:10
-        "duration_sec": 90,
-        "quote": "Whatever is not in line with the will of God for your life must be altered by fire right now!",
-        "scripture_ref": "Jeremiah 32:27",
-        "scripture_text": "Behold, I am the LORD, the God of all flesh: is there any thing too hard for me?"
-    },
-    {
-        "category": "music_nigerian",
-        "category_name": "Gospel Worship (Nigerian)",
-        "video_id": "WFaI6fIT-74",
-        "speaker": "Nathaniel Bassey",
-        "title": "Hallelujah Challenge Live",
-        "start_sec": 110, # 00:01:50
-        "duration_sec": 90,
-        "quote": "You are the Alpha and Omega. Oh Lord, Your kingdom reigns forever!",
-        "scripture_ref": "Revelation 1:8",
-        "scripture_text": "I am Alpha and Omega, the beginning and the ending, saith the Lord."
-    },
-    {
         "category": "music_foreign",
-        "category_name": "Gospel Worship (Foreign)",
-        "video_id": "f2oxGYpuLkw",
-        "speaker": "Elevation Worship",
-        "title": "Praise (Live) ft. Brandon Lake",
-        "start_sec": 165, # 02:45 bridge crescendo
+        "category_name": "Acoustic Revival & Folk Worship (Foreign)",
+        "video_id": "3B3hC706X90",
+        "speaker": "Josiah Queen (Queen Josiah)",
+        "title": "The Prodigal (Acoustic Folk Worship)",
+        "start_sec": 65, # 00:01:05
         "duration_sec": 90,
-        "quote": "I'll praise in the valley, I'll praise on the mountain! As long as I'm breathing, I've got a reason!",
-        "scripture_ref": "Psalm 150:6",
-        "scripture_text": "Let every thing that hath breath praise the LORD. Praise ye the LORD."
+        "raw_file": "raw_josiah_queen_90s.webm",
+        "quote": "I took what was mine and threw it away, but when I came running home, You ran right out to meet me with boundless grace!",
+        "scripture_ref": "Luke 15:20",
+        "scripture_text": "And he arose, and came to his father. But when he was yet a great way off, his father saw him, and had compassion, and ran."
     }
 ]
 
@@ -97,63 +105,43 @@ def main():
         print(f"  Punchline: \"{t['quote']}\"")
         print(f"  Scripture: {t['scripture_ref']} - \"{t['scripture_text']}\"")
 
-    # Let's render the primary viral short: Apostle Joshua Selman (diUkTvCPNSI)
+    # Render primary test short: Bro. Gbile Akanni
     primary = VIRAL_TARGETS[0]
     print("\n-----------------------------------------------------------------")
-    print(f"RENDERING 90-SECOND VIRAL SHORT: {primary['speaker']}...")
+    print(f"PRIMARY TEST SHORT: {primary['speaker']}...")
     print("-----------------------------------------------------------------")
 
-    # Check if raw slice already downloaded
-    existing_slice = None
-    for cand_name in ["raw_selman_90s.webm", "raw_selman_90s.mp4"]:
-        p = clipper.output_dir / cand_name
-        if p.is_file() and p.stat().st_size > 1000:
-            existing_slice = p
-            print(f"Found existing raw slice at {existing_slice} ({existing_slice.stat().st_size} bytes)")
-            break
+    raw_slice = clipper.output_dir / primary["raw_file"]
+    if not raw_slice.is_file():
+        print(f"Downloading slice for {primary['speaker']}...")
+        raw_slice = clipper.download_90s_slice(
+            primary["video_id"],
+            primary["start_sec"],
+            primary["duration_sec"],
+            output_filename=primary["raw_file"]
+        )
 
-    raw_slice = existing_slice or clipper.download_slice(
-        primary["video_id"],
-        start_sec=primary["start_sec"],
-        duration_sec=primary["duration_sec"],
-        temp_filename="raw_selman_90s.mp4"
-    )
-
-    if not raw_slice:
-        print("Failed to download raw slice.")
-        return
-
-    result = clipper.render_vertical_short(
-        raw_video_path=raw_slice,
-        output_name="selman_covenant_dominion_90s",
+    out_vertical = clipper.output_dir / "gbile_akanni_intimacy_90s.mp4"
+    rendered = clipper.composite_vertical_short(
+        video_path=raw_slice,
         speaker=primary["speaker"],
         title=primary["title"],
         quote=primary["quote"],
         scripture_ref=primary["scripture_ref"],
         scripture_text=primary["scripture_text"],
-        duration_limit_sec=primary["duration_sec"]
+        output_filename="gbile_akanni_intimacy_90s.mp4"
     )
 
-    if result:
-        out_video, out_preview = result
-        print(f"\n[RENDER SUCCESS]")
-        print(f"  Video:   {out_video} ({out_video.stat().st_size} bytes)")
-        print(f"  Preview: {out_preview}")
-
-        # Copy to artifact dir for instant user inspection
-        if artifact_dir.is_dir():
-            art_video = artifact_dir / "selman_covenant_dominion_90s.mp4"
-            art_preview = artifact_dir / "selman_covenant_dominion_90s_preview.png"
-            shutil.copy2(out_video, art_video)
-            shutil.copy2(out_preview, art_preview)
-            print(f"  Copied artifacts to:")
-            print(f"    - {art_video}")
-            print(f"    - {art_preview}")
-
-    # Save candidates data
-    cand_path = BASE_DIR / "data" / "viral_targets_90s.json"
-    cand_path.write_text(json.dumps(VIRAL_TARGETS, indent=2), encoding="utf-8")
-    print(f"\nSaved candidates registry to {cand_path}")
+    if rendered and rendered.is_file():
+        print(f"\n>>> Successfully rendered 9:16 short: {rendered.name} ({rendered.stat().st_size / (1024*1024):.2f} MB)")
+        # Extract preview
+        prev = clipper.extract_preview_frame(rendered)
+        if prev and prev.is_file():
+            print(f">>> Snapshot preview generated: {prev.name}")
+            if artifact_dir.is_dir():
+                shutil.copy2(rendered, artifact_dir / rendered.name)
+                shutil.copy2(prev, artifact_dir / prev.name)
+                print(f">>> Copied to brain artifacts: {artifact_dir}")
 
 if __name__ == "__main__":
     main()
