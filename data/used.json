@@ -17,7 +17,8 @@
     "Tb_bT3qWsYk",
     "diUkTvCPNSI",
     "Qa17awFKvig",
-    "TKbjyq4Pxlc"
+    "TKbjyq4Pxlc",
+    "kA6V3TIRDQE"
   ],
   "used_quotes": [
     "The night is far spent. Wake up out of sleep.",
@@ -37,7 +38,8 @@
     "God visited promise and left his signature. He's a doing God.",
     "Though I do not know the way, I trust the one who created the way.",
     "Christianity is not powerlessness. If there is no power is not Christianity.",
-    "They that wait on the Lord, they shall renew their strength."
+    "They that wait on the Lord, they shall renew their strength.",
+    "I live by faith and not by sight. My faith is in Christ Jesus."
   ],
   "used_themes": [
     "The 4 a.m. nudge is a call.",
@@ -55,7 +57,8 @@
     "Divine Action",
     "The Secret Place",
     "The Power Of Presence",
-    "Divine Renewal"
+    "Divine Renewal",
+    "Unshakable Faith"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -233,6 +236,20 @@
         "open_bible",
         "crimson_cream_wave"
       ]
+    },
+    {
+      "issue": 74,
+      "date": "2026-11-18",
+      "video_id": "kA6V3TIRDQE",
+      "theme": "Unshakable Faith",
+      "scripture": "Galatians 2:20",
+      "template": "quiet_light",
+      "background": [
+        "diagonal_royal_gold",
+        "royal_crown",
+        "green_sprout",
+        "crimson_cream_wave"
+      ]
     }
   ],
   "used_scriptures": [
@@ -242,7 +259,8 @@
     "Luke 18:1",
     "2 Corinthians 5:7",
     "Jeremiah 33:3",
-    "Psalm 27:14"
+    "Psalm 27:14",
+    "Galatians 2:20"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -254,7 +272,8 @@
     "bold_statement",
     "contrast_split",
     "heavy_impact",
-    "asymmetric_split"
+    "asymmetric_split",
+    "quiet_light"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
@@ -270,6 +289,7 @@
     "mountain_summit",
     "cross_sunrise",
     "golden_sunburst_clouds",
-    "open_bible"
+    "open_bible",
+    "diagonal_royal_gold"
   ]
 }
