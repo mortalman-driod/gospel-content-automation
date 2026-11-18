@@ -53,7 +53,8 @@ jobs:
           SMTP_PORT: "587"
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || secrets.SMTP_USER }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL || secrets.RECIPIENT_EMAIL || secrets.SMTP_USER }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL || secrets.NOTIFICATION_EMAIL || secrets.SMTP_USER }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY || secrets.YT_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
@@ -70,7 +71,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git pull --rebase origin main
           git add data/state.json data/used.json data/performance.csv data/transcripts/
-          git diff --staged --quiet || (git commit -m "chore(ops): update pipeline state and performance logs [skip ci]" && git push origin main)
+          git diff --staged --quiet || git commit -m "chore(ops): update pipeline state and performance logs [skip ci]"
+          git pull --rebase origin main || (git rebase --abort && git pull -X ours --no-rebase origin main)
+          git push origin main || echo "Push skipped or already up to date" 
