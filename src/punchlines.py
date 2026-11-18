@@ -41,6 +41,74 @@ def load_env():
                     os.environ[k] = v
 
 CHANNEL_PREACHER_MAP = {
+    # Primary Theological Lineage (Discipleship, Holiness, Priesthood, Historic Revival)
+    "gbile akanni": "Bro. Gbile Akanni",
+    "bro gbile akanni": "Bro. Gbile Akanni",
+    "livingseed media gboko": "Bro. Gbile Akanni",
+    "livingseed team media": "Bro. Gbile Akanni",
+    "livingseed": "Bro. Gbile Akanni",
+    "living seed": "Bro. Gbile Akanni",
+    "peace house": "Bro. Gbile Akanni",
+
+    "w.f. kumuyi": "Pastor W.F. Kumuyi",
+    "wf kumuyi": "Pastor W.F. Kumuyi",
+    "w f kumuyi": "Pastor W.F. Kumuyi",
+    "kumuyi": "Pastor W.F. Kumuyi",
+    "deeper christian life ministry": "Pastor W.F. Kumuyi",
+    "deeper life": "Pastor W.F. Kumuyi",
+    "dclm": "Pastor W.F. Kumuyi",
+
+    "arome osayi": "Apostle Arome Osayi",
+    "apostle arome osayi": "Apostle Arome Osayi",
+    "remnant christian network": "Apostle Arome Osayi",
+    "rcn": "Apostle Arome Osayi",
+
+    "omolehin": "Rev. Isaac Omolehin",
+    "papa omolehin": "Rev. Isaac Omolehin",
+    "baba omolehin": "Rev. Isaac Omolehin",
+    "isaac omolehin": "Rev. Isaac Omolehin",
+    "rev isaac omolehin": "Rev. Isaac Omolehin",
+    "the word assembly hq": "Rev. Isaac Omolehin",
+    "word assembly": "Rev. Isaac Omolehin",
+
+    "kesena esiri": "Pastor Kesena Esiri",
+    "kesiena esiri": "Pastor Kesena Esiri",
+    "evangelist kesiena esiri": "Pastor Kesena Esiri",
+
+    "michael orokpo": "Apostle Michael Orokpo",
+    "apostle orokpo michael": "Apostle Michael Orokpo",
+    "orokpo michael": "Apostle Michael Orokpo",
+    "encounter jesus ministries international": "Apostle Michael Orokpo",
+    "encounter jesus ministries": "Apostle Michael Orokpo",
+    "ejmi": "Apostle Michael Orokpo",
+
+    "theophilus sunday": "Minister Theophilus Sunday",
+    "1spirit worship ministry": "Minister Theophilus Sunday",
+    "1spirit": "Minister Theophilus Sunday",
+
+    # Classic Historic Evangelists & Revivalists
+    "john wesley": "John Wesley",
+    "charles spurgeon": "Charles Spurgeon",
+    "spurgeon": "Charles Spurgeon",
+    "leonard ravenhill": "Leonard Ravenhill",
+    "ravenhill": "Leonard Ravenhill",
+    "a.w. tozer": "A.W. Tozer",
+    "aw tozer": "A.W. Tozer",
+    "tozer": "A.W. Tozer",
+    "george whitefield": "George Whitefield",
+    "whitefield": "George Whitefield",
+    "d.l. moody": "D.L. Moody",
+    "dl moody": "D.L. Moody",
+    "smith wigglesworth": "Smith Wigglesworth",
+    "wigglesworth": "Smith Wigglesworth",
+    "william booth": "William Booth",
+    "charles finney": "Charles Finney",
+    "jonathan edwards": "Jonathan Edwards",
+    "sermonindex.net": "Classic Revivalist",
+    "sermonindex": "Classic Revivalist",
+    "christian classic audio books": "Classic Evangelist",
+
+    # Additional Familiar Ministries
     "koinonia global": "Apostle Joshua Selman",
     "koinonia": "Apostle Joshua Selman",
     "joshua selman": "Apostle Joshua Selman",
@@ -51,25 +119,9 @@ CHANNEL_PREACHER_MAP = {
     "nathaniel bassey": "Nathaniel Bassey",
     "nathaniel bassey main": "Nathaniel Bassey",
     "victoria orenze": "Victoria Orenze",
-    "theophilus sunday": "Theophilus Sunday",
-    "sunmisola agbebi": "Sunmisola Agbebi",
-    "moses bliss": "Moses Bliss",
-    "harvesters": "Pastor Bolaji Idowu",
-    "harvesters tv": "Pastor Bolaji Idowu",
-    "elevation church": "Pastor Godman Akinlabi",
-    "the elevation church": "Pastor Godman Akinlabi",
-    "daystar": "Pastor Sam Adeyemi",
-    "sam adeyemi": "Pastor Sam Adeyemi",
-    "covenant christian centre": "Pastor Poju Oyemade",
-    "poju oyemade": "Pastor Poju Oyemade",
-    "celebration church tv": "Pastor Emmanuel Iren",
-    "celebration church": "Pastor Emmanuel Iren",
     "streams of joy": "Pastor Jerry Eze",
-    "streams of joy international": "Pastor Jerry Eze",
     "jerry eze": "Pastor Jerry Eze",
-    "pastor jerry eze": "Pastor Jerry Eze",
-    "the god life club": "Pastor Chingtok Ishaku",
-    "chingtok ishaku": "Pastor Chingtok Ishaku"
+    "pastor jerry eze": "Pastor Jerry Eze"
 }
 
 def resolve_speaker_name(title: str, channel: str) -> str:

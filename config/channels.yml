@@ -1,88 +1,76 @@
 # The Kingdom Journal: Curated YouTube Channels
+# Configured specifically for the requested theological roster:
+# Gbile Akanni, W.F. Kumuyi, Arome Osayi, Papa Omolehin, Kesena Esiri,
+# Michael Orokpo, Theophilus Sunday, and classic historic evangelists (John Wesley, etc.)
 # Uploads playlists are derived automatically: UC... -> UU... (1 quota unit per channel)
 
 channels:
-  - id: "UCq2ueL6wl7slTuInRbFpe7w"
-    name: "Koinonia Global"
-    speaker: "Apostle Joshua Selman"
-    category: "apostolic_teaching"
+  - id: "UCtLmK9BBITjt_LrJTyHbIrw"
+    name: "Livingseed Media Gboko"
+    speaker: "Bro. Gbile Akanni"
+    category: "discipleship_consecration"
 
-  - id: "UC9unpsMUkOGDIMraqBfZtYg"
-    name: "Dunsin Oyekan"
-    speaker: "Dunsin Oyekan"
-    category: "prophetic_worship"
+  - id: "UCk6vFo7hIWeZGBKYRhbBHvA"
+    name: "LIVINGSEED TEAM MEDIA"
+    speaker: "Bro. Gbile Akanni"
+    category: "discipleship_consecration"
 
-  - id: "UCRe2Ir9wtPk_YQjElam7n2w"
-    name: "Nathaniel Bassey Main"
-    speaker: "Nathaniel Bassey"
-    category: "worship_warfare"
+  - id: "UC4zsqN5YdXfxkkdVvwNA3JA"
+    name: "Deeper Christian Life Ministry"
+    speaker: "Pastor W.F. Kumuyi"
+    category: "biblical_holiness"
 
-  - id: "UCo9_ALYi0IYcMn7K84YFTzw"
-    name: "Victoria Orenze"
-    speaker: "Victoria Orenze"
-    category: "intimate_worship"
+  - id: "UCh6Sn6v_mdhwWTEpNvo5A4A"
+    name: "Apostle Arome Osayi"
+    speaker: "Apostle Arome Osayi"
+    category: "apostolic_prayer"
 
-  - id: "UC299_CRk_c_LvfwhMzmfyBQ"
-    name: "Theophilus Sunday"
-    speaker: "Theophilus Sunday"
+  - id: "UCfypbTPqAdphp1EJ5XkJ7-Q"
+    name: "Remnant Christian Network"
+    speaker: "Apostle Arome Osayi"
+    category: "revival_priesthood"
+
+  - id: "UCb7m1sHxrufNc2sBOYeBG-g"
+    name: "The Word Assembly HQ"
+    speaker: "Rev. Isaac Omolehin"
+    category: "revival_power"
+
+  - id: "UC0-b-naEc_lhZIK94QKnEBw"
+    name: "Isaac Omolehin"
+    speaker: "Rev. Isaac Omolehin"
+    category: "prophetic_exhortation"
+
+  - id: "UCsUhEn06Z5nMIAB7cGGImpg"
+    name: "Evangelist Kesiena Esiri"
+    speaker: "Pastor Kesena Esiri"
+    category: "apostolic_doctrine"
+
+  - id: "UC18clSai_qCKimZrbYvZj4Q"
+    name: "Encounter Jesus Ministries International"
+    speaker: "Apostle Michael Orokpo"
+    category: "kingdom_mysteries"
+
+  - id: "UCxssq4RFmPSgUzyjpIZBjSQ"
+    name: "Apostle Orokpo Michael"
+    speaker: "Apostle Michael Orokpo"
+    category: "spiritual_priesthood"
+
+  - id: "UChTPK3QCgwASaZa8LAxTOWA"
+    name: "1Spirit Worship Ministry"
+    speaker: "Minister Theophilus Sunday"
     category: "secret_place_chants"
 
-  - id: "UCNeLs83EPGjX8Pz7wsiBckw"
-    name: "Lawrence Oyor"
-    speaker: "Lawrence Oyor"
-    category: "revival_chants"
+  - id: "UC299_CRk_c_LvfwhMzmfyBQ"
+    name: "THEOPHILUS SUNDAY"
+    speaker: "Minister Theophilus Sunday"
+    category: "prayer_altar"
 
-  - id: "UCtIRyuESlnOflQCpmk-fHUw"
-    name: "Mercy Chinwo Official"
-    speaker: "Mercy Chinwo"
-    category: "praise_adoration"
+  - id: "UCrcrDXK620kopfSffPxrdTA"
+    name: "SermonIndex.net"
+    speaker: "John Wesley & Classic Evangelists"
+    category: "historic_revival"
 
-  - id: "UC0LnPAjiEk6pZqd7bIzq4sw"
-    name: "Emmanuel Iren Live"
-    speaker: "Pastor Emmanuel Iren"
-    category: "apostolic_teaching"
-
-  - id: "UCXTMFK4-CSliIT1tXuRXpkg"
-    name: "Pastor Chingtok Ishaku"
-    speaker: "Pastor Chingtok Ishaku"
-    category: "intimate_worship"
-
-  - id: "UCyuK5A1Zmf8CxHD5ar3hlxg"
-    name: "TY Bello"
-    speaker: "TY Bello"
-    category: "spontaneous_worship"
-
-  - id: "UCLg4NCAJxhIvD4IRV__LOFg"
-    name: "Pastor Jerry Eze"
-    speaker: "Pastor Jerry Eze"
-    category: "morning_prayers"
-
-  - id: "UCtc3wKlT9HxkqE-xDHvxVXA"
-    name: "P.Daniel Olawande"
-    speaker: "P.Daniel Olawande"
-    category: "fire_revival"
-
-  - id: "UCiKEtpeOs6eAJjMvBRnry7g"
-    name: "Celebration Church TV"
-    speaker: "Pastor Emmanuel Iren"
-    category: "church_community"
-
-  - id: "UCSf-NCzjwcnXErUBW_qeFvA"
-    name: "Elevation Worship"
-    speaker: "Elevation Worship"
-    category: "global_worship"
-
-  - id: "UCv88VZJUuRoot7GfSO_sm-g"
-    name: "Moses Bliss"
-    speaker: "Moses Bliss"
-    category: "inspirational_praise"
-
-  - id: "UCOoO8EtJL8LMjIYogzJRfvg"
-    name: "Gaise Baba"
-    speaker: "Gaise Baba"
-    category: "urban_gospel"
-
-  - id: "UCZ4trZcPxr3DwcMbFb54rDQ"
-    name: "TRIBL"
-    speaker: "Maverick City / TRIBL"
-    category: "communal_worship"
+  - id: "UCVZVHTYFBn0Hw2gXUWXpupA"
+    name: "Christian Classic Audio Books"
+    speaker: "Classic Evangelists"
+    category: "classic_expositions"

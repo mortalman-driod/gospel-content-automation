@@ -45,9 +45,12 @@ def clean_theme_title(raw_title: str) -> str:
     t = re.sub(r'\b(OFFICIAL|MUSIC|VIDEO|AUDIO|VISUALIZER|LYRICS?|LIVE|BROADCAST|MINISTRATION|STREAM|FASTING|ONLINE|FEATURING|FEAT\.?|FT\.?)\b', '', t, flags=re.IGNORECASE)
     # Strip preacher/artist names from theme candidate so author name is never used as theme
     banned_theme_words = [
-        "ty bello", "tomi favored", "dunsin oyekan", "nathaniel bassey",
-        "joshua selman", "emmanuel iren", "jerry eze", "victoria orenze",
-        "theophilus sunday", "sunmisola agbebi", "moses bliss", "sam adeyemi"
+        "gbile akanni", "kumuyi", "w.f. kumuyi", "arome osayi", "omolehin",
+        "isaac omolehin", "kesena esiri", "michael orokpo", "theophilus sunday",
+        "john wesley", "charles spurgeon", "leonard ravenhill", "tozer",
+        "smith wigglesworth", "george whitefield", "d.l. moody", "charles finney",
+        "joshua selman", "emmanuel iren", "jerry eze", "nathaniel bassey",
+        "dunsin oyekan", "victoria orenze"
     ]
     for bw in banned_theme_words:
         t = re.sub(r'\b' + re.escape(bw) + r'\b', '', t, flags=re.IGNORECASE)

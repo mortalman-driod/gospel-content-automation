@@ -109,7 +109,7 @@ class DiscoverEngine:
         url = f"https://www.googleapis.com/youtube/v3/playlistItems?{params}"
         req = urllib.request.Request(url, headers={"User-Agent": "KingdomJournal/3.8"})
         try:
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=25) as resp:
                 self.quota.spend(1)
                 data = json.loads(resp.read().decode("utf-8"))
                 items = data.get("items", [])
@@ -140,7 +140,7 @@ class DiscoverEngine:
             url = f"https://www.googleapis.com/youtube/v3/videos?{params}"
             req = urllib.request.Request(url, headers={"User-Agent": "KingdomJournal/3.8"})
             try:
-                with urllib.request.urlopen(req, timeout=15) as resp:
+                with urllib.request.urlopen(req, timeout=25) as resp:
                     self.quota.spend(1)
                     data = json.loads(resp.read().decode("utf-8"))
                     detailed_videos.extend(data.get("items", []))
@@ -151,7 +151,7 @@ class DiscoverEngine:
 
     def discovery_search(self, query: str, max_results: int = 10) -> list:
         """Search discovery fallback (Costs 100 units). Restricted to at most 1-2 calls per run."""
-        published_after = (datetime.now(timezone.utc) - timedelta(days=14)).strftime("%Y-%m-%dT%H:%M:%SZ")
+        published_after = (datetime.now(timezone.utc) - timedelta(days=45)).strftime("%Y-%m-%dT%H:%M:%SZ")
         params = urllib.parse.urlencode({
             "part": "snippet",
             "q": query,
@@ -165,7 +165,7 @@ class DiscoverEngine:
         url = f"https://www.googleapis.com/youtube/v3/search?{params}"
         req = urllib.request.Request(url, headers={"User-Agent": "KingdomJournal/3.8"})
         try:
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=25) as resp:
                 self.quota.spend(100)
                 data = json.loads(resp.read().decode("utf-8"))
                 vids = [it["id"]["videoId"] for it in data.get("items", []) if "videoId" in it.get("id", {})]
@@ -176,7 +176,7 @@ class DiscoverEngine:
 
     def score_and_rank_candidates(self, raw_videos: list) -> list:
         """
-        Filters candidates (published within 14 days, duration 3-60 min).
+        Filters candidates (published within 45 days, duration 3-60 min).
         Computes velocity, channel outlier multiple, and engagement ratio.
         """
         now = datetime.now(timezone.utc)
@@ -210,7 +210,7 @@ class DiscoverEngine:
                 pub_dt = now - timedelta(days=1)
             
             hours_since_publish = max(0.5, (now - pub_dt).total_seconds() / 3600.0)
-            if hours_since_publish > (14 * 24):
+            if hours_since_publish > (45 * 24):
                 continue # Skip uploads older than 14 days
 
             views = int(stats.get("viewCount", "0") or 0)
