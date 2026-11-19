@@ -58,7 +58,8 @@
     "The Secret Place",
     "The Power Of Presence",
     "Divine Renewal",
-    "Unshakable Faith"
+    "Unshakable Faith",
+    "Unshakable Peace"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -250,6 +251,20 @@
         "green_sprout",
         "crimson_cream_wave"
       ]
+    },
+    {
+      "issue": 75,
+      "date": "2026-11-19",
+      "video_id": null,
+      "theme": "Unshakable Peace",
+      "scripture": "John 14:27",
+      "template": "heritage_serif",
+      "background": [
+        "deep_cobalt_wave",
+        "study_desk",
+        "royal_crown",
+        "mountain_summit"
+      ]
     }
   ],
   "used_scriptures": [
@@ -260,7 +275,8 @@
     "2 Corinthians 5:7",
     "Jeremiah 33:3",
     "Psalm 27:14",
-    "Galatians 2:20"
+    "Galatians 2:20",
+    "John 14:27"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -273,7 +289,8 @@
     "contrast_split",
     "heavy_impact",
     "asymmetric_split",
-    "quiet_light"
+    "quiet_light",
+    "heritage_serif"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
