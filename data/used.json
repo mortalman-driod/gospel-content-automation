@@ -59,7 +59,8 @@
     "The Power Of Presence",
     "Divine Renewal",
     "Unshakable Faith",
-    "Unshakable Peace"
+    "Unshakable Peace",
+    "The Rest Of True Belief"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -265,6 +266,20 @@
         "royal_crown",
         "mountain_summit"
       ]
+    },
+    {
+      "issue": 76,
+      "date": "2026-11-20",
+      "video_id": null,
+      "theme": "The Rest Of True Belief",
+      "scripture": "Matthew 11:28-29",
+      "template": "bold_statement",
+      "background": [
+        "terracotta_amber_wave",
+        "deep_cobalt_wave",
+        "emerald_white_wave",
+        "study_desk"
+      ]
     }
   ],
   "used_scriptures": [
@@ -276,7 +291,8 @@
     "Jeremiah 33:3",
     "Psalm 27:14",
     "Galatians 2:20",
-    "John 14:27"
+    "John 14:27",
+    "Matthew 11:28-29"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -290,7 +306,8 @@
     "heavy_impact",
     "asymmetric_split",
     "quiet_light",
-    "heritage_serif"
+    "heritage_serif",
+    "bold_statement"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
