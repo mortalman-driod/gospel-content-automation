@@ -280,6 +280,20 @@
         "emerald_white_wave",
         "study_desk"
       ]
+    },
+    {
+      "issue": 77,
+      "date": "2026-11-21",
+      "video_id": null,
+      "theme": "Unshakable Peace",
+      "scripture": "Isaiah 26:3",
+      "template": "contrast_split",
+      "background": [
+        "terracotta_amber_wave",
+        "emerald_white_wave",
+        "crimson_cream_wave",
+        "deep_cobalt_wave"
+      ]
     }
   ],
   "used_scriptures": [
@@ -292,7 +306,8 @@
     "Psalm 27:14",
     "Galatians 2:20",
     "John 14:27",
-    "Matthew 11:28-29"
+    "Matthew 11:28-29",
+    "Isaiah 26:3"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -307,7 +322,8 @@
     "asymmetric_split",
     "quiet_light",
     "heritage_serif",
-    "bold_statement"
+    "bold_statement",
+    "contrast_split"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
