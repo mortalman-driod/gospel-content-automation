@@ -60,7 +60,8 @@
     "Divine Renewal",
     "Unshakable Faith",
     "Unshakable Peace",
-    "The Rest Of True Belief"
+    "The Rest Of True Belief",
+    "Unwavering Conviction"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -294,6 +295,20 @@
         "crimson_cream_wave",
         "deep_cobalt_wave"
       ]
+    },
+    {
+      "issue": 78,
+      "date": "2026-11-22",
+      "video_id": null,
+      "theme": "Unwavering Conviction",
+      "scripture": "Psalm 46:10",
+      "template": "quiet_light",
+      "background": [
+        "royal_crown",
+        "crimson_cream_wave",
+        "terracotta_amber_wave",
+        "emerald_white_wave"
+      ]
     }
   ],
   "used_scriptures": [
@@ -307,7 +322,8 @@
     "Galatians 2:20",
     "John 14:27",
     "Matthew 11:28-29",
-    "Isaiah 26:3"
+    "Isaiah 26:3",
+    "Psalm 46:10"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -323,7 +339,8 @@
     "quiet_light",
     "heritage_serif",
     "bold_statement",
-    "contrast_split"
+    "contrast_split",
+    "quiet_light"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
