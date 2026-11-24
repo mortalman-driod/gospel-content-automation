@@ -62,7 +62,8 @@
     "Unshakable Peace",
     "The Rest Of True Belief",
     "Unwavering Conviction",
-    "Shepherd'S Steadfast Peace"
+    "Shepherd'S Steadfast Peace",
+    "Unwavering Belief"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -324,6 +325,20 @@
         "green_sprout",
         "crimson_cream_wave"
       ]
+    },
+    {
+      "issue": 80,
+      "date": "2026-11-24",
+      "video_id": null,
+      "theme": "Unwavering Belief",
+      "scripture": "Jeremiah 29:11",
+      "template": "heritage_serif",
+      "background": [
+        "terracotta_amber_wave",
+        "green_sprout",
+        "royal_crown",
+        "mountain_summit"
+      ]
     }
   ],
   "used_scriptures": [
@@ -339,7 +354,8 @@
     "Matthew 11:28-29",
     "Isaiah 26:3",
     "Psalm 46:10",
-    "Psalm 23:1-3"
+    "Psalm 23:1-3",
+    "Jeremiah 29:11"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -357,7 +373,8 @@
     "bold_statement",
     "contrast_split",
     "quiet_light",
-    "asymmetric_split"
+    "asymmetric_split",
+    "heritage_serif"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
