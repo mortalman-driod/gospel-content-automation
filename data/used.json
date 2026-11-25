@@ -63,7 +63,8 @@
     "The Rest Of True Belief",
     "Unwavering Conviction",
     "Shepherd'S Steadfast Peace",
-    "Unwavering Belief"
+    "Unwavering Belief",
+    "The Substance Of Belief"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -339,6 +340,20 @@
         "royal_crown",
         "mountain_summit"
       ]
+    },
+    {
+      "issue": 81,
+      "date": "2026-11-25",
+      "video_id": null,
+      "theme": "The Substance Of Belief",
+      "scripture": "Hebrews 11:1",
+      "template": "heavy_impact",
+      "background": [
+        "terracotta_amber_wave",
+        "royal_crown",
+        "study_desk",
+        "green_sprout"
+      ]
     }
   ],
   "used_scriptures": [
@@ -355,7 +370,8 @@
     "Isaiah 26:3",
     "Psalm 46:10",
     "Psalm 23:1-3",
-    "Jeremiah 29:11"
+    "Jeremiah 29:11",
+    "Hebrews 11:1"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -374,7 +390,8 @@
     "contrast_split",
     "quiet_light",
     "asymmetric_split",
-    "heritage_serif"
+    "heritage_serif",
+    "heavy_impact"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
