@@ -65,7 +65,8 @@
     "Shepherd'S Steadfast Peace",
     "Unwavering Belief",
     "The Substance Of Belief",
-    "Divine Generosity In Leadership"
+    "Divine Generosity In Leadership",
+    "Unshakable Leadership Peace"
   ],
   "updated_at": "2026-11-06T15:00:00Z",
   "history": [
@@ -369,6 +370,20 @@
         "deep_cobalt_wave",
         "emerald_white_wave"
       ]
+    },
+    {
+      "issue": 83,
+      "date": "2026-11-27",
+      "video_id": null,
+      "theme": "Unshakable Leadership Peace",
+      "scripture": "Philippians 4:6-7",
+      "template": "contrast_split",
+      "background": [
+        "terracotta_amber_wave",
+        "deep_cobalt_wave",
+        "crimson_cream_wave",
+        "mountain_summit"
+      ]
     }
   ],
   "used_scriptures": [
@@ -387,7 +402,8 @@
     "Psalm 23:1-3",
     "Jeremiah 29:11",
     "Hebrews 11:1",
-    "John 3:16"
+    "John 3:16",
+    "Philippians 4:6-7"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -408,7 +424,8 @@
     "asymmetric_split",
     "heritage_serif",
     "heavy_impact",
-    "bold_statement"
+    "bold_statement",
+    "contrast_split"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
