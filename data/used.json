@@ -384,6 +384,20 @@
         "crimson_cream_wave",
         "mountain_summit"
       ]
+    },
+    {
+      "issue": 84,
+      "date": "2026-11-28",
+      "video_id": null,
+      "theme": "The Secret Place",
+      "scripture": "Romans 8:28",
+      "template": "quiet_light",
+      "background": [
+        "terracotta_amber_wave",
+        "emerald_white_wave",
+        "mountain_summit",
+        "green_sprout"
+      ]
     }
   ],
   "used_scriptures": [
@@ -403,7 +417,8 @@
     "Jeremiah 29:11",
     "Hebrews 11:1",
     "John 3:16",
-    "Philippians 4:6-7"
+    "Philippians 4:6-7",
+    "Romans 8:28"
   ],
   "used_templates": [
     "asymmetric_split",
@@ -425,7 +440,8 @@
     "heritage_serif",
     "heavy_impact",
     "bold_statement",
-    "contrast_split"
+    "contrast_split",
+    "quiet_light"
   ],
   "used_backgrounds": [
     "deep_cobalt_wave",
